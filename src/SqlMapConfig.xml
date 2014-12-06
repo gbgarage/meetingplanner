@@ -6,5 +6,5 @@
 
 <sqlMapConfig>
     <sqlMap resource="dfzq/dao/sheduleSystem.xml"/>
-
+    <sqlMap resource="dfzq/dao/schedule.xml"/>
 </sqlMapConfig>

@@ -74,7 +74,9 @@
 
     </bean>
 
-
+     <bean id="scheduleDAO" class="dfzq.dao.ScheduleDAO">
+       <property name="sqlMapClient" ref="sqlMapClient"/>
+    </bean> 
 
 
 
