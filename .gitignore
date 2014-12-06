@@ -1,1 +1,10 @@
 /build/
+
+
+*.iml
+.classpath
+.project
+
+.idea\*
+.settings\*
+.build\*
