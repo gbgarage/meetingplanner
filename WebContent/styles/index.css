@@ -1,0 +1,91 @@
+body {
+	font-family: "Î¢ÈíÑÅºÚ";
+	font-size: 12px;
+	min-width: 1200px;
+}
+
+textarea {
+	font-family: "Î¢ÈíÑÅºÚ";
+	font-size: 12px
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+td {
+	border: 0px solid #000;
+	padding: 2px;
+}
+
+.title {
+	padding: 5px;
+	width: 100%;
+	font-size: 32px;
+	margin: 5px;
+}
+
+.subTitle {
+	padding: 5px;
+	width: 100%;
+	font-size: 12px;
+	margin: 5px;
+	cursor: pointer;
+}
+
+.header {
+	width: 100%;
+	padding: 0px;
+	display: block;
+}
+
+.clear {
+	clear: both;
+}
+
+dl {
+	clear: left;
+}
+
+dt {
+	float: left;
+	width: 25%;
+}
+
+dd {
+	width: 73%;
+}
+/*  .column input[type="text"] { width: 200px;} */
+input[type="text"] {
+	width: 300px;
+}
+
+select {
+	width: 300px;
+}
+
+#responseReadArea,#requestReadArea,#requestHead,#requestBody,#responseHead,#responseBody
+	{
+	font-family: 'Courier New';
+	font-size: 12px;
+	width: 95%;
+	border: silver 1px solid;
+	border-style: dashed;
+	border-left: solid 5px #6CE26C;
+	word-wrap: break-word;
+}
+
+pre {
+	font-family: 'Courier New';
+	font-size: 12px;
+	width: 95%;
+	word-wrap: break-word;
+}
+
+.processing {
+	background-image: ../images/processing.gif;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}

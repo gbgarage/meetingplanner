@@ -1,0 +1,18 @@
+﻿[
+	{id: "1", name: "Jet", pid:"-1"},
+
+
+	{id: "fly_home", name: "包灰机回家", pid:"1"},
+	{id: "game_again", name: "再飞一次吧", pid:"1"},
+	{id: "go_btn", name: "开始游戏", pid:"1"},
+	{id: "pv", name: "pv", pid:"1"},
+	{id: "reward_btn", name: "领取奖励", pid:"1"},
+	{id: "share_friends", name: "告诉小伙伴", pid:"1"},
+	{id: "where_go", name: "飞到哪里了", pid:"1"},
+	{id: "weixin_share", name: "微信分享", pid:"1"}
+
+
+
+
+
+]

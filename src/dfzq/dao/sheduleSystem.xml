@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+
+    <typeAlias alias="Fund" type="dfzq.model.Fund"/>
+    <typeAlias alias="OneOnOneMeetingRequest" type="dfzq.model.OneOnOneMeetingRequest"/>
+    <typeAlias alias="Company" type="dfzq.model.Company"/>
+    <typeAlias alias="Availability" type="dfzq.model.Availability"/>
+
+
+    <insert id="insertFund" parameterClass="Fund">
+        insert into fund( fund_name, phone_number,contact) values (
+        #fundName#,#phoneNumber#,#contactor#)
+
+        <selectKey resultClass="int" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+
+    <insert id="insertOneOnOneMeetingRequest" parameterClass="OneOnOneMeetingRequest">
+        insert into one_on_one_meeting_request (fund_id, company_id) values (#fund.id#,#company.id#)
+    </insert>
+
+    <insert id="saveCompanyAvailablility" parameterClass="Availability">
+        insert into company_availbility (company_id, time_frame_id) values (#company.id#,#timeFrameId#)
+    </insert>
+
+
+    <insert id="saveCompany" parameterClass="Company">
+        insert into company( name, contact) values (#name#,#contact#)
+
+        <selectKey resultClass="int" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+
+    <select id="getCompanyByName" parameterClass="string" resultClass="Company">
+      select id as id , name as name, contact as contact
+      from company
+      where name=#name#
+
+
+    </select>
+
+</sqlMap>

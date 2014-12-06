@@ -1,0 +1,15 @@
+﻿[
+	{id: "1", name: "航变", pid:"-1"},
+
+
+	{id: "transit", name: "短链入口", pid:"1"},
+	{id: "fmFlightChangeResult", name: "航变完成", pid:"1"},
+	{id: "fmTicketChangeResult", name: "改签完成", pid:"1"},
+	{id: "fmFlightTicketRefund", name: "退票完成", pid:"1"},
+	{id: "fmFlightchange", name: "航变详情", pid:"1"}
+
+
+
+
+
+]

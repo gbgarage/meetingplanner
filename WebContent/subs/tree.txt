@@ -1,0 +1,8 @@
+﻿[
+	{id: "dataBar", text: "性能测试"},
+	
+	{id: "jobIns/jobIns", text: "任务列表", pid: "dataBar" },
+	{id: "apicfg/logCount2", text: "图表", pid: "dataBar" },
+	{id: "apicfg/logCount", text: "统计", pid: "dataBar" },
+	
+]
