@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+        
+<sqlMap>
+
+ <resultMap id="scheduleMap" class="com.dfzq.model.Schedule">
+    <result property="id" column="id"/>
+    <result property="subject" column="subject"/>
+    <result property="location" column="location"/>
+    <result property="description" column="description"/>
+    <result property="startTime" column="startTime"/>
+    <result property="endTime" column="endTime"/>
+    <result property="isAllDayEvent" column="isAllDayEvent"/>
+    <result property="color" column="color"/>
+    <result property="recurringRule" column="recurringRule"/>
+</resultMap> 
+
+    <typeAlias alias="Schedule" type="com.dfzq.model.Schedule"/>
+
+    <insert id="addSchedule">
+       insert into `tbl_schedule` (`subject`, `starttime`, `endtime`, `isalldayevent`) 
+       values (#subject#, #startTime#, #endTime#, #isAllDayEvent#)
+       <selectKey keyProperty="id" resultClass="java.lang.Integer" type="post" >
+          SELECT LAST_INSERT_ID()
+       </selectKey>
+    </insert>
+    
+    <insert id="addDetailedSchedule">
+       insert into `tbl_schedule` (`subject`, `starttime`, `endtime`, `isalldayevent`, `description`, `location`, `color`)
+       values (#subject#, #startTime#, #endTime#, #isAllDayEvent#, #description#, #location#, #color#)
+       <selectKey keyProperty="id" resultClass="java.lang.Integer" type="post" >
+          SELECT LAST_INSERT_ID()
+       </selectKey>
+    </insert>
+    
+    <select id="listScheduleByRange"  resultMap="scheduleMap" parameterClass="Map">
+       select * from `tbl_schedule` 
+       where starttime between #st# and #et#;
+    </select>
+    
+    
+    <select id="listSchedule"  resultMap="scheduleMap" parameterClass="Map">
+       select * from `tbl_schedule` 
+       where id = #id#;
+    </select>
+    
+    <update id="updateSchedule">
+       update `tbl_schedule` set 
+          `starttime` = #startTime#, 
+          `endtime` = #endTime# 
+       where `id` = #id#
+    </update>
+    
+    <delete id="removeSchedule">
+       delete from `tbl_schedule` 
+       where `id` = #id#
+    </delete>
+    
+    <update id="updateDetailedSchedule">
+       update `tbl_schedule` set
+          `starttime`=#startTime#,
+	      `endtime`=#endTime#,
+          `subject`=#subject#,
+		  `isalldayevent`=#isAllDayEvent#, 
+           `description`=#description#,
+		   `location`=#location#,
+           `color`=#color# 
+        where `id`= #id#
+    </update>
+    
+
+</sqlMap>
+
