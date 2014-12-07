@@ -82,4 +82,7 @@ public class Company {
     }
 
 
+    public boolean isConflict() {
+        return oneOnOneMeetingRequestList.size() > availableMeetingCount;
+    }
 }

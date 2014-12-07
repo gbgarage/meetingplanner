@@ -13,8 +13,25 @@ public class OneOnOneMeetingRequest {
 
     private Company company;
 
-    private Availability meetingAvailability;
+    private Integer fundId;
 
+    private Integer companyId;
+
+    public Integer getFundId() {
+        return fundId;
+    }
+
+    public void setFundId(Integer fundId) {
+        this.fundId = fundId;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
 
     public OneOnOneMeetingRequest(Fund fund, Company company) {
         this.fund = fund;
@@ -38,13 +55,7 @@ public class OneOnOneMeetingRequest {
         this.company = company;
     }
 
-    public Availability getMeetingAvailability() {
-        return meetingAvailability;
-    }
 
-    public void setMeetingAvailability(Availability meetingAvailability) {
-        this.meetingAvailability = meetingAvailability;
-    }
 
     @Override
     public String toString() {

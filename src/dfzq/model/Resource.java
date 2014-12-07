@@ -11,23 +11,49 @@ import java.util.List;
  */
 public class Resource {
 
-    private List<Fund> fundList;
+    private List<Company> conflictCompany;
 
-    private List<Company> companyList;
+    private List<Fund> conflictFunds;
 
-    public List<Fund> getFundList() {
-        return fundList;
+
+    private List<Company> otherCompanies;
+
+
+    public List<Company> getConflictCompany() {
+        return conflictCompany;
     }
 
-    public void setFundList(List<Fund> fundList) {
-        this.fundList = fundList;
+    public void setConflictCompany(List<Company> conflictCompany) {
+        this.conflictCompany = conflictCompany;
     }
 
-    public List<Company> getCompanyList() {
-        return companyList;
+    public List<Fund> getConflictFunds() {
+        return conflictFunds;
     }
 
-    public void setCompanyList(List<Company> companyList) {
-        this.companyList = companyList;
+    public void setConflictFunds(List<Fund> conflictFunds) {
+        this.conflictFunds = conflictFunds;
+    }
+
+    public List<Company> getOtherCompanies() {
+        return otherCompanies;
+    }
+
+    public void setOtherCompanies(List<Company> otherCompanies) {
+        this.otherCompanies = otherCompanies;
+    }
+
+
+    public void addConflictCompany(Company company) {
+        this.conflictCompany.add(company);
+    }
+
+    public void addNoneConflictCompany(Company company) {
+        this.otherCompanies.add(company);
+    }
+
+    public void addConflictFund(Fund fund) {
+        this.conflictFunds.add(fund);
     }
 }
+
