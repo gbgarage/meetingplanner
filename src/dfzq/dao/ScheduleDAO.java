@@ -12,7 +12,7 @@ import dfzq.model.ScheduleByDVT;
 public class ScheduleDAO extends BaseDao {
 	
    public int addSchedule(Schedule s) {
-	   int i = (int)getSqlMapClientTemplate().insert("addSchedule", s);
+	   int i = (Integer)getSqlMapClientTemplate().insert("addSchedule", s);
 	   return i;
    }
    
@@ -43,7 +43,7 @@ public List<Schedule> listScheduleByRange(Timestamp st ,Timestamp et) {
    }
    
    public int addDetailedSchedule(Schedule s) {
-	   int i = (int)getSqlMapClientTemplate().insert("addDetailedSchedule", s);
+	   int i = (Integer)getSqlMapClientTemplate().insert("addDetailedSchedule", s);
 	   return i;
    }
    

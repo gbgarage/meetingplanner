@@ -3,7 +3,10 @@ package dfzq.dao;
 import com.common.BaseDao;
 import dfzq.model.Availability;
 import dfzq.model.Company;
+import dfzq.model.OneOnOneMeetingRequest;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,5 +45,9 @@ public class CompanyDao extends BaseDao {
         getSqlMapClientTemplate().insert("saveCompanyAvailablility", companyAvailability);
 
 
+    }
+
+    public List<OneOnOneMeetingRequest> loadAvailableCompanies(int[] timeFrames) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 }

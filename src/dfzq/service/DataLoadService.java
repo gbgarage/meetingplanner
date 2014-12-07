@@ -2,10 +2,7 @@ package dfzq.service;
 
 import dfzq.dao.CompanyDao;
 import dfzq.dao.FundDao;
-import dfzq.model.Availability;
-import dfzq.model.Company;
-import dfzq.model.Fund;
-import dfzq.model.OneOnOneMeetingRequest;
+import dfzq.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,4 +53,25 @@ public class DataLoadService {
     }
 
 
+    public Resource loadResource(int[] timeFrames) {
+        List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = companyDao.loadAvailableCompanies(timeFrames);
+        Resource resource = new Resource();
+        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : oneOnOneMeetingRequests) {
+            Company company = oneOnOneMeetingRequest.getCompany();
+            if (company.isConflict()) {
+                resource.addConflictCompany(company);
+            } else {
+                resource.addNoneConflictCompany(company);
+            }
+
+            Fund fund = oneOnOneMeetingRequest.getFund();
+            if (fund.isConflict()) {
+                resource.addConflictFund(fund);
+            }
+
+        }
+        return resource;
+
+
+    }
 }

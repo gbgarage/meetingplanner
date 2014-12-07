@@ -19,10 +19,11 @@ public class Fund {
 
     private String fundName;
 
-    private Availability fundAvailability;
+    private int fundAvailabilityCount;
 
 
     private List<OneOnOneMeetingRequest> oneOnOneMeetingRequests= new ArrayList<OneOnOneMeetingRequest>();
+
 
 
     public Fund() {
@@ -67,15 +68,14 @@ public class Fund {
         this.fundName = fundName;
     }
 
-    public Availability getFundAvailability() {
-        return fundAvailability;
+
+    public int getFundAvailabilityCount() {
+        return fundAvailabilityCount;
     }
 
-    public void setFundAvailability(Availability fundAvailability) {
-        this.fundAvailability = fundAvailability;
+    public void setFundAvailabilityCount(int fundAvailabilityCount) {
+        this.fundAvailabilityCount = fundAvailabilityCount;
     }
-
-
 
     public void addOneOnOneMeetingRequest(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
         oneOnOneMeetingRequests.add(oneOnOneMeetingRequest);
@@ -91,5 +91,9 @@ public class Fund {
                 "fundName='" + fundName + '\'' +
                 ", contactor='" + contactor + '\'' +
                 '}';
+    }
+
+    public boolean isConflict() {
+        return oneOnOneMeetingRequests.size()> fundAvailabilityCount;
     }
 }
