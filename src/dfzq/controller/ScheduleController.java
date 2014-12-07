@@ -1,4 +1,4 @@
-package dfzq.control;
+package dfzq.controller;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -23,7 +23,7 @@ import dfzq.util.StringUtil;
 @Controller
 public class ScheduleController {
 
-	private static final long serialVersionUID = 1L;
+	//private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger("ScheduleController");
 
 	public JSONObject addSchedule(String sScheduleStartTime,

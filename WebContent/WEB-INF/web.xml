@@ -13,7 +13,6 @@
 		<param-name>api</param-name>
 		<param-value>webName.root</param-value>
 	</context-param>
-	
  	<!-- 	log4j 配置	 -->
     <context-param>  
         <param-name>log4jConfigLocation</param-name>  
