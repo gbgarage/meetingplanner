@@ -6,7 +6,7 @@
         
 <sqlMap>
 
- <resultMap id="scheduleMap" class="com.dfzq.model.Schedule">
+ <resultMap id="scheduleMap" class="dfzq.model.Schedule">
     <result property="id" column="id"/>
     <result property="subject" column="subject"/>
     <result property="location" column="location"/>

@@ -12,7 +12,7 @@
 	<span class="topbar">
 	<a href="index.jsp">新版入口</a>
 	<a href="logout.jsp">注销</a>
-    <a href="userinfo.jsp"><%=u.getUser_name() %></a>	
+    <a href="userinfo.jsp"><%= /*u.getUser_name()*/ %></a>	
 	</span>
 	<strong>挡板数据管理系统</strong>
 </h1>
