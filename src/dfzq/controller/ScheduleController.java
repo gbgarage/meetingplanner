@@ -373,7 +373,7 @@ public class ScheduleController {
 		return result;
 	}
 
-	@RequestMapping(value = "/listdvt", method = RequestMethod.GET)
+	@RequestMapping(value = "/listdvt", method = RequestMethod.POST)
 	public @ResponseBody String listScheduleByDVT() {
 		logger.info("listScheduleByDVT()");
 		logger.info("");
