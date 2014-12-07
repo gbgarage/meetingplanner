@@ -17,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import dfzq.dao.ScheduleDAO;
 import dfzq.model.Schedule;
+import dfzq.model.ScheduleByDVT;
 import dfzq.util.DateFormatter;
 import dfzq.util.StringUtil;
 
@@ -372,12 +373,42 @@ public class ScheduleController {
 		return result;
 	}
 
-	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public @ResponseBody String getUser(
-			@RequestParam(value = "method", required = false) String method,
-			@RequestParam(value = "key", required = false) String key) {
-		System.out.println(method);
-		System.out.println(key);
-		return new JSONObject().toString();
+	@RequestMapping(value = "/listdvt", method = RequestMethod.GET)
+	public @ResponseBody String listScheduleByDVT() {
+		logger.info("listScheduleByDVT()");
+		logger.info("");
+		ScheduleDAO scheduleDAO = getScheduleDAO();
+		List<ScheduleByDVT> listOfScheduleItems = scheduleDAO.listScheduleByDVT();
+		JSONArray resultJsonArray = new JSONArray();
+		String currentDateVenueCombination = "";
+		JSONObject dateVenueJsonObject = new JSONObject();
+		
+		for (int i=0;i<listOfScheduleItems.size();i++) {
+			ScheduleByDVT scheduleResultItem = listOfScheduleItems.get(i);
+			if (!currentDateVenueCombination.equals(scheduleResultItem.getMeetingDate()+scheduleResultItem.getVenue())) {
+				if (!currentDateVenueCombination.equals("")) {
+					//output
+					resultJsonArray.put(dateVenueJsonObject);
+				}
+				//create a new combination
+				currentDateVenueCombination = scheduleResultItem.getMeetingDate()+scheduleResultItem.getVenue();
+				
+				//set up the key Date and Venue in the new JSONObject
+				dateVenueJsonObject = new JSONObject();
+				dateVenueJsonObject.put("MeetingDate", scheduleResultItem.getMeetingDate());
+				dateVenueJsonObject.put("MeetingVenue", scheduleResultItem.getVenue());
+			}
+			
+			// for all the time put T0900, Subject into the defined dateVenueJsonObject
+			dateVenueJsonObject.put("T"+scheduleResultItem.getMeetingTime(), 
+					scheduleResultItem.getSubject()==null?"":scheduleResultItem.getSubject()
+					);
+		}
+		//in case any left during the loop
+		if (!currentDateVenueCombination.equals("")) {
+			resultJsonArray.put(dateVenueJsonObject);
+		}
+		//replace Unicode chars in the JSON string
+		return StringUtil.toUnicodeFormat(resultJsonArray.toString());//.replaceAll("\\\\\\\\", "\\\\");
 	}
 }

@@ -629,11 +629,12 @@ INSERT INTO `time_frame` (`id`, `date`, `time_window`, `region`) VALUES
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 
 
-drop table IF EXISTS `tbl_schedule`;
-CREATE TABLE `tbl_schedule` (
+/* tbl_schedule 日程安排结果表 */
+drop table IF EXISTS `schedule_system`.`tbl_schedule`;
+CREATE TABLE `schedule_system`.`tbl_schedule` (
   `Id` int(11) NOT NULL auto_increment,
   `Subject` varchar(1000) character set utf8 default NULL,
-  `Location` varchar(200) character set utf8 default NULL,
+  `Venue` varchar(200) character set utf8 default NULL,
   `Description` varchar(255) character set utf8 default NULL,
   `StartTime` datetime default NULL,
   `EndTime` datetime default NULL,
@@ -642,3 +643,36 @@ CREATE TABLE `tbl_schedule` (
   `RecurringRule` varchar(500) character set utf8 default NULL,
   PRIMARY KEY  (`Id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 COLLATE=utf8_unicode_ci;
+
+SELECT form.Meeting_Dt,
+       form.Meeting_Tm,
+       form.Venue,
+       form.Meeting_Id,
+       s.Subject,
+       s.Description,
+       s.Color
+  FROM (SELECT MAX(Meeting_Id) AS Meeting_Id, Meeting_Dt, Meeting_Tm, Venue
+          FROM ((SELECT MAX(Id) AS Meeting_Id,
+                        date_format(StartTime, '%Y%m%d') AS Meeting_Dt,
+                        time_format(StartTime, '%H%i') AS Meeting_Tm,
+                        venue As Venue
+                   FROM schedule_system . tbl_schedule
+                 /* 过滤掉那些 非标准时间的 会议安排 */
+                  WHERE time_format(StartTime, '%H%i') IN
+                        ('0900','1000','1100','1200','1330','1430','1530','1630')
+                  GROUP BY venue,
+                           date_format(StartTime, '%Y%m%d'),
+                           time_format(StartTime, '%H%i')) UNION ALL
+                (SELECT NULL AS Meeting_Id, Meeting_Dt, Meeting_Tm, Venue
+                   FROM (SELECT DISTINCT date_format(StartTime, '%Y%m%d') AS Meeting_Dt, Venue
+                           FROM schedule_system.tbl_schedule
+                          WHERE time_format(StartTime, '%H%i') IN
+                                ('0900','1000','1100','1200','1330','1430','1530','1630')) d,
+                        (SELECT DISTINCT time_format(StartTime, '%H%i') AS Meeting_Tm
+                           FROM schedule_system . tbl_schedule
+                          WHERE time_format(StartTime, '%H%i') IN
+                               ('0900','1000','1100','1200','1330','1430','1530','1630')) t)) M
+         GROUP BY Meeting_Dt, Meeting_Tm, Venue) form
+  LEFT JOIN schedule_system.tbl_schedule s
+    ON form.Meeting_Id = s.Id
+ ORDER BY form.Meeting_Dt, form.Venue, form.Meeting_Tm;

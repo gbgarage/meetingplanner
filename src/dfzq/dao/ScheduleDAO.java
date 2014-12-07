@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import dfzq.model.Schedule;
+import dfzq.model.ScheduleByDVT;
 
 public class ScheduleDAO extends BaseDao {
 	
@@ -50,4 +51,10 @@ public List<Schedule> listScheduleByRange(Timestamp st ,Timestamp et) {
    public void updateDetailedSchedule(Schedule s) {
 	   getSqlMapClientTemplate().update("updateDetailedSchedule", s);
    }
+   
+   @SuppressWarnings("unchecked")
+   public List<ScheduleByDVT> listScheduleByDVT() {
+   	   HashMap<String, Timestamp> m = new HashMap<String, Timestamp>();
+       return (List<ScheduleByDVT>)getSqlMapClientTemplate().queryForList("listScheduleByDVT", m);
+      }
 }
