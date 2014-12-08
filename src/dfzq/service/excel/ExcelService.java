@@ -3,6 +3,7 @@ package dfzq.service.excel;
 import dfzq.model.Company;
 import dfzq.model.Fund;
 import dfzq.model.OneOnOneMeetingRequest;
+import dfzq.service.ArrangementService;
 import dfzq.service.DataLoadService;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -178,9 +179,10 @@ public class ExcelService {
         ApplicationContext context = new ClassPathXmlApplicationContext(
                 new String[]{"applicationContext.xml"});
 
-
-        ExcelService excelService = (ExcelService) context.getBean("excelService");
-        excelService.readExcel();
+        ArrangementService arrangementService = (ArrangementService)context.getBean("arrangementService");
+        arrangementService.arrageMeeting(new int[]{1,2,3});
+//        ExcelService excelService = (ExcelService) context.getBean("excelService");
+//        excelService.readExcel();
 
 //        for (Company company : excelService.companyMap.values()) {
 //            System.out.println(company);

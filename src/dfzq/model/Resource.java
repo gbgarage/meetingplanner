@@ -1,6 +1,9 @@
 package dfzq.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,38 +14,25 @@ import java.util.List;
  */
 public class Resource {
 
-    private List<Company> conflictCompany;
+    private Set<Company> conflictCompany = new HashSet<Company>();
 
-    private List<Fund> conflictFunds;
-
-
-    private List<Company> otherCompanies;
+    private Set<Fund> conflictFunds = new HashSet<Fund>();
 
 
-    public List<Company> getConflictCompany() {
+    private Set<Company> otherCompanies = new HashSet<Company>();
+
+
+    public Set<Company> getConflictCompany() {
         return conflictCompany;
     }
 
-    public void setConflictCompany(List<Company> conflictCompany) {
-        this.conflictCompany = conflictCompany;
-    }
-
-    public List<Fund> getConflictFunds() {
+    public Set<Fund> getConflictFunds() {
         return conflictFunds;
     }
 
-    public void setConflictFunds(List<Fund> conflictFunds) {
-        this.conflictFunds = conflictFunds;
-    }
-
-    public List<Company> getOtherCompanies() {
+    public Set<Company> getOtherCompanies() {
         return otherCompanies;
     }
-
-    public void setOtherCompanies(List<Company> otherCompanies) {
-        this.otherCompanies = otherCompanies;
-    }
-
 
     public void addConflictCompany(Company company) {
         this.conflictCompany.add(company);

@@ -7,7 +7,7 @@ package dfzq.model;
  * Time: 上午9:43
  * To change this template use File | Settings | File Templates.
  */
-public class OneOnOneMeetingRequest {
+public class OneOnOneMeetingRequest implements Comparable<OneOnOneMeetingRequest> {
 
     private Fund fund;
 
@@ -16,6 +16,26 @@ public class OneOnOneMeetingRequest {
     private Integer fundId;
 
     private Integer companyId;
+
+    private Integer status;
+
+    private Integer timeFrameId;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getTimeFrameId() {
+        return timeFrameId;
+    }
+
+    public void setTimeFrameId(Integer timeFrameId) {
+        this.timeFrameId = timeFrameId;
+    }
 
     public Integer getFundId() {
         return fundId;
@@ -39,6 +59,9 @@ public class OneOnOneMeetingRequest {
 
     }
 
+    public OneOnOneMeetingRequest() {
+    }
+
     public Fund getFund() {
         return fund;
     }
@@ -56,11 +79,15 @@ public class OneOnOneMeetingRequest {
     }
 
 
-
     @Override
     public String toString() {
         return "OneOnOneMeetingRequest{" +
                 "fund=" + fund +
                 '}';
+    }
+
+    @Override
+    public int compareTo(OneOnOneMeetingRequest o) {
+        return this.fund.compareTo(o.fund);
     }
 }

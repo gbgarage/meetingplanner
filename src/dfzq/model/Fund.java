@@ -10,7 +10,7 @@ import java.util.List;
  * Time: 下午3:04
  * To change this template use File | Settings | File Templates.
  */
-public class Fund {
+public class Fund implements Comparable<Fund> {
     private Integer id;
 
     private String contactor;
@@ -21,10 +21,19 @@ public class Fund {
 
     private int fundAvailabilityCount;
 
+    private int priority;
 
-    private List<OneOnOneMeetingRequest> oneOnOneMeetingRequests= new ArrayList<OneOnOneMeetingRequest>();
+
+    private List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = new ArrayList<OneOnOneMeetingRequest>();
 
 
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
 
     public Fund() {
     }
@@ -94,6 +103,28 @@ public class Fund {
     }
 
     public boolean isConflict() {
-        return oneOnOneMeetingRequests.size()> fundAvailabilityCount;
+        return oneOnOneMeetingRequests.size() > fundAvailabilityCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Fund)) return false;
+
+        Fund fund = (Fund) o;
+
+        if (id != null ? !id.equals(fund.id) : fund.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(Fund o) {
+        return this.priority - o.priority;
     }
 }

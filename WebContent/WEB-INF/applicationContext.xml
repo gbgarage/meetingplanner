@@ -32,14 +32,14 @@
     <bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
         <!--<property name="url"-->
                   <!--value="jdbc:mysql://172.16.157.230:5359/wireless_data_report?useUnicode=true&amp;characterEncoding=utf-8"/>-->
-        <property name="url" value="jdbc:mysql://localhost:3306/schedule_system?useUnicode=true&amp;characterEncoding=utf-8"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/schedule_system?useUnicode=true&amp;characterEncoding=utf-8"/>
         <!--&lt;!&ndash;&lt;!&ndash;<property name="url"&ndash;&gt;&ndash;&gt;-->
         <!--value="jdbc:mysql://172.16.156.79:3306/server_performance?useUnicode=true&amp;characterEncoding=utf-8" />-->
         <!--value="jdbc:mysql://172.16.156.79:3306/server_performance?useUnicode=true&amp;characterEncoding=utf-8" />-->
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="username" value="root"/>
         <!--<property name="password" value="cxb776" />-->
-        <property name="password" value=""/>
+        <property name="password" value="root"/>
         <property name="maxActive" value="30"/>
         <property name="initialSize" value="10"/>
         <property name="maxIdle" value="5"/>

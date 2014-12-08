@@ -2,6 +2,8 @@ package dfzq.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,13 +23,13 @@ public class Company {
 
     private int availableMeetingCount;
 
-    private List<OneOnOneMeetingRequest> oneOnOneMeetingRequestList = new ArrayList<OneOnOneMeetingRequest>();
+    private Set<OneOnOneMeetingRequest> oneOnOneMeetingRequestList = new TreeSet<OneOnOneMeetingRequest>();
 
 
     public Company() {
     }
 
-    public Company( String name, String contact) {
+    public Company(String name, String contact) {
 
         this.name = name;
         this.contact = contact;
@@ -65,7 +67,7 @@ public class Company {
         this.availableMeetingCount = availableMeetingCount;
     }
 
-    public List<OneOnOneMeetingRequest> getOneOnOneMeetingRequestList() {
+    public Set<OneOnOneMeetingRequest> getOneOnOneMeetingRequestList() {
         return oneOnOneMeetingRequestList;
     }
 
@@ -84,5 +86,22 @@ public class Company {
 
     public boolean isConflict() {
         return oneOnOneMeetingRequestList.size() > availableMeetingCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Company)) return false;
+
+        Company company = (Company) o;
+
+        if (id != null ? !id.equals(company.id) : company.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

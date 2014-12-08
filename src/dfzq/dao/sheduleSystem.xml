@@ -50,4 +50,37 @@
 
     </select>
 
+    <select id="loadAvailableMeetingRequest" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+          select  one.company_id as companyId , one.fund_id as fundId
+from company c inner join company_availbility a
+on c.id=a.company_id
+inner join one_on_one_meeting_request one
+on one.company_id= c.id
+where a.time_frame_id in $timeFrame$ and a.time_frame_id not in $otherTimeFrame$
+group by  one.company_id , one.fund_id
+
+
+    </select>
+
+    <select id="getCompanyById" parameterClass="int" resultClass="Company">
+        select id as id , name as name, contact as contact
+      from company
+      where id=#id#
+    </select>
+
+
+    <select id="getFundById" parameterClass="int" resultClass="Fund">
+        select id as id , fund_name as fundName, phone_number as phoneNumber ,contact as contactor
+      from fund
+      where id=#id#
+    </select>
+
+    <select id="countTheAvailableTime" parameterClass="map" resultClass="int">
+        select count(*)
+        from company_availbility
+        where company_id=#companyId# and time_frame_id in $companyAvailableTimeFrame$
+
+    </select>
+
+
 </sqlMap>

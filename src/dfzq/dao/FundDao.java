@@ -25,4 +25,8 @@ public class FundDao extends BaseDao{
 
 
     }
+
+    public Fund getFundById(Integer fundId) {
+        return (Fund)getSqlMapClientTemplate().queryForObject("getFundById",fundId);
+    }
 }
