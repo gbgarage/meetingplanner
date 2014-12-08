@@ -13,11 +13,16 @@
 	<script type="text/javascript" charset="utf-8" src="script/jquery-1.8.2.js"></script>
 	<script src="script/miniui/miniui.js" type="text/javascript"></script>
 
+<style>
+.mini-pager-first,.mini-pager-prev,.mini-pager-next,.mini-pager-last{
+    display:none;
+}
+</style>
 <title>会议安排清单</title>
 </head>
 <body>
-<div id="datagrid1" class="mini-datagrid" style="width:1200px;height:250px;" 
-    url="listdvt.do">
+<div id="datagrid1" class="mini-datagrid" style="width:100%;height:100%" 
+    url="listdvt.do" showPager="false" pageSize="500" >
     <div property="columns">
           <div field="MeetingDate" width="120">日期</div>
           <div field="MeetingVenue" width="100">会议室</div>
