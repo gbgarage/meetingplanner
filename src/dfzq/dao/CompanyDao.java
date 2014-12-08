@@ -64,11 +64,11 @@ public class CompanyDao extends BaseDao {
         Map<String, String> parameterMap = initParameterMap(timeFrames, otherTimeFrames);
         List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableMeetingRequest", parameterMap);
 
-        Map<Integer, Company> companyMap = new HashMap<Integer,Company>();
+        Map<Integer, Company> companyMap = new HashMap<Integer, Company>();
         Map<Integer, Fund> fundMap = new HashMap<Integer, Fund>();
 
-        for(OneOnOneMeetingRequest oneOnOneMeetingRequest:oneOnOneMeetingRequests){
-            initCompanyAndFund(oneOnOneMeetingRequest,companyMap,fundMap,timeFrames);
+        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : oneOnOneMeetingRequests) {
+            initCompanyAndFund(oneOnOneMeetingRequest, companyMap, fundMap, timeFrames);
 
         }
 
@@ -84,7 +84,7 @@ public class CompanyDao extends BaseDao {
 
         Company company = getCompany(companyMap, companyId);
         company.setAvailableMeetingCount(getCompanyAvailableTimeCount(timeFrames, companyId));
-        Fund fund =  getFund(fundMap, fundId);
+        Fund fund = getFund(fundMap, fundId);
         fund.setFundAvailabilityCount(timeFrames.length);
         oneOnOneMeetingRequest.setCompany(company);
         oneOnOneMeetingRequest.setFund(fund);
@@ -97,14 +97,14 @@ public class CompanyDao extends BaseDao {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("companyId", companyId);
         parameterMap.put("companyAvailableTimeFrame", convertArrayToINString(timeFrames));
-        return (Integer)getSqlMapClientTemplate().queryForObject("countTheAvailableTime",parameterMap);
+        return (Integer) getSqlMapClientTemplate().queryForObject("countTheAvailableTime", parameterMap);
     }
 
     private Fund getFund(Map<Integer, Fund> fundMap, Integer fundId) {
         Fund fund = fundMap.get(fundId);
-        if(fund == null){
+        if (fund == null) {
             fund = fundDao.getFundById(fundId);
-            fundMap.put(fundId,fund);
+            fundMap.put(fundId, fund);
 
         }
         return fund;
@@ -112,13 +112,12 @@ public class CompanyDao extends BaseDao {
 
     private Company getCompany(Map<Integer, Company> companyMap, Integer companyId) {
         Company c = companyMap.get(companyId);
-        if(c == null){
+        if (c == null) {
             c = getCompanyById(companyId);
-            companyMap.put(companyId,c);
+            companyMap.put(companyId, c);
         }
         return c;
     }
-
 
 
     private Map<String, String> initParameterMap(int[] timeFrames, int[] otherTimeFrames) {
@@ -144,7 +143,27 @@ public class CompanyDao extends BaseDao {
     }
 
 
-    public int getNextAvailableTimeFrame(Company company) {
-            return 0;  //To change body of created methods use File | Settings | File Templates.
+    public Integer getNextAvailableTimeFrame(Company company) {
+        List<Integer> availableTimeFrames = (List<Integer>) getSqlMapClientTemplate().queryForObject("getNextAvailableTimeFrame", company);
+        if (availableTimeFrames.isEmpty()) {
+            return null;
+        } else {
+            for (Integer availableTimeFrameId : availableTimeFrames) {
+                if (checkTimeFrameAvailable(company, availableTimeFrameId)) {
+                    return availableTimeFrameId;
+                }
+            }
+            return null;
+        }
+    }
+
+    private boolean checkTimeFrameAvailable(Company company, Integer availableTimeFrameId) {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("company_id", company.getId());
+        parameters.put("availableTimeFrameId", availableTimeFrameId);
+
+        OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId", parameters);
+        return oneOnOneMeetingRequest.getStatus() == null;
+
     }
 }

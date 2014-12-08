@@ -1,5 +1,7 @@
 package dfzq.service;
 
+import dfzq.constants.Status;
+import dfzq.dao.ArrangeMeetingDao;
 import dfzq.dao.CompanyDao;
 import dfzq.model.Company;
 import dfzq.model.Fund;
@@ -24,48 +26,80 @@ public class ArrangementService {
     private DataLoadService dataLoadService;
     @Autowired
     private CompanyDao companyDao;
+    @Autowired
+    private ArrangeMeetingDao arrangeMeetingDao;
 
-      public void arrageMeeting(int[] timeFrames){
-          int[] otherTimeFrames = getOtherTimeFrames(timeFrames);
-          Resource resource = dataLoadService.loadResource(timeFrames, otherTimeFrames);
+    public void arrageMeeting(int[] timeFrames) {
+        int[] otherTimeFrames = getOtherTimeFrames(timeFrames);
+        Resource resource = dataLoadService.loadResource(timeFrames, otherTimeFrames);
 
-          arrageConflictCompany(resource.getConflictCompany());
-//          arrageConflictFunds(resource.getConflictFunds());
-//          arrageOtherCompany(resource.getOtherCompanies());
-
-
-
-
+        arrageConflictCompany(resource, resource.getConflictCompany());
+        arrageConflictFunds(resource.getConflictFunds());
+        arrageOtherCompany(resource.getOtherCompanies());
 
 
-
-      }
+    }
 
     private int[] getOtherTimeFrames(int[] timeFrames) {
-            return new int[]{4,5,6,7};  //To change body of created methods use File | Settings | File Templates.
+        return new int[]{4, 5, 6, 7};  //To change body of created methods use File | Settings | File Templates.
     }
 
 
-
-
-    private void arrageConflictCompany(Set<Company> conflictCompany) {
-        for(Company company: conflictCompany){
-            for(OneOnOneMeetingRequest oneOnOneMeetingRequest : company.getOneOnOneMeetingRequestList()){
-                int timeFrameId = companyDao.getNextAvailableTimeFrame(company);
+    private void arrageConflictCompany(Resource resource, Set<Company> conflictCompany) {
+        for (Company company : conflictCompany) {
+            for (OneOnOneMeetingRequest oneOnOneMeetingRequest : company.getOneOnOneMeetingRequestList()) {
+                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company);
+                if (timeFrameId != null) {
+                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_COMPANY_AND_ARRAGED);
+                    Fund fund = oneOnOneMeetingRequest.getFund();
+                    fund.decreaseAvailbility();
+                    if (fund.isConflict()) {
+                        resource.addConflictFund(fund);
+                    }
+                } else {
+                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_COMPANY_AND_NOT_ARRAGED);
+                }
 
             }
 
         }
 
 
+    }
+
+    private void arrageConflictFunds(Set<Fund> conflictFunds) {
+        for (Fund fund : conflictFunds) {
+            for (OneOnOneMeetingRequest oneOnOneMeetingRequest : fund.getOneOnOneMeetingRequests()) {
+                Company company = oneOnOneMeetingRequest.getCompany();
+                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company);
+                if (timeFrameId != null) {
+                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
+
+                } else {
+                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_NOT_ARRAGED);
+                }
+
+
+            }
+
+
+        }
 
     }
 
-    private void arrageConflictFunds(List<Fund> conflictFunds) {
-        //To change body of created methods use File | Settings | File Templates.
-    }
+    private void arrageOtherCompany(Set<Company> otherCompanies) {
+        for (Company company : otherCompanies) {
+            for (OneOnOneMeetingRequest oneOnOneMeetingRequest : company.getOneOnOneMeetingRequestList()) {
+                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company);
+                if (timeFrameId != null) {
+                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.NOT_CONFLICT);
 
-    private void arrageOtherCompany(List<Company> otherCompanies) {
-    }
 
+                }
+
+            }
+
+        }
+
+    }
 }

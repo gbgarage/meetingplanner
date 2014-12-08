@@ -127,4 +127,9 @@ public class Fund implements Comparable<Fund> {
     public int compareTo(Fund o) {
         return this.priority - o.priority;
     }
+
+    public void decreaseAvailbility() {
+        this.fundAvailabilityCount--;
+
+    }
 }
