@@ -5,6 +5,9 @@
 <%@ page import="org.springframework.web.context.WebApplicationContext"%>
 <%@ page import="java.sql.ResultSet"%>
 <%@ page import="java.sql.SQLException"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%!private String [] sarr, earr;
 
 
@@ -52,7 +55,7 @@ private Schedule getCalendarByRange(String id){
 <html xmlns="http://www.w3.org/1999/xhtml" >
   <head>    
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">    
-    <title>Calendar Details</title>    
+    <title>会议明细</title>    
     <link href="css/main.css" rel="stylesheet" type="text/css" />       
     <link href="css/dp.css" rel="stylesheet" />    
     <link href="css/dropdown.css" rel="stylesheet" />    
@@ -235,17 +238,17 @@ private Schedule getCalendarByRange(String id){
     <div>      
       <div class="toolBotton">           
         <a id="Savebtn" class="imgbtn" href="javascript:void(0);">                
-          <span class="Save"  title="Save the calendar">Save(<u>S</u>)
+          <span class="Save"  title="Save the calendar">保存(<u>S</u>)
           </span>          
         </a>                           
         <% if(event!=null) { %>
         <a id="Deletebtn" class="imgbtn" href="javascript:void(0);">                    
-          <span class="Delete" title="Cancel the calendar">Delete(<u>D</u>)
+          <span class="Delete" title="Cancel the calendar">删除(<u>D</u>)
           </span>                
         </a>             
         <% } %>            
         <a id="Closebtn" class="imgbtn" href="javascript:void(0);">                
-          <span class="Close" title="Close the window" >Close
+          <span class="Close" title="Close the window" >关闭
           </span></a>            
         </a>        
       </div>                  
@@ -254,7 +257,7 @@ private Schedule getCalendarByRange(String id){
       <div class="infocontainer">            
         <form action="schedule.do?method=adddetails<% if(event!=null) out.print("&id="+event.getId()); %>" class="fform" id="fmEdit" method="post">                 
           <label>                    
-            <span>                        *Subject:              
+            <span>                        *标题:              
             </span>                    
             <div id="calendarcolor">
             </div>
@@ -262,7 +265,7 @@ private Schedule getCalendarByRange(String id){
             <input id="colorvalue" name="colorvalue" type="hidden" value="<% if(event!=null && event.getColor()!=null) out.print(event.getColor()); %>" />                
           </label>                 
           <label>                    
-            <span>*Time:
+            <span>*时间:
             </span>                    
             <div>  
               <%
@@ -278,17 +281,17 @@ private Schedule getCalendarByRange(String id){
               <input MaxLength="10" class="required date" id="etpartdate" name="etpartdate" style="padding-left:2px;width:90px;" type="text" value="<% if(event!=null) out.print(earr[0]); %>" />                       
               <input MaxLength="50" class="required time" id="etparttime" name="etparttime" style="width:40px;" type="text" value="<% if(event!=null) out.print(earr[1]); %>" />                                            
               <label class="checkp"> 
-                <input id="IsAllDayEvent" name="IsAllDayEvent" type="checkbox" value="1" <% if(event!=null && event.getIsAllDayEvent()!=0) out.print("checked"); %>/>          All Day Event                      
+                <input id="IsAllDayEvent" name="IsAllDayEvent" type="checkbox" value="1" <% if(event!=null && event.getIsAllDayEvent()!=0) out.print("checked"); %>/>          全天事件                      
               </label>                    
             </div>                
           </label>                 
           <label>                    
-            <span>                        Location:
+            <span>                        地点:
             </span>                    
             <input MaxLength="200" id="Location" name="Location" style="width:95%;" type="text" value="" />                 
           </label>                 
           <label>                    
-            <span>                        Remark:
+            <span>                        备注:
             </span>                    
 <textarea cols="20" id="Description" name="Description" rows="2" style="width:95%; height:70px"></textarea>                
           </label>                

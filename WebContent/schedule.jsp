@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1">
-    <title>	My Calendar </title>
+    <title>会议安排日历视图</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <link href="css/dailog.css" rel="stylesheet" type="text/css" />
     <link href="css/calendar.css" rel="stylesheet" type="text/css" /> 
@@ -15,12 +15,12 @@
     <script src="src/jquery.js" type="text/javascript"></script>  
     
     <script src="src/Plugins/Common.js" type="text/javascript"></script>    
-    <script src="src/Plugins/datepicker_lang_US.js" type="text/javascript"></script>     
+    <script src="src/Plugins/datepicker_lang_CN.js" type="text/javascript"></script>     
     <script src="src/Plugins/jquery.datepicker.js" type="text/javascript"></script>
 
     <script src="src/Plugins/jquery.alert.js" type="text/javascript"></script>    
     <script src="src/Plugins/jquery.ifrmdailog.js" defer="defer" type="text/javascript"></script>
-    <script src="src/Plugins/wdCalendar_lang_US.js" type="text/javascript"></script>    
+    <script src="src/Plugins/wdCalendar_lang_CN.js" type="text/javascript"></script>    
     <script src="src/Plugins/jquery.calendar.js" type="text/javascript"></script>   
     
     <script type="text/javascript">
@@ -108,7 +108,7 @@
                 if(data)
                 {
                     var url = StrFormat(eurl,data);
-                    OpenModelWindow(url,{ width: 600, height: 400, caption:"Manage  The Calendar",onclose:function(){
+                    OpenModelWindow(url,{ width: 600, height: 400, caption:"管理会议",onclose:function(){
                        $("#gridcontainer").reload();
                     }});
                 }
@@ -126,7 +126,8 @@
                 
                 $.alerts.okButton="Ok";  
                 $.alerts.cancelButton="Cancel";  
-                hiConfirm("Are You Sure to Delete this Event", 'Confirm',function(r){ r && callback(0);});           
+                //hiConfirm("Are You Sure to Delete this Event", 'Confirm',function(r){ r && callback(0);});
+                hiConfirm("确定删除该日程吗?", 'Confirm',function(r){ r && callback(0);});
             }
             function wtd(p)
             {
@@ -183,7 +184,7 @@
             //Add a new event
             $("#faddbtn").click(function(e) {
                 var url ="edit.jsp";
-                OpenModelWindow(url,{ width: 500, height: 400, caption: "Create New Calendar"});
+                OpenModelWindow(url,{ width: 500, height: 400, caption: "新建会议"});
             });
             //go to today
             $("#showtodaybtn").click(function(e) {
@@ -217,7 +218,7 @@
     <div>
 
       <div id="calhead" style="padding-left:1px;padding-right:1px;">          
-            <!--  <div class="cHead"><div class="ftitle">My Calendar</div> -->
+            <!--  <div class="cHead"><div class="ftitle">我的会议</div> -->
             <div id="loadingpannel" class="ptogtitle loadicon" style="display: none;">Loading data...</div>
              <div id="errorpannel" class="ptogtitle loaderror" style="display: none;">Sorry, could not load your data, please try again later</div>
             </div>          
@@ -232,23 +233,23 @@
             <div class="btnseparator"></div>
              <div id="showtodaybtn" class="fbutton">
                 <div><span title='Click to back to today ' class="showtoday">
-                Today</span></div>
+                今天</span></div>
             </div>
               <div class="btnseparator"></div>
 
             <div id="showdaybtn" class="fbutton">
-                <div><span title='Day' class="showdayview">Day</span></div>
+                <div><span title='Day' class="showdayview">日视图</span></div>
             </div>
               <div  id="showweekbtn" class="fbutton fcurrent">
-                <div><span title='Week' class="showweekview">Week</span></div>
+                <div><span title='Week' class="showweekview">周视图</span></div>
             </div>
               <div  id="showmonthbtn" class="fbutton">
-                <div><span title='Month' class="showmonthview">Month</span></div>
+                <div><span title='Month' class="showmonthview">月视图</span></div>
 
             </div>
             <div class="btnseparator"></div>
               <div  id="showreflashbtn" class="fbutton">
-                <div><span title='Refresh view' class="showdayflash">Refresh</span></div>
+                <div><span title='Refresh view' class="showdayflash">刷新</span></div>
                 </div>
              <div class="btnseparator"></div>
             <div id="sfprevbtn" title="Prev"  class="fbutton">
@@ -261,7 +262,7 @@
             <div class="fshowdatep fbutton">
                     <div>
                         <input type="hidden" name="txtshow" id="hdtxtshow" />
-                        <span id="txtdatetimeshow">Loading</span>
+                        <span id="txtdatetimeshow">数据加载中...</span>
 
                     </div>
             </div>

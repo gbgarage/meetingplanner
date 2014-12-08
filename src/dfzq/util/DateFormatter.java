@@ -6,13 +6,13 @@ import java.text.SimpleDateFormat;
 public class DateFormatter {
 	
 	public static java.util.Date js2Date(String s) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy"); 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
 		java.util.Date date = sdf.parse(s);
 		return date;
 	}
 	
 	public static java.util.Date js2Datetime(String s) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm"); 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm"); 
 		java.util.Date date = sdf.parse(s);
 		return date;
 	}
