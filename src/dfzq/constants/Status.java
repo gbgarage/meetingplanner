@@ -13,6 +13,7 @@ public class Status {
     public static final int CONFLICT_COMPANY_AND_NOT_ARRAGED=2;
     public static final int CONFLICT_FUND_AND_ARRAGED=3;
     public static final int CONFLICT_FUND_AND_NOT_ARRAGED=4;
+    public static final int NOT_CONfLICT_=4;
 
 
 
