@@ -630,7 +630,7 @@ INSERT INTO `time_frame` (`id`, `date`, `time_window`, `region`) VALUES
 
 
 /* tbl_schedule 日程安排结果表 */
-drop table IF EXISTS `schedule_system`.`tbl_schedule`;
+DROP TABLE IF EXISTS `schedule_system`.`tbl_schedule`;
 CREATE TABLE `schedule_system`.`tbl_schedule` (
   `Id` int(11) NOT NULL auto_increment,
   `Subject` varchar(1000) character set utf8 default NULL,
@@ -644,6 +644,32 @@ CREATE TABLE `schedule_system`.`tbl_schedule` (
   PRIMARY KEY  (`Id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 COLLATE=utf8_unicode_ci;
 
+
+/* tbl_schedule_party 日程安排人员表 */
+DROP TABLE IF EXISTS `schedule_system`.`tbl_schedule_party`;
+CREATE TABLE `schedule_system`.`tbl_schedule_party` (
+  `Id` int(11) NOT NULL auto_increment,
+  `Schedule_Id` int(11) NOT NULL,
+  `Party_Id`  int(11) NOT NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 COLLATE=utf8_unicode_ci;
+
+/* tbl_party 人员表 */
+DROP TABLE IF EXISTS `schedule_system`.`tbl_party`;
+CREATE TABLE `schedule_system`.`tbl_party` (
+  `Id` int(11) NOT NULL auto_increment,
+  `Name` varchar(255) NOT NULL,
+  `Job_Title` varchar(255) character set utf8 default NULL,
+  `Phone_Nbr` varchar(255) character set utf8 default NULL,
+  `Email_Addr` varchar(255) character set utf8 default NULL,
+  `Description` varchar(1024) character set utf8 default NULL,
+  `Organization_Name` varchar(255) character set utf8 default '东方证券',
+  `Internal_Ind` varchar(1) character set utf8 default 'Y',
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 COLLATE=utf8_unicode_ci;
+
+
+select *from schedule_system . tbl_schedule;
 SELECT form.Meeting_Dt,
        form.Meeting_Tm,
        form.Venue,
