@@ -90,4 +90,24 @@ public class OneOnOneMeetingRequest implements Comparable<OneOnOneMeetingRequest
     public int compareTo(OneOnOneMeetingRequest o) {
         return this.fund.compareTo(o.fund);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OneOnOneMeetingRequest)) return false;
+
+        OneOnOneMeetingRequest that = (OneOnOneMeetingRequest) o;
+
+        if (companyId != null ? !companyId.equals(that.companyId) : that.companyId != null) return false;
+        if (fundId != null ? !fundId.equals(that.fundId) : that.fundId != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fundId != null ? fundId.hashCode() : 0;
+        result = 31 * result + (companyId != null ? companyId.hashCode() : 0);
+        return result;
+    }
 }

@@ -125,7 +125,11 @@ public class Fund implements Comparable<Fund> {
 
     @Override
     public int compareTo(Fund o) {
-        return this.priority - o.priority;
+        if (this.priority - o.priority != 0) {
+            return this.priority - o.priority;
+        } else {
+            return this.fundName.compareTo( o.fundName);
+        }
     }
 
     public void decreaseAvailbility() {

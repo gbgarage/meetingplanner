@@ -43,7 +43,7 @@ public class ExcelService {
     public void readExcel() throws IOException {
 
 
-        FileInputStream is = new FileInputStream("input.xlsx");
+        FileInputStream is = new FileInputStream("data/input.xlsx");
         XSSFWorkbook hssfWorkbook = new XSSFWorkbook(is);
 
 

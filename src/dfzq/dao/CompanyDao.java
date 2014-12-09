@@ -143,13 +143,13 @@ public class CompanyDao extends BaseDao {
     }
 
 
-    public Integer getNextAvailableTimeFrame(Company company) {
-        List<Integer> availableTimeFrames = (List<Integer>) getSqlMapClientTemplate().queryForObject("getNextAvailableTimeFrame", company);
+    public Integer getNextAvailableTimeFrame(Company company,Fund fund) {
+        List<Integer> availableTimeFrames = (List<Integer>) getSqlMapClientTemplate().queryForList("getNextAvailableTimeFrame", company);
         if (availableTimeFrames.isEmpty()) {
             return null;
         } else {
             for (Integer availableTimeFrameId : availableTimeFrames) {
-                if (checkTimeFrameAvailable(company, availableTimeFrameId)) {
+                if (checkTimeFrameAvailable(company, availableTimeFrameId)&& fundDao.checkTimeFrameAvailable(fund, availableTimeFrameId)) {
                     return availableTimeFrameId;
                 }
             }
@@ -157,13 +157,16 @@ public class CompanyDao extends BaseDao {
         }
     }
 
-    private boolean checkTimeFrameAvailable(Company company, Integer availableTimeFrameId) {
+    public boolean checkTimeFrameAvailable(Company company, Integer availableTimeFrameId) {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("company_id", company.getId());
         parameters.put("availableTimeFrameId", availableTimeFrameId);
 
         OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId", parameters);
-        return oneOnOneMeetingRequest.getStatus() == null;
-
+        if (oneOnOneMeetingRequest == null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

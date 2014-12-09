@@ -51,12 +51,12 @@
     </select>
 
     <select id="loadAvailableMeetingRequest" parameterClass="map" resultClass="OneOnOneMeetingRequest">
-          select  one.company_id as companyId , one.fund_id as fundId
-from company c inner join company_availbility a
-on c.id=a.company_id
+select  one.company_id as companyId , one.fund_id as fundId
+from company c
 inner join one_on_one_meeting_request one
 on one.company_id= c.id
-where a.time_frame_id in $timeFrame$ and a.time_frame_id not in $otherTimeFrame$
+where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ ) and
+not exists (select 1 from company_availbility where company_id=c.id and time_frame_id in  $otherTimeFrame$ )
 group by  one.company_id , one.fund_id
 
 
@@ -96,10 +96,17 @@ group by  one.company_id , one.fund_id
       where c.id=#id#
     </select>
 
-    <select id="checkTimeFrameAvailable" parameterClass="map" resultClass="OneOnOneMeetingRequest">
-      select status as status, one.company_id as companyId , one.fund_id as fundId
+    <select id="getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+      select status as status, company_id as companyId , fund_id as fundId
       from one_on_one_meeting_request
       where company_id=#company_id# and time_frame_id=#availableTimeFrameId#
+    </select>
+
+
+    <select id="getOneOnOneMeetingRequestByFundIdAndtimeFrameId" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+      select status as status, company_id as companyId , fund_id as fundId
+      from one_on_one_meeting_request
+      where fund_id=#fund_id# and time_frame_id=#availableTimeFrameId#
     </select>
 
 

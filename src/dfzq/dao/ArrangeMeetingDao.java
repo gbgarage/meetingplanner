@@ -20,7 +20,7 @@ import java.util.Map;
 public class ArrangeMeetingDao extends BaseDao {
 
     public void saveArrangement(OneOnOneMeetingRequest oneOnOneMeetingRequest, int timeFrameId, int status) {
-        Map<String, Integer> parameters = new HashMap<String, Integer>();
+        Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("status", status);
         parameters.put("timeFrameId", timeFrameId);
         parameters.put("fund_id",oneOnOneMeetingRequest.getFundId());
@@ -31,4 +31,15 @@ public class ArrangeMeetingDao extends BaseDao {
 
     }
 
+    public void saveArrangement(OneOnOneMeetingRequest oneOnOneMeetingRequest, int status) {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("status", status);
+        parameters.put("timeFrameId", null);
+        parameters.put("fund_id",oneOnOneMeetingRequest.getFundId());
+        parameters.put("company_id",oneOnOneMeetingRequest.getCompanyId());
+
+        getSqlMapClientTemplate().update("updateArrangement", parameters);
+
+
+    }
 }
