@@ -1,8 +1,16 @@
 package dfzq.dao;
 
+import java.util.Iterator;
+import java.util.List;
+
 import com.common.BaseDao;
+
 import dfzq.model.Availability;
 import dfzq.model.Company;
+import dfzq.model.Fund;
+import dfzq.model.FundAvailability;
+import dfzq.model.Timeframe;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -42,5 +50,32 @@ public class CompanyDao extends BaseDao {
         getSqlMapClientTemplate().insert("saveCompanyAvailablility", companyAvailability);
 
 
+    }
+    
+    public List<Company> getCompanyList() {
+    	return (List<Company>)getSqlMapClientTemplate().queryForList("getCompanyList");
+    }
+   
+    public List<Timeframe> getCompanyTime(Integer companyid) {
+    	return (List<Timeframe>)getSqlMapClientTemplate().queryForList("getCompanyTime", companyid);
+    }
+    
+    public Company getCompanyById(Integer companyid) {
+    	return (Company)getSqlMapClientTemplate().queryForObject("getCompanyById", companyid);
+    }
+    
+    public void saveTimeCompany(List<Integer> timeids, Integer companyid) {
+    	
+    	getSqlMapClientTemplate().delete("deleteCompanyAllTimeslots", companyid);
+    	
+    	Company company = this.getCompanyById(companyid);
+    
+    	Iterator<Integer> timeItr = timeids.iterator();
+    	
+    	while (timeItr.hasNext()) {
+    		
+    		Availability compAvail = new Availability(company, timeItr.next());
+    		getSqlMapClientTemplate().insert("insertCompanyTimeslot", compAvail);
+    	}
     }
 }

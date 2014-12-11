@@ -12,7 +12,11 @@
     <typeAlias alias="OneOnOneMeetingRequest" type="dfzq.model.OneOnOneMeetingRequest"/>
     <typeAlias alias="Company" type="dfzq.model.Company"/>
     <typeAlias alias="Availability" type="dfzq.model.Availability"/>
-
+    <typeAlias alias="Timeframe" type="dfzq.model.Timeframe"/>
+    <typeAlias alias="FundAvailability" type="dfzq.model.FundAvailability"/>
+    <typeAlias alias="Availability" type="dfzq.model.Availability"/>  
+    
+    
 
     <insert id="insertFund" parameterClass="Fund">
         insert into fund( fund_name, phone_number,contact) values (
@@ -41,13 +45,152 @@
         </selectKey>
     </insert>
 
-
     <select id="getCompanyByName" parameterClass="string" resultClass="Company">
       select id as id , name as name, contact as contact
       from company
       where name=#name#
+    </select>
+    
+<!--     return fund list -->
+    
+    <resultMap id="fund-result" class="Fund">
+       <result column="id" property="id" />
+       <result column="fund_name" property="fundName" />
+       <result column="phone_number" property="phoneNumber" />
+       <result column="contact" property="contactor" />
+    </resultMap>
 
+    <select id="getFundList" parameterClass="java.util.Map" resultMap="fund-result">
+      select * from fund
+    </select>
+    
+    
+<!-- return fund by id -->
 
+    <select id="getFundById" parameterClass="Integer" resultClass="Fund">
+      select * from fund where id=#fundid#
+    </select>
+
+    
+<!--     return company list -->
+
+    <resultMap id="company-result" class="Company">
+       <result column="id" property="id" />
+       <result column="name" property="name" />
+       <result column="contact" property="contact" />
+    </resultMap>
+
+    <select id="getCompanyList" parameterClass="java.util.Map" resultMap="company-result">
+      select * from company
+    </select>
+
+<!-- return 1v1 company list for a fund -->
+
+    <resultMap id="1v1company-result" class="Company">
+       <result column="id" property="id" />
+       <result column="name" property="name" />
+       <result column="contact" property="contact" />
+    </resultMap>
+
+    <select id="get1on1CompanyList" parameterClass="Integer" resultMap="1v1company-result">
+      SELECT company.* 
+      FROM one_on_one_meeting_request 
+      INNER JOIN company 
+      ON one_on_one_meeting_request.company_id = company.id 
+      where fund_id = #fundid#
+    </select>
+    
+<!--     return all time slots in JSON -->
+
+    <resultMap id="timeframe-result" class="Timeframe">
+       <result column="id" property="id" />
+       <result column="date" property="date" />
+       <result column="time_window" property="time_window" />
+       <result column="region" property="region" />
+    </resultMap>
+
+    <select id="getTimeframeList" parameterClass="java.util.Map" resultMap="timeframe-result">
+      select * from time_frame
+    </select>
+
+<!-- return fund time availability  -->
+
+    <resultMap id="fundAvailTimeframe-result" class="Timeframe">
+       <result column="id" property="id" />
+       <result column="date" property="date" />
+       <result column="time_window" property="time_window" />
+       <result column="region" property="region" />
+    </resultMap>
+
+    <select id="getFundTime" parameterClass="Integer" resultMap="fundAvailTimeframe-result">
+		select time_frame.* 
+		from fund_availbility
+		inner join time_frame
+		on fund_availbility.time_frame_id = time_frame.id
+		where fund_availbility.fund_id = #fundid#	
+    </select>
+
+<!-- company time availability -->
+
+    <resultMap id="companyAvailTimeframe-result" class="Timeframe">
+       <result column="id" property="id" />
+       <result column="date" property="date" />
+       <result column="time_window" property="time_window" />
+       <result column="region" property="region" />
+    </resultMap>
+
+    <select id="getCompanyTime" parameterClass="Integer" resultMap="companyAvailTimeframe-result">
+		select time_frame.* 
+		from company_availbility
+		inner join time_frame
+		on company_availbility.time_frame_id = time_frame.id
+		where company_availbility.company_id = #companyid#
+    </select>
+    
+<!--     delete all 1on1 request for a fund -->
+
+    <delete id="deleteAll1on1Company" parameterClass="Integer">
+    	delete from one_on_one_meeting_request 
+    	where fund_id = #fundid#
+    </delete>
+    
+<!--     delete all time slot available for a fund -->
+
+    <delete id="deleteFundAllTimeslots" parameterClass="Integer">
+    	delete from fund_availbility 
+    	where fund_id = #fundid#
+    </delete>
+
+<!--     delete all time slot available for a company -->
+
+    <delete id="deleteCompanyAllTimeslots" parameterClass="Integer">
+    	delete from company_availbility 
+    	where company_id = #companyid#
+    </delete>
+    
+<!--     insert 1one1 request for a fund -->
+	<insert id="insert1on1Company" parameterClass="OneOnOneMeetingRequest">
+		insert into one_on_one_meeting_request 
+		value (#fund.id#, #company.id#)
+	</insert>
+	
+<!-- 	insert time slot for a fund -->
+
+	<insert id="insertFundTimeslot" parameterClass="FundAvailability">
+		insert into fund_availbility
+		value (#fund.id#, #timeFrameId#)
+	</insert>
+
+<!-- 	insert time slot for a company -->
+
+	<insert id="insertCompanyTimeslot" parameterClass="Availability">
+		insert into company_availbility
+		value (#company.id#, #timeFrameId#)
+	</insert>
+	
+<!--     get company by ID -->
+    <select id="getCompanyById" parameterClass="Integer" resultClass="Company">
+    	select * from company where id = #companyid#
     </select>
 
 </sqlMap>
