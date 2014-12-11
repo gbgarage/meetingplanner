@@ -67,9 +67,9 @@
     
 <!-- return fund by id -->
 
-    <select id="getFundById" parameterClass="Integer" resultClass="Fund">
-      select * from fund where id=#fundid#
-    </select>
+<!--     <select id="getFundById" parameterClass="Integer" resultClass="Fund"> -->
+<!--       select * from fund where id=#fundid# -->
+<!--     </select> -->
 
     
 <!--     return company list -->
@@ -189,8 +189,69 @@
 	</insert>
 	
 <!--     get company by ID -->
-    <select id="getCompanyById" parameterClass="Integer" resultClass="Company">
-    	select * from company where id = #companyid#
+<!--     <select id="getCompanyById" parameterClass="Integer" resultClass="Company"> -->
+<!--     	select * from company where id = #companyid# -->
+<!--     </select> -->
+
+    <select id="loadAvailableMeetingRequest" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+select  one.company_id as companyId , one.fund_id as fundId
+from company c
+inner join one_on_one_meeting_request one
+on one.company_id= c.id
+where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ ) and
+not exists (select 1 from company_availbility where company_id=c.id and time_frame_id in  $otherTimeFrame$ )
+group by  one.company_id , one.fund_id
+
+
     </select>
+
+    <select id="getCompanyById" parameterClass="int" resultClass="Company">
+        select id as id , name as name, contact as contact
+      from company
+      where id=#id#
+    </select>
+
+
+    <select id="getFundById" parameterClass="int" resultClass="Fund">
+        select id as id , fund_name as fundName, phone_number as phoneNumber ,contact as contactor
+      from fund
+      where id=#id#
+    </select>
+
+    <select id="countTheAvailableTime" parameterClass="map" resultClass="int">
+        select count(*)
+        from company_availbility
+        where company_id=#companyId# and time_frame_id in $companyAvailableTimeFrame$
+
+    </select>
+
+    <update id="updateArrangement" parameterClass="map">
+        update one_on_one_meeting_request
+        set status=#status#, time_frame_id=#timeFrameId#
+        where fund_id=#fund_id# and company_id=#company_id#
+
+
+    </update>
+
+    <select id="getNextAvailableTimeFrame" parameterClass="Company" resultClass="int">
+      select ca.time_frame_id
+      from company_availbility ca inner join company c on ca.company_id=c.id
+      where c.id=#id#
+    </select>
+
+    <select id="getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+      select status as status, company_id as companyId , fund_id as fundId
+      from one_on_one_meeting_request
+      where company_id=#company_id# and time_frame_id=#availableTimeFrameId#
+    </select>
+
+
+    <select id="getOneOnOneMeetingRequestByFundIdAndtimeFrameId" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+      select status as status, company_id as companyId , fund_id as fundId
+      from one_on_one_meeting_request
+      where fund_id=#fund_id# and time_frame_id=#availableTimeFrameId#
+    </select>
+
+
 
 </sqlMap>

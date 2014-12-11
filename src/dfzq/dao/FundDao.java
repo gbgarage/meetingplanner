@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.common.BaseDao;
-
 import dfzq.model.Company;
 import dfzq.model.Fund;
 import dfzq.model.FundAvailability;
@@ -14,6 +13,9 @@ import dfzq.model.Timeframe;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,6 +38,7 @@ public class FundDao extends BaseDao{
     public void saveOneOnOneMeetingRequest(OneOnOneMeetingRequest oneOnOneMeetingRequest){
         getSqlMapClientTemplate().insert("insertOneOnOneMeetingRequest",oneOnOneMeetingRequest);
     }
+
     
     public List<Fund> getFundList() {
     	return (List<Fund>)getSqlMapClientTemplate().queryForList("getFundList");
@@ -49,9 +52,6 @@ public class FundDao extends BaseDao{
     	return (List<Company>)getSqlMapClientTemplate().queryForList("get1on1CompanyList", fundid);
     }
     
-    public Fund getFundById (Integer fundid) {
-    	return (Fund)getSqlMapClientTemplate().queryForObject("getFundById", fundid);
-    }
     
     public void save1on1Company(List<Integer> companyids, Integer fundid) {
     
@@ -86,4 +86,21 @@ public class FundDao extends BaseDao{
     }
 
     
+    public Fund getFundById(Integer fundId) {
+        return (Fund)getSqlMapClientTemplate().queryForObject("getFundById",fundId);
+    }
+
+
+    public boolean checkTimeFrameAvailable(Fund fund, Integer availableTimeFrameId) {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("fund_id", fund.getId());
+        parameters.put("availableTimeFrameId", availableTimeFrameId);
+
+        OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getOneOnOneMeetingRequestByFundIdAndtimeFrameId", parameters);
+        if (oneOnOneMeetingRequest == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
