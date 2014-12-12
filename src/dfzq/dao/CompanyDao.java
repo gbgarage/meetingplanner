@@ -7,12 +7,13 @@ import com.common.BaseDao;
 
 import dfzq.model.Availability;
 import dfzq.model.Company;
+import dfzq.model.CompanyChangeRow;
 import dfzq.model.Fund;
-
 import dfzq.model.FundAvailability;
+import dfzq.model.FundChangeRow;
 import dfzq.model.Timeframe;
-
 import dfzq.model.OneOnOneMeetingRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -199,5 +200,34 @@ public class CompanyDao extends BaseDao {
             return false;
         }
 
+    }
+    
+    //save company changes from frontend
+    public void saveCompanyChanges (List<CompanyChangeRow> rows) {
+
+    	Iterator<CompanyChangeRow> rowItr = rows.iterator();
+    	
+    	while (rowItr.hasNext()) {
+    		
+    		CompanyChangeRow row = rowItr.next();
+    		
+    		//if the change is for add
+    		if (row.get_state().equals("added")) {
+    			getSqlMapClientTemplate().insert("insertCompanyfromChanges", row);
+    		}
+    				
+    		//if the change is for modify
+    		
+    		if (row.get_state().equals("modified")) {
+    			getSqlMapClientTemplate().update("updateCompanyfromChanges", row);
+    		}
+    				
+    		//if the change is for remove
+    		if (row.get_state().equals("removed")) {
+    			getSqlMapClientTemplate().delete("deleteCompanyfromChanges", row);
+    		}	
+    	}
+    	
+    	
     }
 }

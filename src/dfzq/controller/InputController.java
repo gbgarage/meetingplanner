@@ -1,5 +1,6 @@
 package dfzq.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -18,8 +19,11 @@ import dfzq.dao.CompanyDao;
 import dfzq.dao.FundDao;
 import dfzq.dao.TimeframeDao;
 import dfzq.model.Company;
+import dfzq.model.CompanyChangeRow;
 import dfzq.model.Fund;
+import dfzq.model.OneOnOneMeetingRequest;
 import dfzq.model.Timeframe;
+import dfzq.model.FundChangeRow;
 
 @Controller
 @RequestMapping(value = "/input")
@@ -188,6 +192,37 @@ public class InputController {
 		companyDao.saveTimeCompany(timeids, companyid);
 		return 1;
 	}	
+	
+	//CRUD fund page
+	@RequestMapping(value = "/crudFund")
+	public String crudFundPage(Model model) {
+		return "input/crud_fund";
+	}	
+	
+	//CRUD fund
+	@ResponseBody
+	@RequestMapping(value = "/crudFund/submit")
+	public int crudFundSubmit(@RequestBody FundChangeRow[] rows, Model model) {
+		List<FundChangeRow> rowslist = Arrays.asList(rows);
+		fundDao.saveFundChanges(rowslist);
+		return 1;
+	}	
+	
+	//CRUD company page
+	@RequestMapping(value = "/crudCompany")
+	public String crudCompanyPage(Model model) {
+		return "input/crud_company";
+	}	
+	
+	//CRUD company
+	@ResponseBody
+	@RequestMapping(value = "/crudCompany/submit")
+	public int crudCompanySubmit(@RequestBody CompanyChangeRow[] rows, Model model) {
+		List<CompanyChangeRow> rowslist = Arrays.asList(rows);
+		companyDao.saveCompanyChanges(rowslist);
+		return 1;
+	}	
+
 }
 
 class DataList <T> {
@@ -204,3 +239,5 @@ class DataList <T> {
 		return data;
 	}
 }
+
+

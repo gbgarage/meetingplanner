@@ -15,9 +15,9 @@
     <typeAlias alias="Timeframe" type="dfzq.model.Timeframe"/>
     <typeAlias alias="FundAvailability" type="dfzq.model.FundAvailability"/>
     <typeAlias alias="Availability" type="dfzq.model.Availability"/>  
+    <typeAlias alias="FundChangeRow" type="dfzq.model.FundChangeRow"/>  
+    <typeAlias alias="CompanyChangeRow" type="dfzq.model.CompanyChangeRow"/>   
     
-    
-
     <insert id="insertFund" parameterClass="Fund">
         insert into fund( fund_name, phone_number,contact) values (
         #fundName#,#phoneNumber#,#contactor#)
@@ -253,5 +253,45 @@ group by  one.company_id , one.fund_id
     </select>
 
 
+<!-- 	save fund changes from frontend -->
+	<insert id="insertFundfromChanges" parameterClass="FundChangeRow">
+		insert into fund (fund_name, phone_number, contact)
+		value (#fundName#, #phoneNumber#, #contactor#)
+        <selectKey resultClass="int" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+	</insert>
+
+    <delete id="deleteFundfromChanges" parameterClass="FundChangeRow">
+    	delete from fund
+    	where id = #id#
+    </delete>
+    
+    <update id="updateFundfromChanges" parameterClass="FundChangeRow">
+    	update fund
+    	set fund_name = #fundName#, phone_number = #phoneNumber#, contact = #contactor#
+    	where id = #id#
+    </update>    
+    
+    
+<!-- 	save company changes from frontend -->
+	<insert id="insertCompanyfromChanges" parameterClass="CompanyChangeRow">
+		insert into company (name, contact)
+		value (#name#, #contact#)
+        <selectKey resultClass="int" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+	</insert>
+
+    <delete id="deleteCompanyfromChanges" parameterClass="CompanyChangeRow">
+    	delete from company
+    	where id = #id#
+    </delete>
+    
+    <update id="updateCompanyfromChanges" parameterClass="CompanyChangeRow">
+    	update company
+    	set name = #name#, contact = #contact#
+    	where id = #id#
+    </update>    
 
 </sqlMap>

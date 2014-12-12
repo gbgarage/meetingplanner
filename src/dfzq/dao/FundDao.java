@@ -5,11 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.common.BaseDao;
+
 import dfzq.model.Company;
 import dfzq.model.Fund;
 import dfzq.model.FundAvailability;
 import dfzq.model.OneOnOneMeetingRequest;
 import dfzq.model.Timeframe;
+import dfzq.model.FundChangeRow;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -84,7 +86,6 @@ public class FundDao extends BaseDao{
     		getSqlMapClientTemplate().insert("insertFundTimeslot", fundAvail);
     	}
     }
-
     
     public Fund getFundById(Integer fundId) {
         return (Fund)getSqlMapClientTemplate().queryForObject("getFundById",fundId);
@@ -103,4 +104,35 @@ public class FundDao extends BaseDao{
             return false;
         }
     }
+    
+    //save fund changes from frontend
+    public void saveFundChanges (List<FundChangeRow> rows) {
+
+    	Iterator<FundChangeRow> rowItr = rows.iterator();
+    	
+    	while (rowItr.hasNext()) {
+    		
+    		FundChangeRow row = rowItr.next();
+    		
+    		//if the change is for add
+    		if (row.get_state().equals("added")) {
+    			getSqlMapClientTemplate().insert("insertFundfromChanges", row);
+    		}
+    				
+    		//if the change is for modify
+    		
+    		if (row.get_state().equals("modified")) {
+    			getSqlMapClientTemplate().update("updateFundfromChanges", row);
+    		}
+    				
+    		//if the change is for remove
+    		if (row.get_state().equals("removed")) {
+    			getSqlMapClientTemplate().delete("deleteFundfromChanges", row);
+    		}	
+    	}
+    	
+    	
+    }
+    
+
 }
