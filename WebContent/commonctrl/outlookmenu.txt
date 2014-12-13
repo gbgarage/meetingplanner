@@ -1,0 +1,13 @@
+﻿[
+	{ id: "fund", text: "基金管理"},
+	{ id: "configFund", pid: "fund", text: "设置基金需求", iconCls: "Note", url: "./input/configfund.do", iconPosition: "top"  },
+	{ id: "crudFund", pid: "fund", text: "配置基金信息", iconCls: "Reports", url: "./input/crudFund.do", iconPosition: "top"  },
+		
+	{ id: "company", text: "上市公司管理"},
+	{ id: "configCompany", pid: "company", text: "设置上市公司需求", iconCls: "Note", url: "./input/configcompany.do", iconPosition: "top" },
+	{ id: "crudCompany", pid: "company", text: "配置上市公司信息", iconCls: "Reports", url: "./input/crudCompany.do", iconPosition: "top" },		
+
+	{ id: "calendar", text: "会议日程显示"},
+	{ id: "showCalendar", pid: "calendar", text: "显示会议日程", iconCls: "Note", url: "./input/configCalendar.do", iconPosition: "top" }
+
+]

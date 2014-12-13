@@ -1,5 +1,8 @@
 <%-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="ISO-8859-1"%> --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -33,11 +36,12 @@
     	mini.parse();
     	var selectedCompany;
         var timeGrid = mini.get("timeGrid");
+        var path = "${contextPath}";
 
         function onCompanyButtonEdit(e) {
             var btnEdit = this;
             mini.open({
-                url: "./config_company_name.jsp",
+                url: path + "/input/config_company_name.jsp",
                 title: "选择列表",
                 width: 650,
                 height: 380,
@@ -67,7 +71,7 @@
                	return;
                }
                mini.open({
-                   url: "./config_companytime.jsp?company=" + selectedCompany,
+                   url: path + "/input/config_companytime.jsp?company=" + selectedCompany,
                    showMaxButton: true,
                    title: "选择列表",
                    width: 650,

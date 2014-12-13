@@ -1,5 +1,8 @@
 <%-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="ISO-8859-1"%> --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -46,12 +49,13 @@
     	var selectedFund;
         var companyGrid = mini.get("companyGrid");
         var timeGrid = mini.get("timeGrid");
-
+        var path = "${contextPath}";
+        
         function onFundButtonEdit(e) {
             var btnEdit = this;
             mini.open({
 //                 url: bootPATH + "./config_fund_name.jsp",
-				url: "./config_fund_name.jsp",
+				url:  path + "/input/config_fund_name.jsp",
                 title: "选择列表",
                 width: 650,
                 height: 380,
@@ -84,7 +88,7 @@
                 
                 mini.open({
 //                     url: bootPATH + "./config_1v1Company.jsp?fund=" + selectedFund,
-					url: "./config_1v1Company.jsp?fund=" + selectedFund,
+					url: path + "/input/config_1v1Company.jsp?fund=" + selectedFund,
                     showMaxButton: true,
                     title: "选择列表",
                     width: 650,
@@ -132,7 +136,7 @@
                }
                mini.open({
 //                    url: bootPATH + "./config_fundtime.jsp?fund=" + selectedFund,
-				   url: "./config_fundtime.jsp?fund=" + selectedFund,	
+				   url: path + "/input/config_fundtime.jsp?fund=" + selectedFund,	
                    showMaxButton: true,
                    title: "选择列表",
                    width: 650,

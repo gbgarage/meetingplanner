@@ -222,6 +222,12 @@ public class InputController {
 		companyDao.saveCompanyChanges(rowslist);
 		return 1;
 	}	
+	
+	//calendar configuration page
+	@RequestMapping(value = "/configCalendar")
+	public String configCalendar(Model model) {
+		return "input/config_calendar";
+	}	
 
 }
 
