@@ -29,13 +29,14 @@ public class ScheduleController {
 
 	public JSONObject addSchedule(String sScheduleStartTime,
 			String sScheduleEndTime, String sScheduleTitle,
-			String sIsAllDayEvent) {
+			String sIsAllDayEvent, String sAttendee) {
 
 		logger.info("addSchedule()");
 		logger.info("   sScheduleStartTime=" + sScheduleStartTime);
 		logger.info("   sScheduleEndTime=" + sScheduleEndTime);
 		logger.info("   sScheduleTitle=" + sScheduleTitle);
 		logger.info("   sIsAllDayEvent=" + sIsAllDayEvent);
+		logger.info("   sAttendee=" + sAttendee);
 		logger.info("");
 
 		JSONObject jsonResult = new JSONObject();
@@ -53,7 +54,12 @@ public class ScheduleController {
 			params.setEndTime(new java.sql.Timestamp(DateFormatter.js2Datetime(
 					sScheduleEndTime).getTime()));
 			params.setIsAllDayEvent(Integer.parseInt(sIsAllDayEvent));
-
+			if (sAttendee!=null) {
+			    params.setAttendee(","+sAttendee+",");
+			} else {
+				params.setAttendee(null);
+			}
+			
 			long id = sd.addSchedule(params);
 			if (id >= 0) {
 				jsonResult.put("IsSuccess", true);
@@ -70,10 +76,11 @@ public class ScheduleController {
 		return jsonResult;
 	}
 
-	public JSONObject listSchedule(String sShowDate, String sViewType) {
+	public JSONObject listSchedule(String sShowDate, String sViewType, String sAttendee) {
 		logger.info("listSchedule()");
 		logger.info("   sShowDate=" + sShowDate);
 		logger.info("   sViewType=" + sViewType);
+		logger.info("   sAttendee=" + sAttendee);
 		logger.info("");
 
 		java.util.Calendar c = java.util.Calendar.getInstance();
@@ -110,13 +117,14 @@ public class ScheduleController {
 			et = c.getTime();
 		}
 
-		return listScheduleByRange(st, et);
+		return listScheduleByRange(st, et, sAttendee);
 	}
 
-	private JSONObject listScheduleByRange(Date st, Date et) {
+	private JSONObject listScheduleByRange(Date st, Date et, String sAttendee) {
 		logger.info("listScheduleByRange()");
 		logger.info("   st:" + st);
 		logger.info("   et:" + et);
+		logger.info("   sAttendee:" + sAttendee);
 
 		JSONObject jsonResult = new JSONObject();
 		JSONArray events = new JSONArray();
@@ -127,7 +135,8 @@ public class ScheduleController {
 
 			List<Schedule> ls = (List<Schedule>) sd.listScheduleByRange(
 					new java.sql.Timestamp(st.getTime()),
-					new java.sql.Timestamp(et.getTime()));
+					new java.sql.Timestamp(et.getTime()),
+					sAttendee);
 
 			for (int i = 0; i < ls.size(); i++) {
 				JSONArray event = new JSONArray();
@@ -262,7 +271,7 @@ public class ScheduleController {
 
 	public JSONObject addDetailedSchedule(String sStartTime, String sEndTime,
 			String sSubject, int iIsAllDayEvent, String sDescription,
-			String sLocation, String sColorValue, String sTimeZone) {
+			String sLocation, String sColorValue, String sTimeZone, String sAttendee) {
 		logger.info("addDetailedSchedule()");
 		logger.info("   sStartTime=" + sStartTime);
 		logger.info("   sEndTime=" + sEndTime);
@@ -272,6 +281,7 @@ public class ScheduleController {
 		logger.info("   sLocation=" + sLocation);
 		logger.info("   sColorValue=" + sColorValue);
 		logger.info("   sTimeZone=" + sTimeZone);
+		logger.info("   sAttendee=" + sAttendee);
 		logger.info("");
 
 		JSONObject jsonResult = new JSONObject();
@@ -288,6 +298,7 @@ public class ScheduleController {
 			params.setDescription(sDescription);
 			params.setLocation(sLocation);
 			params.setColor(sColorValue);
+			params.setColor(sAttendee);
 
 			long id = sd.addDetailedSchedule(params);
 			if (id >= 0) {
@@ -336,7 +347,10 @@ public class ScheduleController {
 			@RequestParam(value = "Description", required = false) String sDescription,
 			@RequestParam(value = "Location", required = false) String sLocation,
 			@RequestParam(value = "colorvalue", required = false) String sColorvalue,
-			@RequestParam(value = "timezone", required = false) String sTimezone) {
+			@RequestParam(value = "timezone", required = false) String sTimezone,
+			
+			@RequestParam(value = "attendee", required = false) String sAttendee
+			) {
 
 		JSONObject jsonResult = null;
 
@@ -344,9 +358,9 @@ public class ScheduleController {
 
 		if (method.equals("add")) {
 			jsonResult = addSchedule(sScheduleStartTime, sScheduleEndTime,
-					sScheduleTitle, sIsAllDayEvent);
+					sScheduleTitle, sIsAllDayEvent, sAttendee);
 		} else if (method.equals("list")) {
-			jsonResult = listSchedule(sShowDate, sViewType);
+			jsonResult = listSchedule(sShowDate, sViewType, sAttendee);
 		} else if (method.equals("update")) {
 			jsonResult = updateSchedule(sScheduleId, sScheduleStartTime,
 					sScheduleEndTime);
@@ -362,7 +376,7 @@ public class ScheduleController {
 			} else {
 				jsonResult = addDetailedSchedule(st, et, sSubject,
 						(sIsAllDayEvent != null) ? 1 : 0, sDescription,
-						sLocation, sColorvalue, sTimezone);
+						sLocation, sColorvalue, sTimezone, sAttendee);
 			}
 		}
 

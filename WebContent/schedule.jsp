@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
+<%
+	String attendee = request.getParameter("attendee");
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1">
@@ -25,13 +29,16 @@
     
     <script type="text/javascript">
         $(document).ready(function() {     
-           var view="week";          
+           var view="week";  
+           
            
             var DATA_FEED_URL = "schedule.do";
             var op = {
                 view: view,
                 theme:3,
                 showday: new Date(),
+                //#modified to pass the attendee, store it in the option variable
+                attendee: "<%=attendee%>",
                 EditCmdhandler:Edit,
                 DeleteCmdhandler:Delete,
                 ViewCmdhandler:View,    

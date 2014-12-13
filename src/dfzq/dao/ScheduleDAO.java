@@ -27,10 +27,12 @@ public class ScheduleDAO extends BaseDao {
    }
    
    @SuppressWarnings("unchecked")
-public List<Schedule> listScheduleByRange(Timestamp st ,Timestamp et) {
-	   HashMap<String, Timestamp> m = new HashMap<String, Timestamp>();
+public List<Schedule> listScheduleByRange(Timestamp st ,Timestamp et, String sAttendee) {
+	   HashMap<String, Object> m = new HashMap<String, Object>();
 	   m.put("st", st);
 	   m.put("et", et);
+	   m.put("attendee", "%,"+sAttendee.toLowerCase()+",%");
+	   System.out.println("%,"+sAttendee.toLowerCase()+",%");
 	   return (List<Schedule>)getSqlMapClientTemplate().queryForList("listScheduleByRange", m);
    }
    
