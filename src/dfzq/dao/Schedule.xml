@@ -50,7 +50,7 @@
     
     <select id="listScheduleByRange"  resultMap="scheduleMap" parameterClass="Map">
        select * from `tbl_schedule` 
-       where lower(attendee) like lower(#attendee#) and starttime between #st# and #et#;
+       where (lower(attendee) like lower(#attendee#) OR #attendee# = '%,*,%') and starttime between #st# and #et#;
     </select>
     
     
