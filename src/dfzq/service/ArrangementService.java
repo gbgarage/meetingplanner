@@ -3,14 +3,16 @@ package dfzq.service;
 import dfzq.constants.Status;
 import dfzq.dao.ArrangeMeetingDao;
 import dfzq.dao.CompanyDao;
-import dfzq.model.Company;
-import dfzq.model.Fund;
-import dfzq.model.OneOnOneMeetingRequest;
-import dfzq.model.Resource;
+import dfzq.dao.ScheduleDAO;
+import dfzq.dao.TimeframeDao;
+import dfzq.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,6 +30,12 @@ public class ArrangementService {
     private CompanyDao companyDao;
     @Autowired
     private ArrangeMeetingDao arrangeMeetingDao;
+    @Autowired
+    private TimeframeDao timeframeDao;
+    @Autowired
+    private ScheduleDAO scheduleDAO;
+
+    private Map<Integer, Integer> locationMap = new HashMap<Integer,Integer>();
 
     public void arrageMeeting(int[] timeFrames) {
         int[] otherTimeFrames = getOtherTimeFrames(timeFrames);
@@ -52,6 +60,7 @@ public class ArrangementService {
                 Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company,fund);
                 if (timeFrameId != null) {
                     arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_COMPANY_AND_ARRAGED);
+                    scheduleMeeting(oneOnOneMeetingRequest,timeFrameId);
 
                     fund.decreaseAvailbility();
                     if (fund.isConflict()) {
@@ -76,6 +85,8 @@ public class ArrangementService {
                 Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company,fund);
                 if (timeFrameId != null) {
                     arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
+                    scheduleMeeting(oneOnOneMeetingRequest,timeFrameId);
+
 
                 } else {
                     arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest,  Status.CONFLICT_FUND_AND_NOT_ARRAGED);
@@ -96,6 +107,7 @@ public class ArrangementService {
                 Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company,fund);
                 if (timeFrameId != null) {
                     arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.NOT_CONFLICT);
+                    scheduleMeeting(oneOnOneMeetingRequest,timeFrameId);
 
 
                 }
@@ -105,4 +117,45 @@ public class ArrangementService {
         }
 
     }
+
+    private void scheduleMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest,Integer timeFrameId){
+        Schedule schedule  = new Schedule();
+        schedule.setColor("-1");
+
+        Company company = oneOnOneMeetingRequest.getCompany();
+
+        Fund fund = oneOnOneMeetingRequest.getFund();
+
+        schedule.setSubject(oneOnOneMeetingRequest.getCompany().getName()+"("+oneOnOneMeetingRequest.getCompany().getContact()+")"+"-"+ oneOnOneMeetingRequest.getFund().getFundName()+"("+oneOnOneMeetingRequest.getFund().getContactor()+")");
+        schedule.setDescription(schedule.getSubject());
+        Timeframe timeFrame =timeframeDao.getTimeFrame(timeFrameId);
+
+        schedule.setStartTime(timeFrame.getStartTime());
+        schedule.setEndTime(timeFrame.getEndTime());
+
+        schedule.setLocation(getLocation(timeFrameId)+"");
+        String attendee =","+"f"+fund.getId()+","+ "c"+company.getId()+",";
+        schedule.setAttendee(attendee);
+        scheduleDAO.addDetailedSchedule(schedule)  ;
+
+
+
+
+
+
+
+    }
+
+    private int getLocation(Integer timeFrameId) {
+        Integer locationId = locationMap.get(timeFrameId);
+        if(locationId==null){
+            locationMap.put(timeFrameId,1);
+            return 1;
+        }else{
+            locationMap.put(timeFrameId,locationId+1);
+            return locationId;
+        }
+
+    }
+
 }
