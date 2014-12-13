@@ -1,5 +1,6 @@
 package dfzq.model;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Timeframe {
@@ -12,7 +13,28 @@ public class Timeframe {
 	
 	private String region;
 
-	public int getId() {
+    private Timestamp startTime;
+
+    private Timestamp endTime;
+
+
+    public Timestamp getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    public Timestamp getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
+    }
+
+    public int getId() {
 		return id;
 	}
 

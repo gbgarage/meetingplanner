@@ -1149,7 +1149,9 @@
                 var param = [
                 { name: "showdate", value: dateFormat.call(option.showday, i18n.xgcalendar.dateformat.fulldayvalue) },
                 { name: "viewtype", value: option.view },
-				 { name: "timezone", value: zone }
+				{ name: "timezone", value: zone },
+				//#modified to pass the attendee
+                { name: "attendee", value:  option.attendee }
                 ];
                 if (option.extParam) {
                     for (var pi = 0; pi < option.extParam.length; pi++) {
@@ -1783,7 +1785,9 @@
 						{ "name": "CalendarStartTime", value: datestart },
 						{ "name": "CalendarEndTime", value: dateend },
 						{ "name": "IsAllDayEvent", value: allday },
-						{ "name": "timezone", value: zone}];
+						{ "name": "timezone", value: zone},
+						//#modified for attendee
+						{ "name": "attendee", value: option.attendee}];
 
                     if (option.extParam) {
                         for (var pi = 0; pi < option.extParam.length; pi++) {

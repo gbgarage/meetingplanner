@@ -16,6 +16,7 @@
     <result property="isAllDayEvent" column="isAllDayEvent"/>
     <result property="color" column="color"/>
     <result property="recurringRule" column="recurringRule"/>
+    <result property="attendee" column="attendee"/>
 </resultMap> 
 
  <resultMap id="scheduleByDVTMap" class="dfzq.model.ScheduleByDVT">
@@ -32,16 +33,16 @@
     <typeAlias alias="Schedule" type="com.dfzq.model.Schedule"/>
 
     <insert id="addSchedule">
-       insert into `tbl_schedule` (`subject`, `starttime`, `endtime`, `isalldayevent`) 
-       values (#subject#, #startTime#, #endTime#, #isAllDayEvent#)
+       insert into `tbl_schedule` (`subject`, `starttime`, `endtime`, `isalldayevent`, `attendee`) 
+       values (#subject#, #startTime#, #endTime#, #isAllDayEvent#, #attendee#)
        <selectKey keyProperty="id" resultClass="java.lang.Integer" type="post" >
           SELECT LAST_INSERT_ID()
        </selectKey>
     </insert>
     
     <insert id="addDetailedSchedule">
-       insert into `tbl_schedule` (`subject`, `starttime`, `endtime`, `isalldayevent`, `description`, `venue`, `color`)
-       values (#subject#, #startTime#, #endTime#, #isAllDayEvent#, #description#, #location#, #color#)
+       insert into `tbl_schedule` (`subject`, `starttime`, `endtime`, `isalldayevent`, `description`, `venue`, `color`, `attendee`)
+       values (#subject#, #startTime#, #endTime#, #isAllDayEvent#, #description#, #location#, #color#, #attendee#)
        <selectKey keyProperty="id" resultClass="java.lang.Integer" type="post" >
           SELECT LAST_INSERT_ID()
        </selectKey>
@@ -49,7 +50,7 @@
     
     <select id="listScheduleByRange"  resultMap="scheduleMap" parameterClass="Map">
        select * from `tbl_schedule` 
-       where starttime between #st# and #et#;
+       where lower(attendee) like lower(#attendee#) and starttime between #st# and #et#;
     </select>
     
     

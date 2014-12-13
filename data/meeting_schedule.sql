@@ -1,8 +1,8 @@
-ï»¿-- --------------------------------------------------------
--- ä¸»æœº:                           127.0.0.1
--- æœåŠ¡å™¨ç‰ˆæœ¬:                        5.5.27 - MySQL Community Server (GPL)
--- æœåŠ¡å™¨æ“ä½œç³»ç»Ÿ:                      Win32
--- HeidiSQL ç‰ˆæœ¬:                  8.2.0.4675
+-- --------------------------------------------------------
+-- Ö÷»ú:                           127.0.0.1
+-- ·þÎñÆ÷°æ±¾:                        5.5.27 - MySQL Community Server (GPL)
+-- ·þÎñÆ÷²Ù×÷ÏµÍ³:                      Win32
+-- HeidiSQL °æ±¾:                  8.2.0.4675
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -10,12 +10,12 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- å¯¼å‡º schedule_system çš„æ•°æ®åº“ç»“æž„
+-- µ¼³ö schedule_system µÄÊý¾Ý¿â½á¹¹
 CREATE DATABASE IF NOT EXISTS `schedule_system` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
 USE `schedule_system`;
 
 
--- å¯¼å‡º  è¡¨ schedule_system.company ç»“æž„
+-- µ¼³ö  ±í schedule_system.company ½á¹¹
 CREATE TABLE IF NOT EXISTS `company` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
@@ -23,117 +23,117 @@ CREATE TABLE IF NOT EXISTS `company` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- æ­£åœ¨å¯¼å‡ºè¡¨  schedule_system.company çš„æ•°æ®ï¼š~93 rows (å¤§çº¦)
+-- ÕýÔÚµ¼³ö±í  schedule_system.company µÄÊý¾Ý£º~93 rows (´óÔ¼)
 /*!40000 ALTER TABLE `company` DISABLE KEYS */;
 INSERT INTO `company` (`id`, `name`, `contact`) VALUES
-	(1, 'å»¶åŽæ™ºèƒ½ ', 'é¡¾ç‡•èŠ³'),
-	(2, 'æ‹“å°”æ–¯', 'ä½•ä¸œç‚¯'),
-	(3, 'ä¸‰å®‰å…‰ç”µ', 'çŽ‹åº†'),
-	(4, 'å¾·è±ªæ¶¦è¾¾', 'é‚“é£ž'),
-	(5, 'é¸¿åˆ©å…‰ç”µ', 'é‚“å¯¿é“'),
-	(6, 'é”¦å¯Œæ–°æ', 'è‘›å«ä¸œ'),
-	(7, 'ç™¾è§†é€š', 'å¼ å»º'),
-	(8, 'ç½‘å®¿ç§‘æŠ€', 'å‘¨ä¸½è'),
-	(9, 'æœ—çŽ›ä¿¡æ¯', 'ä½™å‘¨å†›'),
-	(10, 'é‡‘é¾™æœºç”µ', 'é»„å¨Ÿ'),
-	(11, 'å¯Œæ˜¥é€šä¿¡', 'é™ˆè‹¹'),
-	(12, 'å…‰è¿…ç§‘æŠ€', 'æ¯›æµ©'),
-	(13, 'ä¸­å¤©ç§‘æŠ€', 'æ¨æ ‹äº‘'),
-	(14, 'ä¸­å…´é€šè®¯', 'å¾å®‡é¾™ã€€'),
-	(15, 'æµ™å¤§ç½‘æ–°', 'è®¸å…‹è²'),
-	(16, 'æ€æºç”µæ°”', 'æž—è± '),
-	(17, 'æ­£æ³°ç”µå™¨', 'çŽ‹å›½è£ '),
-	(18, 'æ±‡å·æŠ€æœ¯', 'å®‹å›æ©'),
-	(19, 'å›½ç”µå—è‡ª', 'é‡‘æ€»'),
-	(20, 'æ£®æºç”µæ°”', 'å´”ä»˜å†›  '),
-	(21, 'å›½ç”µå—ç‘ž', 'æ–¹é£žé¾™'),
-	(22, 'è®¸ç»§ç”µæ°”', 'å§šæ­¦  '),
-	(23, 'ç½®ä¿¡ç”µæ°”', 'ç‰›å¸Œçº¢'),
-	(24, 'è£ç››å‘å±•', 'é™ˆé‡‘æµ·'),
-	(25, 'è‹å®çŽ¯çƒ', 'é‚±æ´ªæ¶›'),
-	(26, 'ä¸‡ç§‘', 'é‚¬é”¦æ˜Ž'),
-	(27, 'æ‹›å•†åœ°äº§', 'é™ˆæ¾„'),
-	(28, 'é‡‘åœ°é›†å›¢', 'å”ç‡•'),
-	(29, 'æ»¨æ±Ÿé›†å›¢', 'æŽæ¸Š'),
-	(30, 'ä¸­å—å»ºè®¾', 'æ™ºåˆš'),
-	(31, 'ç™¾éš†ä¸œæ–¹', 'æ¨é•œè‰¯'),
-	(32, 'å¥¥åº·å›½é™…', 'ä½™é›„å¹³'),
-	(33, 'æŽ¢è·¯è€…', 'å¼ æˆ'),
-	(34, 'å®é’¢è‚¡ä»½', 'é™¶æ˜€'),
-	(35, 'è¾‰ä¸°è‚¡ä»½', 'è´²é“¶è‰¯'),
-	(36, 'åº·å¾—æ–°', 'é’Ÿå‡¯'),
-	(37, 'å®‰åˆ©è‚¡ä»½', 'å´åŒå–œ'),
-	(38, 'é›…æœ¬åŒ–å­¦', 'çŽ‹å“é¢–'),
-	(39, 'é’æ¾è‚¡ä»½', 'é‚“å»ºæ˜Ž'),
-	(40, 'ä¸­å›½çŸ³åŒ–', 'éƒ‘ä¿æ°‘'),
-	(41, 'åŽé¼Žé”¦çº¶', 'èƒ¡æ–¹æ³¢'),
-	(42, 'å«æ˜ŸçŸ³åŒ–', 'æ²ˆæ™“ä¼Ÿ'),
-	(43, 'ä¸­åŒ–å›½é™…', 'åˆ˜ç¿”'),
-	(44, 'å·¨æ˜Ÿç§‘æŠ€', 'ä½•å¤©ä¹'),
-	(45, 'æ±‰é’Ÿç²¾æœº', 'ä½™è‘£'),
-	(46, 'å¹¿æ—¥è‚¡ä»½', 'å´å®¾'),
-	(47, 'å¨æµ·å¹¿æ³°', ''),
-	(48, 'é‡‘é€šçµ', 'ä½•æ´'),
-	(49, 'é€šè£•é‡å·¥', ''),
-	(50, 'æ°¸è¾‰è¶…å¸‚', 'å­™æ€»'),
-	(51, 'è·¯ç¿”è‚¡ä»½', 'é™ˆæ–°åŽ'),
-	(52, 'æ±Ÿæ²³å¹•å¢™', 'åˆ˜ä¸­å²³'),
-	(53, 'é‡‘èž³èž‚', 'ç½—æ‰¿äº‘'),
-	(54, 'ä¸­äº¤å»ºè®¾', 'ä¿žäº¬äº¬'),
-	(55, 'ä¸œæ–¹å›­æž—', 'å”æµ·å†›'),
-	(56, 'æ™®é‚¦å›­æž—', 'é©¬åŠ›è¾¾'),
-	(57, 'æ£•æ¦ˆå›­æž—', 'å°¹æ¾æ¶›'),
-	(58, 'èˆªç©ºåŠ¨åŠ›', 'èµµå²³'),
-	(59, 'é’¢ç ”é«˜çº³', 'è®¸æ´ªè´µ'),
-	(60, 'å®‹åŸŽè‚¡ä»½', ''),
-	(61, 'æ°¸æ³°èƒ½æº', 'çŽ‹å†›'),
-	(62, 'ç¥žç«è‚¡ä»½', 'æŽå®ä¼Ÿ'),
-	(63, 'æµ·å¤§é›†å›¢', 'å¢æ´é›¯'),
-	(64, 'è¥¿çŽ‹é£Ÿå“', 'é©¬ç«‹ä¸œ'),
-	(65, 'çå­å²›', 'å­™ç¦å›'),
-	(66, 'ä¸­ç²®å±¯æ²³', 'è’‹å­¦å·¥'),
-	(67, 'é›é¹°å†œç‰§', 'å´æ˜“å¾·'),
-	(68, 'äºšç››é›†å›¢', 'ç¬¦ç»§å†›'),
-	(69, 'ç‘žæ™®ç”Ÿç‰©', 'æ›¾å¿—ä¼Ÿ'),
-	(70, 'ä¸Šæ±½é›†å›¢', 'å«å‹‡'),
-	(71, 'ç¦ç”°æ±½è½¦', 'æŽå»¶å¼º'),
-	(72, 'å–œä¸´é—¨', 'é™ˆæ€»'),
-	(73, 'å¥¥ç‘žé‡‘', 'é«˜æ ‘å†›'),
-	(74, 'è±«å›­å•†åŸŽ', 'è’‹ä¼Ÿ'),
-	(75, 'å¼ è£•A', 'æ›²ä¸ºæ°‘'),
-	(76, 'é’å²›å•¤é…’', 'å¼ ç‘žç¥¥'),
-	(77, 'æ¶ªé™µæ¦¨èœ', 'é»„æ­£å¤'),
-	(78, 'æ’ç‘žåŒ»è¯', ''),
-	(79, 'äººç¦è¯ä¸š', ''),
-	(80, 'é€šåŒ–ä¸œå®', ''),
-	(81, 'æˆ´ç»´åŒ»ç–— ', ''),
-	(82, 'ä¸œå¯Œé¾™ ', ''),
-	(83, 'ä¸Šæµ·å‡¯å® ', 'ç©†ç«Ÿä¼Ÿ'),
-	(84, 'æ±¤è‡£å€å¥', 'æž—å¿—æˆ'),
-	(85, 'ç§‘åŽç”Ÿç‰© ', 'é¢œåŽ'),
-	(86, 'æµ¦å‘é“¶è¡Œ', 'æ›¹å¿ æ˜Ž'),
-	(87, 'æµ·äº®è‚¡ä»½', 'é‚µå›½å‹‡'),
-	(88, 'äº‘å—é”—ä¸š ', 'é‡‘çº¢å›½'),
-	(89, 'å¼€å°”æ–°æ', 'ç¨‹å¿—å‹‡'),
-	(90, 'ä½³éƒ½æ–°å¤ª', 'åˆ˜é¢–'),
-	(91, 'æ–°çº¶ç§‘æŠ€', 'æ¨åˆ©'),
-	(92, 'ä¸­æµ·è¾¾', 'ä½•é‡‘æˆ'),
-	(93, 'å®æ³¢GQY', 'è°¢è¯šæ­£'),
-	(95, ' æµ·äº®è‚¡ä»½', NULL),
-	(96, 'ä¸­å—', NULL),
-	(97, 'åŽæµ‹æ£€æµ‹', NULL),
-	(98, 'åº·å¾·æ–°', NULL),
-	(99, ' å®‹åŸŽè‚¡ä»½', NULL);
+	(1, 'ÑÓ»ªÖÇÄÜ ', '¹ËÑà·¼'),
+	(2, 'ÍØ¶ûË¹', 'ºÎ¶«¾¼'),
+	(3, 'Èý°²¹âµç', 'ÍõÇì'),
+	(4, 'µÂºÀÈó´ï', 'µË·É'),
+	(5, 'ºèÀû¹âµç', 'µËÊÙÌú'),
+	(6, '½õ¸»ÐÂ²Ä', '¸ðÎÀ¶«'),
+	(7, '°ÙÊÓÍ¨', 'ÕÅ½¨'),
+	(8, 'ÍøËÞ¿Æ¼¼', 'ÖÜÀöÆ¼'),
+	(9, 'ÀÊÂêÐÅÏ¢', 'ÓàÖÜ¾ü'),
+	(10, '½ðÁú»úµç', '»Æ¾ê'),
+	(11, '¸»´ºÍ¨ÐÅ', '³ÂÆ»'),
+	(12, '¹âÑ¸¿Æ¼¼', 'Ã«ºÆ'),
+	(13, 'ÖÐÌì¿Æ¼¼', 'Ñî¶°ÔÆ'),
+	(14, 'ÖÐÐËÍ¨Ñ¶', 'ÐìÓîÁú¡¡'),
+	(15, 'Õã´óÍøÐÂ', 'Ðí¿Ë·Æ'),
+	(16, 'Ë¼Ô´µçÆø', 'ÁÖÁâ '),
+	(17, 'ÕýÌ©µçÆ÷', 'Íõ¹úÈÙ '),
+	(18, '»ã´¨¼¼Êõ', 'ËÎ¾ý¶÷'),
+	(19, '¹úµçÄÏ×Ô', '½ð×Ü'),
+	(20, 'É­Ô´µçÆø', '´Þ¸¶¾ü  '),
+	(21, '¹úµçÄÏÈð', '·½·ÉÁú'),
+	(22, 'Ðí¼ÌµçÆø', 'Ò¦Îä  '),
+	(23, 'ÖÃÐÅµçÆø', 'Å£Ï£ºì'),
+	(24, 'ÈÙÊ¢·¢Õ¹', '³Â½ðº£'),
+	(25, 'ËÕÄþ»·Çò', 'ÇñºéÌÎ'),
+	(26, 'Íò¿Æ', 'Úù½õÃ÷'),
+	(27, 'ÕÐÉÌµØ²ú', '³Â³Î'),
+	(28, '½ðµØ¼¯ÍÅ', 'ÌÆÑà'),
+	(29, '±õ½­¼¯ÍÅ', 'ÀîÔ¨'),
+	(30, 'ÖÐÄÏ½¨Éè', 'ÖÇ¸Õ'),
+	(31, '°ÙÂ¡¶«·½', 'Ñî¾µÁ¼'),
+	(32, '°Â¿µ¹ú¼Ê', 'ÓàÐÛÆ½'),
+	(33, 'Ì½Â·Õß', 'ÕÅ³É'),
+	(34, '±¦¸Ö¹É·Ý', 'ÌÕêÀ'),
+	(35, '»Ô·á¹É·Ý', 'êÚÒøÁ¼'),
+	(36, '¿µµÃÐÂ', 'ÖÓ¿­'),
+	(37, '°²Àû¹É·Ý', 'ÎâË«Ï²'),
+	(38, 'ÑÅ±¾»¯Ñ§', 'Íõ×¿Ó±'),
+	(39, 'ÇàËÉ¹É·Ý', 'µË½¨Ã÷'),
+	(40, 'ÖÐ¹úÊ¯»¯', 'Ö£±£Ãñ'),
+	(41, '»ª¶¦½õÂÚ', 'ºú·½²¨'),
+	(42, 'ÎÀÐÇÊ¯»¯', 'ÉòÏþÎ°'),
+	(43, 'ÖÐ»¯¹ú¼Ê', 'ÁõÏè'),
+	(44, '¾ÞÐÇ¿Æ¼¼', 'ºÎÌìÀÖ'),
+	(45, 'ººÖÓ¾«»ú', 'Óà¶­'),
+	(46, '¹ãÈÕ¹É·Ý', 'Îâ±ö'),
+	(47, 'Íþº£¹ãÌ©', ''),
+	(48, '½ðÍ¨Áé', 'ºÎ½à'),
+	(49, 'Í¨Ô£ÖØ¹¤', ''),
+	(50, 'ÓÀ»Ô³¬ÊÐ', 'Ëï×Ü'),
+	(51, 'Â·Ïè¹É·Ý', '³ÂÐÂ»ª'),
+	(52, '½­ºÓÄ»Ç½', 'ÁõÖÐÔÀ'),
+	(53, '½ðó«òë', 'ÂÞ³ÐÔÆ'),
+	(54, 'ÖÐ½»½¨Éè', 'Óá¾©¾©'),
+	(55, '¶«·½Ô°ÁÖ', 'ÌÆº£¾ü'),
+	(56, 'ÆÕ°îÔ°ÁÖ', 'ÂíÁ¦´ï'),
+	(57, '×ØéµÔ°ÁÖ', 'ÒüËÉÌÎ'),
+	(58, 'º½¿Õ¶¯Á¦', 'ÕÔÔÀ'),
+	(59, '¸ÖÑÐ¸ßÄÉ', 'Ðíºé¹ó'),
+	(60, 'ËÎ³Ç¹É·Ý', ''),
+	(61, 'ÓÀÌ©ÄÜÔ´', 'Íõ¾ü'),
+	(62, 'Éñ»ð¹É·Ý', 'ÀîºêÎ°'),
+	(63, 'º£´ó¼¯ÍÅ', 'Â¬½àö©'),
+	(64, 'Î÷ÍõÊ³Æ·', 'ÂíÁ¢¶«'),
+	(65, 'â¯×Óµº', 'Ëï¸£¾ý'),
+	(66, 'ÖÐÁ¸ÍÍºÓ', '½¯Ñ§¹¤'),
+	(67, '³ûÓ¥Å©ÄÁ', 'ÎâÒ×µÂ'),
+	(68, 'ÑÇÊ¢¼¯ÍÅ', '·û¼Ì¾ü'),
+	(69, 'ÈðÆÕÉúÎï', 'ÔøÖ¾Î°'),
+	(70, 'ÉÏÆû¼¯ÍÅ', 'ÎÀÓÂ'),
+	(71, '¸£ÌïÆû³µ', 'ÀîÑÓÇ¿'),
+	(72, 'Ï²ÁÙÃÅ', '³Â×Ü'),
+	(73, '°ÂÈð½ð', '¸ßÊ÷¾ü'),
+	(74, 'Ô¥Ô°ÉÌ³Ç', '½¯Î°'),
+	(75, 'ÕÅÔ£A', 'ÇúÎªÃñ'),
+	(76, 'ÇàµºÆ¡¾Æ', 'ÕÅÈðÏé'),
+	(77, '¸¢ÁêÕ¥²Ë', '»ÆÕýÀ¤'),
+	(78, 'ºãÈðÒ½Ò©', ''),
+	(79, 'ÈË¸£Ò©Òµ', ''),
+	(80, 'Í¨»¯¶«±¦', ''),
+	(81, '´÷Î¬Ò½ÁÆ ', ''),
+	(82, '¶«¸»Áú ', ''),
+	(83, 'ÉÏº£¿­±¦ ', 'ÄÂ¾¹Î°'),
+	(84, 'ÌÀ³¼±¶½¡', 'ÁÖÖ¾³É'),
+	(85, '¿Æ»ªÉúÎï ', 'ÑÕ»ª'),
+	(86, 'ÆÖ·¢ÒøÐÐ', '²ÜÖÒÃ÷'),
+	(87, 'º£ÁÁ¹É·Ý', 'ÉÛ¹úÓÂ'),
+	(88, 'ÔÆÄÏÕàÒµ ', '½ðºì¹ú'),
+	(89, '¿ª¶ûÐÂ²Ä', '³ÌÖ¾ÓÂ'),
+	(90, '¼Ñ¶¼ÐÂÌ«', 'ÁõÓ±'),
+	(91, 'ÐÂÂÚ¿Æ¼¼', 'ÑîÀû'),
+	(92, 'ÖÐº£´ï', 'ºÎ½ð³É'),
+	(93, 'Äþ²¨GQY', 'Ð»³ÏÕý'),
+	(95, ' º£ÁÁ¹É·Ý', NULL),
+	(96, 'ÖÐÄÏ', NULL),
+	(97, '»ª²â¼ì²â', NULL),
+	(98, '¿µµÂÐÂ', NULL),
+	(99, ' ËÎ³Ç¹É·Ý', NULL);
 /*!40000 ALTER TABLE `company` ENABLE KEYS */;
 
 
--- å¯¼å‡º  è¡¨ schedule_system.company_availbility ç»“æž„
+-- µ¼³ö  ±í schedule_system.company_availbility ½á¹¹
 CREATE TABLE IF NOT EXISTS `company_availbility` (
   `company_id` int(11) DEFAULT NULL,
   `time_frame_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- æ­£åœ¨å¯¼å‡ºè¡¨  schedule_system.company_availbility çš„æ•°æ®ï¼š~325 rows (å¤§çº¦)
+-- ÕýÔÚµ¼³ö±í  schedule_system.company_availbility µÄÊý¾Ý£º~325 rows (´óÔ¼)
 /*!40000 ALTER TABLE `company_availbility` DISABLE KEYS */;
 INSERT INTO `company_availbility` (`company_id`, `time_frame_id`) VALUES
 	(1, 4),
@@ -464,7 +464,7 @@ INSERT INTO `company_availbility` (`company_id`, `time_frame_id`) VALUES
 /*!40000 ALTER TABLE `company_availbility` ENABLE KEYS */;
 
 
--- å¯¼å‡º  è¡¨ schedule_system.fund ç»“æž„
+-- µ¼³ö  ±í schedule_system.fund ½á¹¹
 CREATE TABLE IF NOT EXISTS `fund` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `fund_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT '0',
@@ -473,85 +473,85 @@ CREATE TABLE IF NOT EXISTS `fund` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- æ­£åœ¨å¯¼å‡ºè¡¨  schedule_system.fund çš„æ•°æ®ï¼š~0 rows (å¤§çº¦)
+-- ÕýÔÚµ¼³ö±í  schedule_system.fund µÄÊý¾Ý£º~0 rows (´óÔ¼)
 /*!40000 ALTER TABLE `fund` DISABLE KEYS */;
 INSERT INTO `fund` (`id`, `fund_name`, `phone_number`, `contact`) VALUES
-	(1, 'åšæ—¶', NULL, 'æœ±å¯…ä¿Š'),
-	(2, 'åšæ—¶', NULL, 'å­™å å†›'),
-	(3, 'åšæ—¶åŸºé‡‘', NULL, 'ä¸ä¸¹'),
-	(4, 'åšæ—¶åŸºé‡‘ ', NULL, 'å”å¤©'),
-	(5, 'å¤§æˆåŸºé‡‘', NULL, 'è™žäºšæ–°'),
-	(6, 'å¯Œé¡¿åŸºé‡‘', NULL, 'Michael Zhang'),
-	(7, 'å›½æŠ•ç‘žé“¶', NULL, 'å­Ÿäº®'),
-	(8, 'å›½æŠ•ç‘žé“¶', NULL, 'æœ±çº¢è£•'),
-	(9, 'å›½æŠ•ç‘žé“¶', NULL, 'åˆ˜æ°æ–‡'),
-	(10, 'å›½æŠ•ç‘žé“¶', NULL, 'åˆ˜ä¼Ÿ'),
-	(11, 'å›½æŠ•ç‘žé“¶ ', NULL, 'é™ˆå°çŽ²'),
-	(12, 'æµ·å¯Œé€š', NULL, 'åˆ˜æ²»å›½Â '),
-	(13, 'æµ·å¯Œé€š', NULL, 'å§šé¥Â Â Â  '),
-	(14, 'æµ·å¯Œé€š', NULL, 'çŸ³çº¢å†›'),
-	(15, 'æµ·å¯Œé€š', NULL, 'ç‰Ÿæ°¸å®,çŽ‹é‡‘ç¥¥'),
-	(16, 'æµ·å¯Œé€š', NULL, 'é™ˆæ´ª'),
-	(17, 'åŽå®‰', NULL, 'çŽ‹å˜‰'),
-	(18, 'åŽå®å…´ä¸š', NULL, 'æœ±äº®'),
-	(19, 'åŽå®å…´ä¸š', NULL, 'èƒ¡æˆˆæ¸¸'),
-	(20, 'åŽå®å…´ä¸š', NULL, 'é™ˆä¹åŽ'),
-	(21, 'åŽå¤åŸºé‡‘ ', NULL, ' å­™å½¬'),
-	(22, 'åŽå¤åŸºé‡‘ ', NULL, 'å½­æµ·ä¼Ÿ'),
-	(23, 'åŽå¤åŸºé‡‘ ', NULL, 'æ½˜ä¸­å®'),
-	(24, 'åŽå¤åŸºé‡‘ ', NULL, 'ä½•é‡‘å­'),
-	(25, 'æ±‡æ·»å¯Œ', NULL, 'èµµå‰‘'),
-	(26, 'æ±‡æ·»å¯Œ', NULL, 'é©¬ç¿”'),
-	(27, 'æ±‡æ·»å¯Œ', NULL, 'é›·é¸£'),
-	(28, 'æ±‡æ·»å¯Œ', NULL, 'æœ±æ™“äº®'),
-	(29, 'æ±‡æ·»å¯Œ', NULL, 'éƒ‘æ…§èŽ²'),
-	(30, 'æ±‡æ·»å¯Œ', NULL, 'èµµå‰‘'),
-	(31, 'æ±‡æ·»å¯Œ', NULL, 'èµµé¹ç¨‹'),
-	(32, 'æ±‡æ·»å¯Œ', NULL, '10äºº'),
-	(33, 'å˜‰å®ž', NULL, 'å¼ ä¸¹åŽ'),
-	(34, 'äº¤é“¶', NULL, 'æ›¹æ–‡ä¿Š'),
-	(35, 'äº¤é“¶', NULL, 'åˆ˜æ½‡æ½‡'),
-	(36, 'äº¤é“¶', NULL, 'é¢œä¼Ÿé¹'),
-	(37, 'å—æ–¹åŸºé‡‘', NULL, 'åº”å¸…,é©¬åŒ—é›,å´å›½æ¸…,è”¡æœ›é¹'),
-	(38, 'å†œé“¶æ±‡ç†', NULL, 'ä»˜å¨Ÿ'),
-	(39, 'é¹åŽ', NULL, 'æ¨ä¿Š'),
-	(40, 'é¹åŽ', NULL, 'åˆ˜å›½ä¸°'),
-	(41, 'é¹åŽ', NULL, 'ä¼æ—‹'),
-	(42, 'èžé€š', NULL, 'åˆ˜ ç¥Ž'),
-	(43, 'ä¸ŠæŠ•æ‘©æ ¹', NULL, 'å”å€©'),
-	(44, 'ä¸ŠæŠ•æ‘©æ ¹', NULL, 'çŽ‹æˆ'),
-	(45, 'å¤ªä¿èµ„ç®¡ï¼ˆä¿é™©ï¼‰', NULL, 'æŽä¿Š'),
-	(46, 'å¤ªå¹³ ', NULL, 'åºžè‰¯æ°¸'),
-	(47, 'å…´ä¸š', NULL, 'æ¨è·ƒæ–Œç­‰äºº'),
-	(48, 'æ³½ç†™æŠ•èµ„', NULL, 'ä¸¥é¹'),
-	(49, 'æ³½ç†™æŠ•èµ„', NULL, 'é²å‹‡å¿—'),
-	(50, 'æ³½ç†™æŠ•èµ„', NULL, 'å¶å±•'),
-	(51, 'ä¸­æµ·', NULL, 'å¤æ˜¥æ™–'),
-	(52, 'ä¸­é“¶åŸºé‡‘', NULL, 'æŽä¸½æ´‹'),
-	(53, 'ä¸­é“¶åŸºé‡‘', NULL, 'ç¥å–„æ–ŒÂ '),
-	(54, 'ä¸­é“¶åŸºé‡‘', NULL, 'æŸ¯ä¸–å³°');
+	(1, '²©Ê±', NULL, 'ÖìÒú¿¡'),
+	(2, '²©Ê±', NULL, 'ËïÕ¼¾ü'),
+	(3, '²©Ê±»ù½ð', NULL, '¶¡µ¤'),
+	(4, '²©Ê±»ù½ð ', NULL, 'ÌÆÌì'),
+	(5, '´ó³É»ù½ð', NULL, 'ÓÝÑÇÐÂ'),
+	(6, '¸»¶Ù»ù½ð', NULL, 'Michael Zhang'),
+	(7, '¹úÍ¶ÈðÒø', NULL, 'ÃÏÁÁ'),
+	(8, '¹úÍ¶ÈðÒø', NULL, 'ÖìºìÔ£'),
+	(9, '¹úÍ¶ÈðÒø', NULL, 'Áõ½ÜÎÄ'),
+	(10, '¹úÍ¶ÈðÒø', NULL, 'ÁõÎ°'),
+	(11, '¹úÍ¶ÈðÒø ', NULL, '³ÂÐ¡Áá'),
+	(12, 'º£¸»Í¨', NULL, 'ÁõÖÎ¹ú?'),
+	(13, 'º£¸»Í¨', NULL, 'Ò¦Ò£??? '),
+	(14, 'º£¸»Í¨', NULL, 'Ê¯ºì¾ü'),
+	(15, 'º£¸»Í¨', NULL, 'Ä²ÓÀÄþ,Íõ½ðÏé'),
+	(16, 'º£¸»Í¨', NULL, '³Âºé'),
+	(17, '»ª°²', NULL, 'Íõ¼Î'),
+	(18, '»ª±¦ÐËÒµ', NULL, 'ÖìÁÁ'),
+	(19, '»ª±¦ÐËÒµ', NULL, 'ºú¸êÓÎ'),
+	(20, '»ª±¦ÐËÒµ', NULL, '³ÂÀÖ»ª'),
+	(21, '»ªÏÄ»ù½ð ', NULL, ' Ëï±ò'),
+	(22, '»ªÏÄ»ù½ð ', NULL, 'Åíº£Î°'),
+	(23, '»ªÏÄ»ù½ð ', NULL, 'ÅËÖÐÄþ'),
+	(24, '»ªÏÄ»ù½ð ', NULL, 'ºÎ½ðÐ¢'),
+	(25, '»ãÌí¸»', NULL, 'ÕÔ½£'),
+	(26, '»ãÌí¸»', NULL, 'ÂíÏè'),
+	(27, '»ãÌí¸»', NULL, 'À×Ãù'),
+	(28, '»ãÌí¸»', NULL, 'ÖìÏþÁÁ'),
+	(29, '»ãÌí¸»', NULL, 'Ö£»ÛÁ«'),
+	(30, '»ãÌí¸»', NULL, 'ÕÔ½£'),
+	(31, '»ãÌí¸»', NULL, 'ÕÔÅô³Ì'),
+	(32, '»ãÌí¸»', NULL, '10ÈË'),
+	(33, '¼ÎÊµ', NULL, 'ÕÅµ¤»ª'),
+	(34, '½»Òø', NULL, '²ÜÎÄ¿¡'),
+	(35, '½»Òø', NULL, 'Áõäìäì'),
+	(36, '½»Òø', NULL, 'ÑÕÎ°Åô'),
+	(37, 'ÄÏ·½»ù½ð', NULL, 'Ó¦Ë§,Âí±±Ñã,Îâ¹úÇå,²ÌÍûÅô'),
+	(38, 'Å©Òø»ãÀí', NULL, '¸¶¾ê'),
+	(39, 'Åô»ª', NULL, 'Ñî¿¡'),
+	(40, 'Åô»ª', NULL, 'Áõ¹ú·á'),
+	(41, 'Åô»ª', NULL, 'ÎéÐý'),
+	(42, 'ÈÚÍ¨', NULL, 'Áõ µt'),
+	(43, 'ÉÏÍ¶Ä¦¸ù', NULL, 'ÌÆÙ»'),
+	(44, 'ÉÏÍ¶Ä¦¸ù', NULL, 'Íõ³É'),
+	(45, 'Ì«±£×Ê¹Ü£¨±£ÏÕ£©', NULL, 'Àî¿¡'),
+	(46, 'Ì«Æ½ ', NULL, 'ÅÓÁ¼ÓÀ'),
+	(47, 'ÐËÒµ', NULL, 'ÑîÔ¾±óµÈÈË'),
+	(48, 'ÔóÎõÍ¶×Ê', NULL, 'ÑÏÅô'),
+	(49, 'ÔóÎõÍ¶×Ê', NULL, 'Â³ÓÂÖ¾'),
+	(50, 'ÔóÎõÍ¶×Ê', NULL, 'Ò¶Õ¹'),
+	(51, 'ÖÐº£', NULL, 'ÏÄ´ºêÍ'),
+	(52, 'ÖÐÒø»ù½ð', NULL, 'ÀîÀöÑó'),
+	(53, 'ÖÐÒø»ù½ð', NULL, 'ÆîÉÆ±ó?'),
+	(54, 'ÖÐÒø»ù½ð', NULL, '¿ÂÊÀ·å');
 /*!40000 ALTER TABLE `fund` ENABLE KEYS */;
 
 
--- å¯¼å‡º  è¡¨ schedule_system.fund_availbility ç»“æž„
+-- µ¼³ö  ±í schedule_system.fund_availbility ½á¹¹
 CREATE TABLE IF NOT EXISTS `fund_availbility` (
   `fund_id` int(11) DEFAULT NULL,
   `time_frame_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- æ­£åœ¨å¯¼å‡ºè¡¨  schedule_system.fund_availbility çš„æ•°æ®ï¼š~0 rows (å¤§çº¦)
+-- ÕýÔÚµ¼³ö±í  schedule_system.fund_availbility µÄÊý¾Ý£º~0 rows (´óÔ¼)
 /*!40000 ALTER TABLE `fund_availbility` DISABLE KEYS */;
 /*!40000 ALTER TABLE `fund_availbility` ENABLE KEYS */;
 
 
--- å¯¼å‡º  è¡¨ schedule_system.one_on_one_meeting_request ç»“æž„
+-- µ¼³ö  ±í schedule_system.one_on_one_meeting_request ½á¹¹
 CREATE TABLE IF NOT EXISTS `one_on_one_meeting_request` (
   `fund_id` int(11) NOT NULL,
   `company_id` int(11) NOT NULL,
   PRIMARY KEY (`fund_id`,`company_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- æ­£åœ¨å¯¼å‡ºè¡¨  schedule_system.one_on_one_meeting_request çš„æ•°æ®ï¼š~0 rows (å¤§çº¦)
+-- ÕýÔÚµ¼³ö±í  schedule_system.one_on_one_meeting_request µÄÊý¾Ý£º~0 rows (´óÔ¼)
 /*!40000 ALTER TABLE `one_on_one_meeting_request` DISABLE KEYS */;
 INSERT INTO `one_on_one_meeting_request` (`fund_id`, `company_id`) VALUES
 	(1, 28),
@@ -604,7 +604,7 @@ INSERT INTO `one_on_one_meeting_request` (`fund_id`, `company_id`) VALUES
 /*!40000 ALTER TABLE `one_on_one_meeting_request` ENABLE KEYS */;
 
 
--- å¯¼å‡º  è¡¨ schedule_system.time_frame ç»“æž„
+-- µ¼³ö  ±í schedule_system.time_frame ½á¹¹
 CREATE TABLE IF NOT EXISTS `time_frame` (
   `id` int(11) NOT NULL,
   `date` date DEFAULT NULL,
@@ -613,7 +613,7 @@ CREATE TABLE IF NOT EXISTS `time_frame` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- æ­£åœ¨å¯¼å‡ºè¡¨  schedule_system.time_frame çš„æ•°æ®ï¼š~7 rows (å¤§çº¦)
+-- ÕýÔÚµ¼³ö±í  schedule_system.time_frame µÄÊý¾Ý£º~7 rows (´óÔ¼)
 /*!40000 ALTER TABLE `time_frame` DISABLE KEYS */;
 INSERT INTO `time_frame` (`id`, `date`, `time_window`, `region`) VALUES
 	(1, '2014-11-23', '9:00-10:00', '1a'),
@@ -629,7 +629,7 @@ INSERT INTO `time_frame` (`id`, `date`, `time_window`, `region`) VALUES
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 
 
-/* tbl_schedule æ—¥ç¨‹å®‰æŽ’ç»“æžœè¡¨ */
+/* tbl_schedule ÈÕ³Ì°²ÅÅ½á¹û±í */
 DROP TABLE IF EXISTS `schedule_system`.`tbl_schedule`;
 CREATE TABLE `schedule_system`.`tbl_schedule` (
   `Id` int(11) NOT NULL auto_increment,
@@ -641,30 +641,7 @@ CREATE TABLE `schedule_system`.`tbl_schedule` (
   `IsAllDayEvent` smallint(6) NOT NULL,
   `Color` varchar(200) character set utf8 default NULL,
   `RecurringRule` varchar(500) character set utf8 default NULL,
-  PRIMARY KEY  (`Id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 COLLATE=utf8_unicode_ci;
-
-
-/* tbl_schedule_party æ—¥ç¨‹å®‰æŽ’äººå‘˜è¡¨ */
-DROP TABLE IF EXISTS `schedule_system`.`tbl_schedule_party`;
-CREATE TABLE `schedule_system`.`tbl_schedule_party` (
-  `Id` int(11) NOT NULL auto_increment,
-  `Schedule_Id` int(11) NOT NULL,
-  `Party_Id`  int(11) NOT NULL,
-  PRIMARY KEY  (`Id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 COLLATE=utf8_unicode_ci;
-
-/* tbl_party äººå‘˜è¡¨ */
-DROP TABLE IF EXISTS `schedule_system`.`tbl_party`;
-CREATE TABLE `schedule_system`.`tbl_party` (
-  `Id` int(11) NOT NULL auto_increment,
-  `Name` varchar(255) NOT NULL,
-  `Job_Title` varchar(255) character set utf8 default NULL,
-  `Phone_Nbr` varchar(255) character set utf8 default NULL,
-  `Email_Addr` varchar(255) character set utf8 default NULL,
-  `Description` varchar(1024) character set utf8 default NULL,
-  `Organization_Name` varchar(255) character set utf8 default 'ä¸œæ–¹è¯åˆ¸',
-  `Internal_Ind` varchar(1) character set utf8 default 'Y',
+  `Attendee` varchar(1000) character set utf8 default NULL,
   PRIMARY KEY  (`Id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 COLLATE=utf8_unicode_ci;
 
@@ -683,7 +660,7 @@ SELECT form.Meeting_Dt,
                         time_format(StartTime, '%H%i') AS Meeting_Tm,
                         venue As Venue
                    FROM schedule_system . tbl_schedule
-                 /* è¿‡æ»¤æŽ‰é‚£äº› éžæ ‡å‡†æ—¶é—´çš„ ä¼šè®®å®‰æŽ’ */
+                 /* ¹ýÂËµôÄÇÐ© ·Ç±ê×¼Ê±¼äµÄ »áÒé°²ÅÅ */
                   WHERE time_format(StartTime, '%H%i') IN
                         ('0900','1000','1100','1200','1330','1430','1530','1630')
                   GROUP BY venue,
@@ -702,3 +679,15 @@ SELECT form.Meeting_Dt,
   LEFT JOIN schedule_system.tbl_schedule s
     ON form.Meeting_Id = s.Id
  ORDER BY form.Meeting_Dt, form.Venue, form.Meeting_Tm;
+ 
+select * from `schedule_system`.`tbl_schedule`;
+Update `schedule_system`.`tbl_schedule`
+set Attendee = ',c123,'
+where id>=0;
+
+
+
+update `schedule_system`.`tbl_schedule`
+set StartTime = date_add(StartTime,interval 7 day),
+EndTime = date_add(EndTime,interval 7 day)
+where id>4;

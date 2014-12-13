@@ -107,6 +107,9 @@
        <result column="date" property="date" />
        <result column="time_window" property="time_window" />
        <result column="region" property="region" />
+       <result column="start_time" property="startTime" />
+       <result column="end_time" property="endTime" />
+
     </resultMap>
 
     <select id="getTimeframeList" parameterClass="java.util.Map" resultMap="timeframe-result">
@@ -187,6 +190,13 @@
 		insert into company_availbility
 		value (#company.id#, #timeFrameId#)
 	</insert>
+
+    <select id="getTimeFrameById" parameterClass="int" resultMap="timeframe-result">
+        select *
+        from time_frame
+        where id=#id#
+
+    </select>
 	
 <!--     get company by ID -->
 <!--     <select id="getCompanyById" parameterClass="Integer" resultClass="Company"> -->

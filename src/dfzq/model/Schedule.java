@@ -12,7 +12,14 @@ public class Schedule {
 	private long isAllDayEvent;
 	private String color;
 	private String recurringRule;
+	private String attendee;
 	
+	public String getAttendee() {
+		return attendee;
+	}
+	public void setAttendee(String pAttendee) {
+		attendee = pAttendee;
+	}
 	public long getId() {
 		return id;
 	}
@@ -66,5 +73,21 @@ public class Schedule {
 	}
 	public void setRecurringRule(String pRecurringRule) {
 		recurringRule = pRecurringRule;
+	}
+	
+	public Schedule clone() {
+		Schedule s = new Schedule();
+		s.id = id;
+		s.subject = subject;
+		s.location = location;
+		s.description = description;
+		s.startTime = startTime;
+		s.endTime = endTime;
+		s.isAllDayEvent = isAllDayEvent;
+		s.color = color;
+		s.recurringRule = recurringRule;
+		s.attendee = attendee;
+
+		return s;
 	}
 }

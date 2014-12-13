@@ -16,4 +16,7 @@ public class TimeframeDao extends BaseDao {
     	return (List<Timeframe>)getSqlMapClientTemplate().queryForList("getTimeframeList");
     }
 
+    public Timeframe getTimeFrame(Integer timeFrameId) {
+        return (Timeframe)getSqlMapClientTemplate().queryForObject("getTimeFrameById", timeFrameId);
+    }
 }
