@@ -23,7 +23,8 @@
 <title>会议安排清单</title>
 </head>
 <body>
-<div id="datagrid1" class="mini-datagrid" style="width:100%;height:100%" 
+会议安排清单<br/>
+<div id="datagrid1" class="mini-datagrid" style="width:100%;height:400px" 
     url="${contextPath}/listdvt.do" showPager="false" pageSize="500" >
     <div property="columns">
           <div field="MeetingDate" width="120">日期</div>
@@ -38,12 +39,29 @@
           <div field="T1630" width="100">16:30</div>
     </div>
 </div>
+
+
+
+<br/>
+资源冲突列表<br/>
+<div id="datagrid2" class="mini-datagrid" style="width:100%;height:400px" 
+    url="${contextPath}/listconflicts.do" showPager="false" pageSize="500" >
+    <div property="columns">
+          <div field="CompanyName" width="120">上市公司</div>
+          <div field="FundName" width="100">基金公司</div>
+          <div field="StatusCode" width="100">冲突</div>
+    </div>
+</div>
+
 <script type="text/javascript">
 mini.parse();
 
-var grid = mini.get("datagrid1");
-grid.load();
+var grid1 = mini.get("datagrid1");
+grid1.load();
 
+
+var grid2 = mini.get("datagrid2");
+grid2.load();
 
 </script>
 </body>

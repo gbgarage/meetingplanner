@@ -19,4 +19,18 @@ public class TimeframeDao extends BaseDao {
     public Timeframe getTimeFrame(Integer timeFrameId) {
         return (Timeframe)getSqlMapClientTemplate().queryForObject("getTimeFrameById", timeFrameId);
     }
+
+    public int[] getTimeFrameByRegion(String region) {
+        List<Timeframe> list =  (List<Timeframe>)getSqlMapClientTemplate().queryForList("getTimeFrameByRegion", region);
+        if(list.isEmpty()){
+            return null;
+        }
+        int[] timeFrameIds = new int[list.size()];
+        for(int i = 0 ; i<list.size(); i++){
+            timeFrameIds[i]=list.get(i).getId();
+
+        }
+        return timeFrameIds;
+
+    }
 }

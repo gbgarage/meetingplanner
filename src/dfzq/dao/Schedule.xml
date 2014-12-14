@@ -17,7 +17,7 @@
     <result property="color" column="color"/>
     <result property="recurringRule" column="recurringRule"/>
     <result property="attendee" column="attendee"/>
-</resultMap> 
+</resultMap>
 
  <resultMap id="scheduleByDVTMap" class="dfzq.model.ScheduleByDVT">
     <result property="meetingDate" column="Meeting_Dt"/>
@@ -29,6 +29,11 @@
     <result property="color" column="Color"/>
 </resultMap> 
 
+ <resultMap id="conflictMap" class="dfzq.model.ConflictResult">
+    <result property="fundName" column="Fund_Name"/>
+    <result property="companyName" column="Company_Name"/>
+    <result property="conflictStatusCode" column="Conflict_Status"/>
+</resultMap> 
 
     <typeAlias alias="Schedule" type="com.dfzq.model.Schedule"/>
 
@@ -50,7 +55,7 @@
     
     <select id="listScheduleByRange"  resultMap="scheduleMap" parameterClass="Map">
        select * from `tbl_schedule` 
-       where lower(attendee) like lower(#attendee#) and starttime between #st# and #et#;
+       where (lower(attendee) like lower(#attendee#) OR #attendee# IN('%,*,%','%,null,%')) and starttime between #st# and #et#;
     </select>
     
     
@@ -116,6 +121,17 @@
   LEFT JOIN schedule_system.tbl_schedule s
     ON form.Meeting_Id = s.Id
  ORDER BY form.Meeting_Dt, form.Venue, form.Meeting_Tm
+    </select>
+    
+    
+    <select id="listConflicts" resultMap="conflictMap">
+    SELECT C.name AS Company_Name, F.fund_name AS Fund_Name,
+	       O.status AS Conflict_Status
+	FROM
+	    `schedule_system`.`one_on_one_meeting_request` O
+	    LEFT JOIN `schedule_system`.`fund` F ON O.fund_id = F.id
+	    LEFT JOIN `schedule_system`.`company` C ON O.company_id = C.id
+	WHERE O.`status` IN (2 , 4);
     </select>
 </sqlMap>
 

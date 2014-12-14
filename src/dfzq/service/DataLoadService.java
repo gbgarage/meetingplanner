@@ -55,6 +55,12 @@ public class DataLoadService {
 
     public Resource loadResource(int[] timeFrames, int[] otherTimeFrames) {
         List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = companyDao.loadAvailableCompanies(timeFrames,otherTimeFrames);
+        return createResource(oneOnOneMeetingRequests);
+
+
+    }
+
+    private Resource createResource(List<OneOnOneMeetingRequest> oneOnOneMeetingRequests) {
         Resource resource = new Resource();
         for (OneOnOneMeetingRequest oneOnOneMeetingRequest : oneOnOneMeetingRequests) {
             Company company = oneOnOneMeetingRequest.getCompany();
@@ -71,6 +77,11 @@ public class DataLoadService {
 
         }
         return resource;
+    }
+
+    public Resource loadAvailableWholeDayCompanies(int[] timeFrames, int[] otherTimeFrames) {
+        List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = companyDao.loadAvailableWholeDayCompanies(timeFrames,otherTimeFrames);
+        return createResource(oneOnOneMeetingRequests);
 
 
     }

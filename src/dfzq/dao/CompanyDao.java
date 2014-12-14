@@ -13,7 +13,6 @@ import dfzq.model.FundAvailability;
 import dfzq.model.FundChangeRow;
 import dfzq.model.Timeframe;
 import dfzq.model.OneOnOneMeetingRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -94,6 +93,24 @@ public class CompanyDao extends BaseDao {
 
         Map<String, String> parameterMap = initParameterMap(timeFrames, otherTimeFrames);
         List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableMeetingRequest", parameterMap);
+
+        Map<Integer, Company> companyMap = new HashMap<Integer, Company>();
+        Map<Integer, Fund> fundMap = new HashMap<Integer, Fund>();
+
+        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : oneOnOneMeetingRequests) {
+            initCompanyAndFund(oneOnOneMeetingRequest, companyMap, fundMap, timeFrames);
+
+        }
+
+
+        return oneOnOneMeetingRequests;
+
+
+    }
+    public List<OneOnOneMeetingRequest> loadAvailableWholeDayCompanies(int[] timeFrames, int[] otherTimeFrames) {
+
+        Map<String, String> parameterMap = initParameterMap(timeFrames, otherTimeFrames);
+        List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableWholeDayCompanies", parameterMap);
 
         Map<Integer, Company> companyMap = new HashMap<Integer, Company>();
         Map<Integer, Fund> fundMap = new HashMap<Integer, Fund>();
