@@ -13,16 +13,23 @@
 <body>
 
 		<h1>请选择角色</h1>
-		 
-		<div id="rolelistbox" class="mini-listbox" style="width:150px;height:100px;"
-		    textField="text" valueField="id" onvaluechanged="onRoleChanged"
-		    url="../commonctrl/roles.txt">
+		
+		<div style="width:300px;height:100px;">
+		
+			<div id="rolelistbox" class="mini-listbox" style="width:150px;height:100px;float:left;" 
+			    textField="text" valueField="id" onvaluechanged="onRoleChanged"
+			    url="../commonctrl/roles.txt">
+			</div>
+			
+			<a id="submitbutton" class="mini-button" style="margin: 20px">提交</a>
+		
 		</div>
-
+				
+		
 		<h1>请选择基金公司</h1>
-        <div id="fundgrid" class="mini-datagrid" style="width:100%;height:100%;" 
+        <div id="fundgrid" class="mini-datagrid" style="width:800px;height:290px;"
             idField="id" allowResize="true"
-            borderStyle="border-left:0;border-right:0;" onrowdblclick="onRowDblClick"
+            borderStyle="border-left:0;border-right:0;" onrowclick="onRowclick"
         >
         	<div property="columns">
                 <div type="indexcolumn" ></div>
@@ -33,9 +40,9 @@
         </div>
         
         <h1>请选择上市公司</h1>
-        <div id="companygrid" class="mini-datagrid" style="width:100%;height:100%;" 
+        <div id="companygrid" class="mini-datagrid" style="width:800px;height:290px;"
             idField="id" allowResize="true"
-            borderStyle="border-left:0;border-right:0;" onrowdblclick="onRowDblClick"
+            borderStyle="border-left:0;border-right:0;" onrowclick="onRowclick"
         >
             <div property="columns">
                 <div type="indexcolumn" ></div>
@@ -44,6 +51,7 @@
                 <div field="contact" width="30%" headerAlign="center" dateFormat="yyyy-MM-dd" allowSort="true">联系人</div>                
             </div>
         </div>
+        
 
 <script>
 mini.parse();
@@ -51,14 +59,36 @@ mini.parse();
 var rolelistbox = mini.get("rolelistbox");
 var fundgrid = mini.get("fundgrid");
 var companygrid = mini.get("companygrid");
+var submitbutton = mini.get("submitbutton");
 
 function onRoleChanged(e) {
 	
 	var roleid = rolelistbox.getValue();
+	
+	if (roleid == "fundmanager") {
+		fundgrid.setUrl("./getFundList.do");
+		fundgrid.load();
+	}
 
-	fundgrid.setUrl("./getFundList.do");
-	fundgrid.load();
+	if (roleid == "companymanager") {
+		companygrid.setUrl("./getCompanyList.do");
+		companygrid.load();
+	}
+	
+}
 
+function onRowclick(e) {
+	
+	var roleid = rolelistbox.getValue();
+	
+	if (roleid == "fundmanager") {
+		submitbutton.setHref("../schedule.jsp?attendee=f" + fundgrid.getSelected().id); 
+	}
+
+	if (roleid == "companymanager") {
+		submitbutton.setHref("../schedule.jsp?attendee=c" + companygrid.getSelected().id); 
+	}
+	
 }
 
 </script>

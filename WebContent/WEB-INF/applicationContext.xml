@@ -40,7 +40,7 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="username" value="root"/>
         <!--<property name="password" value="cxb776" />-->
-        <property name="password" value=""/>
+        <property name="password" value="801124"/>
         <property name="maxActive" value="30"/>
         <property name="initialSize" value="10"/>
         <property name="maxIdle" value="5"/>

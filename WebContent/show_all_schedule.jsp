@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -7,11 +9,11 @@
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">
-	<link href="script/miniui/themes/default/miniui.css" rel="stylesheet"  type="text/css" />
-	<link href="styles/main.css" rel="stylesheet"  type="text/css" />
-	<link href="script/miniui/themes/icons.css" rel="stylesheet"  type="text/css" />
-	<script type="text/javascript" charset="utf-8" src="script/jquery-1.8.2.js"></script>
-	<script src="script/miniui/miniui.js" type="text/javascript"></script>
+	<link href="${contextPath}/script/miniui/themes/default/miniui.css" rel="stylesheet"  type="text/css" />
+	<link href="${contextPath}/styles/main.css" rel="stylesheet"  type="text/css" />
+	<link href="${contextPath}/script/miniui/themes/icons.css" rel="stylesheet"  type="text/css" />
+	<script type="text/javascript" charset="utf-8" src="${contextPath}/script/jquery-1.8.2.js"></script>
+	<script src="${contextPath}/script/miniui/miniui.js" type="text/javascript"></script>
 
 <style>
 .mini-pager-first,.mini-pager-prev,.mini-pager-next,.mini-pager-last{
@@ -22,7 +24,7 @@
 </head>
 <body>
 <div id="datagrid1" class="mini-datagrid" style="width:100%;height:100%" 
-    url="listdvt.do" showPager="false" pageSize="500" >
+    url="${contextPath}/listdvt.do" showPager="false" pageSize="500" >
     <div property="columns">
           <div field="MeetingDate" width="120">日期</div>
           <div field="MeetingVenue" width="100">会议室</div>

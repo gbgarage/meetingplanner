@@ -173,21 +173,21 @@
     
 <!--     insert 1one1 request for a fund -->
 	<insert id="insert1on1Company" parameterClass="OneOnOneMeetingRequest">
-		insert into one_on_one_meeting_request 
+		insert into one_on_one_meeting_request (fund_id, company_id)
 		value (#fund.id#, #company.id#)
 	</insert>
 	
 <!-- 	insert time slot for a fund -->
 
 	<insert id="insertFundTimeslot" parameterClass="FundAvailability">
-		insert into fund_availbility
+		insert into fund_availbility (fund_id, time_frame_id)
 		value (#fund.id#, #timeFrameId#)
 	</insert>
 
 <!-- 	insert time slot for a company -->
 
 	<insert id="insertCompanyTimeslot" parameterClass="Availability">
-		insert into company_availbility
+		insert into company_availbility (company_id, time_frame_id)
 		value (#company.id#, #timeFrameId#)
 	</insert>
 

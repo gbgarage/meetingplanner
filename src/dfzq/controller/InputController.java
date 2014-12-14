@@ -225,8 +225,21 @@ public class InputController {
 	
 	//calendar configuration page
 	@RequestMapping(value = "/configCalendar")
-	public String configCalendar(Model model) {
+	public String configCalendarPage(Model model) {
 		return "input/config_calendar";
+	}	
+	
+	
+	//calendar calculate page
+	@RequestMapping(value = "/calCalendar")
+	public String calCalendarPage(Model model) {
+		return "input/calculate_calendar";
+	}	
+	
+	//calendar calculate 
+	@RequestMapping(value = "/calCalendar/calculate")
+	public String calCalendar(Model model) {
+		return "show_all_schedule";
 	}	
 
 }

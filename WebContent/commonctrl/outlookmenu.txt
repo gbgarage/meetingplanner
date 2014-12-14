@@ -7,7 +7,8 @@
 	{ id: "configCompany", pid: "company", text: "设置上市公司需求", iconCls: "Note", url: "./input/configcompany.do", iconPosition: "top" },
 	{ id: "crudCompany", pid: "company", text: "配置上市公司信息", iconCls: "Reports", url: "./input/crudCompany.do", iconPosition: "top" },		
 
-	{ id: "calendar", text: "会议日程显示"},
-	{ id: "showCalendar", pid: "calendar", text: "显示会议日程", iconCls: "Note", url: "./input/configCalendar.do", iconPosition: "top" }
+	{ id: "calendar", text: "会议日程管理"},
+	{ id: "calculateCalendar", pid: "calendar", text: "计算会议日程", iconCls: "Note", url: "./input/calCalendar.do", iconPosition: "top" },
+	{ id: "showCalendar", pid: "calendar", text: "显示会议日程", iconCls: "Reports", url: "./input/configCalendar.do", iconPosition: "top" }
 
 ]
