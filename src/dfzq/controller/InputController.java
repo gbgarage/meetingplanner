@@ -40,6 +40,8 @@ public class InputController {
 	
 	@Autowired
 	TimeframeDao timeframeDao;
+    @Autowired
+    ArrangementService arrangementService;
 	
 	//fund config home page
 	@RequestMapping(value = "/configfund")
@@ -242,9 +244,9 @@ public class InputController {
 	//calendar calculate 
 	@RequestMapping(value = "/calCalendar/calculate")
 	public String calCalendar(Model model) {
-        ApplicationContext context = new ClassPathXmlApplicationContext(
-                new String[]{"../applicationContext.xml"});
-		ArrangementService arrangementService = (ArrangementService)context.getBean("arrangementService");
+//        ApplicationContext context = new ClassPathXmlApplicationContext(
+//                new String[]{"../applicationContext.xml"});
+//		ArrangementService arrangementService = (ArrangementService)context.getBean("arrangementService");
 		arrangementService.cauclatingArrangeMeeting();
 		return "show_all_schedule";
 	}	
