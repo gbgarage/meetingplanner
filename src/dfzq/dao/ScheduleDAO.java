@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 
+import dfzq.model.ConflictResult;
 import dfzq.model.Schedule;
 import dfzq.model.ScheduleByDVT;
 
@@ -58,5 +59,9 @@ public List<Schedule> listScheduleByRange(Timestamp st ,Timestamp et, String sAt
    public List<ScheduleByDVT> listScheduleByDVT() {
    	   HashMap<String, Timestamp> m = new HashMap<String, Timestamp>();
        return (List<ScheduleByDVT>)getSqlMapClientTemplate().queryForList("listScheduleByDVT", m);
+      }
+   
+   public List<ConflictResult> listConflicts() {
+       return (List<ConflictResult>)getSqlMapClientTemplate().queryForList("listConflicts");
       }
 }

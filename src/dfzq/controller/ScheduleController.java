@@ -16,6 +16,7 @@ import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 import dfzq.dao.ScheduleDAO;
+import dfzq.model.ConflictResult;
 import dfzq.model.Schedule;
 import dfzq.model.ScheduleByDVT;
 import dfzq.util.DateFormatter;
@@ -423,6 +424,28 @@ public class ScheduleController {
 			resultJsonArray.put(dateVenueJsonObject);
 		}
 		//replace Unicode chars in the JSON string
+		return StringUtil.toUnicodeFormat(resultJsonArray.toString());//.replaceAll("\\\\\\\\", "\\\\");
+	}
+	
+	
+	/*, method = RequestMethod.GET*/
+	@RequestMapping(value = "/listconflicts",  method = RequestMethod.POST)
+	public @ResponseBody String listConflicts() {
+		logger.info("listConflicts()");
+		logger.info("");
+		
+		ScheduleDAO scheduleDAO = getScheduleDAO();
+		List<ConflictResult> listOfConflicts = scheduleDAO.listConflicts();
+		JSONArray resultJsonArray = new JSONArray();
+		
+		for (int i=0;i<listOfConflicts.size();i++) {
+			ConflictResult conflictItem = listOfConflicts.get(i);
+			JSONObject jo = new JSONObject();
+			jo.put("CompanyName", conflictItem.getCompanyName());
+			jo.put("FundName", conflictItem.getFundName());
+			jo.put("StatusCode", (conflictItem.getConflictStatusCode()==2?"上市公司资源冲突，暂时无法安排":"基金公司资源冲突，暂时无法安排"));
+			resultJsonArray.put(jo);
+		}
 		return StringUtil.toUnicodeFormat(resultJsonArray.toString());//.replaceAll("\\\\\\\\", "\\\\");
 	}
 }
