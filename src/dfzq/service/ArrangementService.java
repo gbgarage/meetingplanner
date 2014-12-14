@@ -37,9 +37,42 @@ public class ArrangementService {
 
     private Map<Integer, Integer> locationMap = new HashMap<Integer,Integer>();
 
-    public void arrageMeeting(int[] timeFrames) {
-        int[] otherTimeFrames = getOtherTimeFrames(timeFrames);
+    public void cauclatingArrangeMeeting(){
+       for(int i = 1; i<=2; i++){
+           int[] morningtimeFrames = timeframeDao.getTimeFrameByRegion(i+"a");
+           int[] afternoonTimeFrames= timeframeDao.getTimeFrameByRegion(i+"b");
+           if(morningtimeFrames==null | afternoonTimeFrames==null){
+               continue;
+
+           }
+           arrageMeeting(morningtimeFrames,afternoonTimeFrames);
+           arrageMeeting(afternoonTimeFrames,morningtimeFrames);
+           arrageWholeMeeting(morningtimeFrames,afternoonTimeFrames);
+
+
+       }
+
+
+
+
+    }
+
+
+    private void arrageMeeting(int[] timeFrames, int[] otherTimeFrames) {
+
         Resource resource = dataLoadService.loadResource(timeFrames, otherTimeFrames);
+
+        arrageConflictCompany(resource, resource.getConflictCompany());
+        arrageConflictFunds(resource.getConflictFunds());
+        arrageOtherCompany(resource.getOtherCompanies());
+
+
+    }
+
+
+    private void arrageWholeMeeting(int[] timeFrames, int[] otherTimeFrames) {
+
+        Resource resource = dataLoadService.loadAvailableWholeDayCompanies(timeFrames,otherTimeFrames);
 
         arrageConflictCompany(resource, resource.getConflictCompany());
         arrageConflictFunds(resource.getConflictFunds());

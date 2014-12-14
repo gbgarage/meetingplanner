@@ -116,6 +116,12 @@
       select * from time_frame
     </select>
 
+
+    <select id="getTimeFrameByRegion" parameterClass="string" resultMap="timeframe-result">
+      select * from time_frame
+      where region=#region#
+    </select>
+
 <!-- return fund time availability  -->
 
     <resultMap id="fundAvailTimeframe-result" class="Timeframe">
@@ -210,6 +216,18 @@ inner join one_on_one_meeting_request one
 on one.company_id= c.id
 where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ ) and
 not exists (select 1 from company_availbility where company_id=c.id and time_frame_id in  $otherTimeFrame$ )
+group by  one.company_id , one.fund_id
+
+
+    </select>
+
+    <select id="loadAvailableWholeDayCompanies" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+select  one.company_id as companyId , one.fund_id as fundId
+from company c
+inner join one_on_one_meeting_request one
+on one.company_id= c.id
+where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ ) and
+ exists (select 1 from company_availbility where company_id=c.id and time_frame_id in  $otherTimeFrame$ )
 group by  one.company_id , one.fund_id
 
 

@@ -107,6 +107,24 @@ public class CompanyDao extends BaseDao {
 
 
     }
+    public List<OneOnOneMeetingRequest> loadAvailableWholeDayCompanies(int[] timeFrames, int[] otherTimeFrames) {
+
+        Map<String, String> parameterMap = initParameterMap(timeFrames, otherTimeFrames);
+        List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableWholeDayCompanies", parameterMap);
+
+        Map<Integer, Company> companyMap = new HashMap<Integer, Company>();
+        Map<Integer, Fund> fundMap = new HashMap<Integer, Fund>();
+
+        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : oneOnOneMeetingRequests) {
+            initCompanyAndFund(oneOnOneMeetingRequest, companyMap, fundMap, timeFrames);
+
+        }
+
+
+        return oneOnOneMeetingRequests;
+
+
+    }
 
     private void initCompanyAndFund(OneOnOneMeetingRequest oneOnOneMeetingRequest, Map<Integer, Company> companyMap, Map<Integer, Fund> fundMap, int[] timeFrames) {
         Integer fundId = oneOnOneMeetingRequest.getFundId();
