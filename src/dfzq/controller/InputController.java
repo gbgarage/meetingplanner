@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import dfzq.model.Fund;
 import dfzq.model.OneOnOneMeetingRequest;
 import dfzq.model.Timeframe;
 import dfzq.model.FundChangeRow;
+import dfzq.service.ArrangementService;
 
 @Controller
 @RequestMapping(value = "/input")
@@ -239,6 +242,10 @@ public class InputController {
 	//calendar calculate 
 	@RequestMapping(value = "/calCalendar/calculate")
 	public String calCalendar(Model model) {
+        ApplicationContext context = new ClassPathXmlApplicationContext(
+                new String[]{"../applicationContext.xml"});
+		ArrangementService arrangementService = (ArrangementService)context.getBean("arrangementService");
+		arrangementService.cauclatingArrangeMeeting();
 		return "show_all_schedule";
 	}	
 
