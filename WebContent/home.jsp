@@ -37,7 +37,7 @@
         <h1 style="margin:0;padding:15px;cursor:default;font-family:'Trebuchet MS',Arial,sans-serif;">东方证券会议组织系统(v0.1)</h1>
     </div>
     <div title="south" region="south" showSplit="false" showHeader="false" height="30" >
-        <div style="line-height:28px;text-align:center;cursor:default">Copyright © 上海金桥软库有限公司版权所有 </div>
+        <div style="line-height:28px;text-align:center;cursor:default">Copyright © 上海金科云桥有限公司版权所有 </div>
     </div>
     <div showHeader="false" region="west" width="180" maxWidth="250" minWidth="100" style="border:0;" >
         <!--OutlookMenu-->

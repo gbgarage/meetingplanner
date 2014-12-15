@@ -24,55 +24,68 @@
 			<a id="submitbutton" class="mini-button" style="margin: 20px">提交</a>
 		
 		</div>
-				
 		
-		<h1>请选择基金公司</h1>
-        <div id="fundgrid" class="mini-datagrid" style="width:800px;height:290px;"
-            idField="id" allowResize="true"
-            borderStyle="border-left:0;border-right:0;" onrowclick="onRowclick"
-        >
-        	<div property="columns">
-                <div type="indexcolumn" ></div>
-                <div field="fundName" width="30%" headerAlign="center" allowSort="true">基金</div>    
-                <div field="phoneNumber" width="30%" headerAlign="center" allowSort="true">电话</div>                                            
-                <div field="contactor" width="30%" headerAlign="center" dateFormat="yyyy-MM-dd" allowSort="true">联系人</div>                
-            </div>
-        </div>
+		<div id="selectname"></div>
         
-        <h1>请选择上市公司</h1>
-        <div id="companygrid" class="mini-datagrid" style="width:800px;height:290px;"
-            idField="id" allowResize="true"
-            borderStyle="border-left:0;border-right:0;" onrowclick="onRowclick"
-        >
-            <div property="columns">
-                <div type="indexcolumn" ></div>
-                <div field="id" width="30%" headerAlign="center" allowSort="true">上市公司序号</div>    
-                <div field="name" width="30%" headerAlign="center" allowSort="true">公司名称</div>                                            
-                <div field="contact" width="30%" headerAlign="center" dateFormat="yyyy-MM-dd" allowSort="true">联系人</div>                
-            </div>
-        </div>
-        
-
 <script>
 mini.parse();
 
 var rolelistbox = mini.get("rolelistbox");
-var fundgrid = mini.get("fundgrid");
-var companygrid = mini.get("companygrid");
 var submitbutton = mini.get("submitbutton");
 
 function onRoleChanged(e) {
 	
 	var roleid = rolelistbox.getValue();
 	
+	
 	if (roleid == "fundmanager") {
-		fundgrid.setUrl("./getFundList.do");
-		fundgrid.load();
+		
+		var div = (function () {/*
+			<h1>请选择基金公司</h1>
+	        <div id="fundgrid" class="mini-datagrid" style="width:800px;height:290px;"
+	            idField="id" allowResize="true"
+	            borderStyle="border-left:0;border-right:0;" onrowclick="onRowclick"
+	        >
+	        <div property="columns">
+	                <div type="indexcolumn" ></div>
+	                <div field="fundName" width="30%" headerAlign="center" allowSort="true">基金</div>    
+	                <div field="phoneNumber" width="30%" headerAlign="center" allowSort="true">电话</div>                                            
+	                <div field="contactor" width="30%" headerAlign="center" dateFormat="yyyy-MM-dd" allowSort="true">联系人</div>                
+	        </div>
+        	</div>	     
+			*/}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
+			
+		document.getElementById("selectname").innerHTML = div;
+	        
+		mini.parse();
+ 	    var fundgrid = mini.get("fundgrid");	
+ 		fundgrid.setUrl("./getFundList.do");
+ 		fundgrid.load();
 	}
 
 	if (roleid == "companymanager") {
-		companygrid.setUrl("./getCompanyList.do");
-		companygrid.load();
+		
+		var div = (function () {/*
+	        <h1>请选择上市公司</h1>
+	        <div id="companygrid" class="mini-datagrid" style="width:800px;height:290px;"
+	            idField="id" allowResize="true"
+	            borderStyle="border-left:0;border-right:0;" onrowclick="onRowclick"
+	        >
+	            <div property="columns">
+	                <div type="indexcolumn" ></div>
+	                <div field="id" width="30%" headerAlign="center" allowSort="true">上市公司序号</div>    
+	                <div field="name" width="30%" headerAlign="center" allowSort="true">公司名称</div>                                            
+	                <div field="contact" width="30%" headerAlign="center" dateFormat="yyyy-MM-dd" allowSort="true">联系人</div>                
+	            </div>
+	        </div>    
+			*/}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
+		
+		document.getElementById("selectname").innerHTML = div;
+        
+		mini.parse();
+ 	    var companygrid = mini.get("companygrid");	
+ 	    companygrid.setUrl("./getCompanyList.do");
+ 	    companygrid.load();
 	}
 	
 }
@@ -80,6 +93,8 @@ function onRoleChanged(e) {
 function onRowclick(e) {
 	
 	var roleid = rolelistbox.getValue();
+	var fundgrid = mini.get("fundgrid");
+	var companygrid = mini.get("companygrid");
 	
 	if (roleid == "fundmanager") {
 		submitbutton.setHref("../schedule.jsp?attendee=f" + fundgrid.getSelected().id); 

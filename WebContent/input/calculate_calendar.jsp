@@ -12,9 +12,38 @@
 </head>
 <body>
 
+		<h1>当前1对1会议需求列表</h1>
+                    <div id="MeetReqGrid" class="mini-datagrid" style="width:250px;height:200px;" 
+                            showPageSize="false" showPageIndex="false" onload="onLoad"
+                        pagerStyle="padding:2px;"
+                        multiSelect="false" >
+                        <div property="columns">
+                            <div field="fundId" width="100" headerAlign="center" allowSort="true">基金名称</div>     
+                            <div field="companyId" width="150" headerAlign="center" allowSort="true">上市公司名称</div>
+                            <div field="fund.fundName" width="100" headerAlign="center" allowSort="true">基金名称</div>     
+                            <div field="company.name" width="150" headerAlign="center" allowSort="true">上市公司名称</div>                            
+                        </div>
+                    </div>
+                    
+        <br>
 		<h1>是否开始计算</h1>
 		
-		<a id="submitbutton" class="mini-button" style="margin: 20px" href="./calCalendar/calculate.do">计算</a> 
+		<a id="submitbutton" class="mini-button" style="margin: 10px" href="./calCalendar/calculate.do">计算</a> 
 
 </body>
+
+<script>
+	mini.parse();
+	var MeetReqGrid = mini.get("MeetReqGrid");
+	MeetReqGrid.setUrl("./getMeetReqList.do");
+	MeetReqGrid.load();
+	
+    function onLoad(e) {
+    	var test = MeetReqGrid.getResultObject();
+    	var test2 = test.data[0].company.name;
+    	var test3 = 1;
+ 
+    }
+	
+</script>
 </html>

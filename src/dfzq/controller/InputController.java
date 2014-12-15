@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import dfzq.dao.CompanyDao;
 import dfzq.dao.FundDao;
+import dfzq.dao.OneOnOneMeetingRequestDao;
 import dfzq.dao.TimeframeDao;
 import dfzq.model.Company;
 import dfzq.model.CompanyChangeRow;
@@ -40,6 +41,10 @@ public class InputController {
 	
 	@Autowired
 	TimeframeDao timeframeDao;
+	
+	@Autowired
+	OneOnOneMeetingRequestDao oneOnoneMeetingRequestDao;
+	
     @Autowired
     ArrangementService arrangementService;
 	
@@ -248,6 +253,27 @@ public class InputController {
 		arrangementService.cauclatingArrangeMeeting();
 		return "show_all_schedule";
 	}	
+	
+
+	//return all one_on_one_meeting request list in JSON
+	@ResponseBody
+	@RequestMapping(value = "/getMeetReqList")
+	public DataList getMeetReqList(
+			@RequestParam(value="pageIndex", defaultValue="0") int pageIndex, 
+			@RequestParam(value="pageSize", defaultValue="999") int pageSize, 
+			Model model) {
+		List <OneOnOneMeetingRequest> totalMeetReq = oneOnoneMeetingRequestDao.getMeetReqList();
+		int fromIndex = pageIndex*pageSize;
+		int toIndex = pageIndex*pageSize+pageSize;
+		
+		if (toIndex > totalMeetReq.size()) toIndex = totalMeetReq.size();
+		
+		List <OneOnOneMeetingRequest> returnMeetReqs = totalMeetReq.subList(fromIndex, toIndex);
+		
+		DataList dl = new DataList(totalMeetReq.size(),returnMeetReqs);
+		return dl;
+	}	
+	
 
 }
 

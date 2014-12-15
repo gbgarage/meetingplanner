@@ -321,5 +321,20 @@ group by  one.company_id , one.fund_id
     	set name = #name#, contact = #contact#
     	where id = #id#
     </update>    
+    
+<!--     return 1on1 meeting request -->
+    
+    <resultMap id="meetreq-result" class="OneOnOneMeetingRequest">
+       <result column="fund_name" property="fund.fundName" />
+       <result column="name" property="company.name" />
+       <result column="fundid" property="fundId" />
+       <result column="companyid" property="companyId" />
+    </resultMap>
+
+    <select id="getMeetReqList" resultMap="meetreq-result">
+		select fund_name, name, fund.id as fundid, company.id as companyid from one_on_one_meeting_request 
+		left join fund on one_on_one_meeting_request.fund_id = fund.id
+		left join company on one_on_one_meeting_request.company_id = company.id
+    </select>
 
 </sqlMap>
