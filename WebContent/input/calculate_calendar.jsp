@@ -13,15 +13,14 @@
 <body>
 
 		<h1>当前1对1会议需求列表</h1>
-                    <div id="MeetReqGrid" class="mini-datagrid" style="width:250px;height:200px;" 
-                            showPageSize="false" showPageIndex="false" onload="onLoad"
+                    <div id="MeetReqGrid" class="mini-datagrid" style="width:350px;height:300px;" 
+                            showPageSize="false" showPageIndex="false" ondrawcell="onDrawCell"
                         pagerStyle="padding:2px;"
                         multiSelect="false" >
                         <div property="columns">
-                            <div field="fundId" width="100" headerAlign="center" allowSort="true">基金名称</div>     
-                            <div field="companyId" width="150" headerAlign="center" allowSort="true">上市公司名称</div>
-                            <div field="fund.fundName" width="100" headerAlign="center" allowSort="true">基金名称</div>     
-                            <div field="company.name" width="150" headerAlign="center" allowSort="true">上市公司名称</div>                            
+                        	<div field="fundId" width="50" headerAlign="center" allowSort="true">序号</div> 
+                            <div field="fund" width="100" headerAlign="center" allowSort="true">基金名称</div>     
+                            <div field="company" width="150" headerAlign="center" allowSort="true">上市公司名称</div>                            
                         </div>
                     </div>
                     
@@ -37,12 +36,15 @@
 	var MeetReqGrid = mini.get("MeetReqGrid");
 	MeetReqGrid.setUrl("./getMeetReqList.do");
 	MeetReqGrid.load();
-	
-    function onLoad(e) {
-    	var test = MeetReqGrid.getResultObject();
-    	var test2 = test.data[0].company.name;
-    	var test3 = 1;
- 
+    
+    function onDrawCell(e) {
+    	if (e.column.field=="fund") {
+    		e.cellHtml = e.value.fundName;
+    	}
+    	
+    	if (e.column.field=="company") {
+    		e.cellHtml = e.value.name;
+    	}
     }
 	
 </script>

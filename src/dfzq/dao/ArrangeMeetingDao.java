@@ -18,6 +18,11 @@ import java.util.Map;
  */
 @Component
 public class ArrangeMeetingDao extends BaseDao {
+	
+	public void clearArrangement() {
+		getSqlMapClientTemplate().update("updateOneOnOneMeetingRequest");
+		getSqlMapClientTemplate().delete("deleteTblSchedule");
+	}
 
     public void saveArrangement(OneOnOneMeetingRequest oneOnOneMeetingRequest, int timeFrameId, int status) {
         Map<String, Object> parameters = new HashMap<String, Object>();

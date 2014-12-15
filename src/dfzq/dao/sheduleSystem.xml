@@ -336,5 +336,15 @@ group by  one.company_id , one.fund_id
 		left join fund on one_on_one_meeting_request.fund_id = fund.id
 		left join company on one_on_one_meeting_request.company_id = company.id
     </select>
+    
+<!--     clear meeting request calculate result -->
+    <update id="updateOneOnOneMeetingRequest">
+    	update one_on_one_meeting_request
+    	set status = null, time_frame_id = null
+    </update>
+    
+    <delete id="deleteTblSchedule">
+    	delete from tbl_schedule
+    </delete>
 
 </sqlMap>

@@ -32,10 +32,10 @@
           <div field="T1000" width="100">10:00</div>
           <div field="T1100" width="100">11:00</div>
           <div field="T1200" width="100">12:00</div>
-          <div field="T1330" width="100">13:30</div>
-          <div field="T1430" width="100">14:30</div>
-          <div field="T1530" width="100">15:30</div>
-          <div field="T1630" width="100">16:30</div>
+          <div field="T1300" width="100">13:00</div>
+          <div field="T1400" width="100">14:00</div>
+          <div field="T1500" width="100">15:00</div>
+          <div field="T1600" width="100">16:00</div>
     </div>
 </div>
 

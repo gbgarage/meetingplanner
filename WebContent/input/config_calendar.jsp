@@ -88,6 +88,10 @@ function onRoleChanged(e) {
  	    companygrid.load();
 	}
 	
+	if (roleid == "organizer") {
+		submitbutton.setHref("../show_all_schedule.jsp");
+	}
+	
 }
 
 function onRowclick(e) {
@@ -103,7 +107,7 @@ function onRowclick(e) {
 	if (roleid == "companymanager") {
 		submitbutton.setHref("../schedule.jsp?attendee=c" + companygrid.getSelected().id); 
 	}
-	
+
 }
 
 </script>

@@ -104,7 +104,7 @@
                         venue As Venue
                    FROM schedule_system . tbl_schedule
                   WHERE time_format(StartTime, '%H%i') IN
-                        ('0900','1000','1100','1200','1330','1430','1530','1630')
+                        (select distinct time_format(start_time, '%H%i') from schedule_system.time_frame)
                   GROUP BY venue,
                            date_format(StartTime, '%Y%m%d'),
                            time_format(StartTime, '%H%i')) UNION ALL
@@ -112,11 +112,11 @@
                    FROM (SELECT DISTINCT date_format(StartTime, '%Y%m%d') AS Meeting_Dt, Venue
                            FROM schedule_system.tbl_schedule
                           WHERE time_format(StartTime, '%H%i') IN
-                                ('0900','1000','1100','1200','1330','1430','1530','1630')) d,
+                                (select distinct time_format(start_time, '%H%i') from schedule_system.time_frame)) d,
                         (SELECT DISTINCT time_format(StartTime, '%H%i') AS Meeting_Tm
                            FROM schedule_system . tbl_schedule
                           WHERE time_format(StartTime, '%H%i') IN
-                               ('0900','1000','1100','1200','1330','1430','1530','1630')) t)) M
+                               (select distinct time_format(start_time, '%H%i') from schedule_system.time_frame)) t)) M
          GROUP BY Meeting_Dt, Meeting_Tm, Venue) form
   LEFT JOIN schedule_system.tbl_schedule s
     ON form.Meeting_Id = s.Id

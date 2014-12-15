@@ -38,6 +38,8 @@ public class ArrangementService {
     private Map<Integer, Integer> locationMap = new HashMap<Integer,Integer>();
 
     public void cauclatingArrangeMeeting(){
+    	
+       arrangeMeetingDao.clearArrangement();
        for(int i = 1; i<=2; i++){
            int[] morningtimeFrames = timeframeDao.getTimeFrameByRegion(i+"a");
            int[] afternoonTimeFrames= timeframeDao.getTimeFrameByRegion(i+"b");
