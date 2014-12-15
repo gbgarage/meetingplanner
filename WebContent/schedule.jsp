@@ -31,12 +31,15 @@
         $(document).ready(function() {     
            var view="week";  
            
-           
+           var date = new Date();
+            date.setFullYear(2014);
+            date.setMonth(10);
+            date.setDate(23);
             var DATA_FEED_URL = "schedule.do";
             var op = {
                 view: view,
                 theme:3,
-                showday: new Date(),
+                showday: date,
                 //#modified to pass the attendee, store it in the option variable
                 attendee: "<%=attendee%>",
                 EditCmdhandler:Edit,
