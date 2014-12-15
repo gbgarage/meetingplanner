@@ -443,7 +443,7 @@ public class ScheduleController {
 			JSONObject jo = new JSONObject();
 			jo.put("CompanyName", conflictItem.getCompanyName());
 			jo.put("FundName", conflictItem.getFundName());
-			jo.put("StatusCode", (conflictItem.getConflictStatusCode()==2?"上市公司资源冲突，暂时无法安排":"基金公司资源冲突，暂时无法安排"));
+			jo.put("StatusCode", (conflictItem.getConflictStatusCode()==2?"涓婂競鍏徃 璧勬簮鍐茬獊":"鍩洪噾鍏徃 璧勬簮鍐茬獊"));
 			resultJsonArray.put(jo);
 		}
 		return StringUtil.toUnicodeFormat(resultJsonArray.toString());//.replaceAll("\\\\\\\\", "\\\\");
