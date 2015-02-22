@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,26 +32,24 @@ public class ArrangementService {
     @Autowired
     private ScheduleDAO scheduleDAO;
 
-    private Map<Integer, Integer> locationMap = new HashMap<Integer,Integer>();
+    private Map<Integer, Integer> locationMap = new HashMap<Integer, Integer>();
 
-    public void cauclatingArrangeMeeting(){
-    	
-       arrangeMeetingDao.clearArrangement();
-       for(int i = 1; i<=2; i++){
-           int[] morningtimeFrames = timeframeDao.getTimeFrameByRegion(i+"a");
-           int[] afternoonTimeFrames= timeframeDao.getTimeFrameByRegion(i+"b");
-           if(morningtimeFrames==null | afternoonTimeFrames==null){
-               continue;
+    public void cauclatingArrangeMeeting() {
 
-           }
-           arrageMeeting(morningtimeFrames,afternoonTimeFrames);
-           arrageMeeting(afternoonTimeFrames,morningtimeFrames);
-           arrageWholeMeeting(morningtimeFrames,afternoonTimeFrames);
+        arrangeMeetingDao.clearArrangement();
+        for (int i = 1; i <= 2; i++) {
+            int[] morningtimeFrames = timeframeDao.getTimeFrameByRegion(i + "a");
+            int[] afternoonTimeFrames = timeframeDao.getTimeFrameByRegion(i + "b");
+            if (morningtimeFrames == null | afternoonTimeFrames == null) {
+                continue;
 
-
-       }
+            }
+            arrageMeeting(morningtimeFrames, afternoonTimeFrames);
+            arrageMeeting(afternoonTimeFrames, morningtimeFrames);
+            arrageWholeMeeting(morningtimeFrames, afternoonTimeFrames);
 
 
+        }
 
 
     }
@@ -74,7 +69,7 @@ public class ArrangementService {
 
     private void arrageWholeMeeting(int[] timeFrames, int[] otherTimeFrames) {
 
-        Resource resource = dataLoadService.loadAvailableWholeDayCompanies(timeFrames,otherTimeFrames);
+        Resource resource = dataLoadService.loadAvailableWholeDayCompanies(timeFrames, otherTimeFrames);
 
         arrageConflictCompany(resource, resource.getConflictCompany());
         arrageConflictFunds(resource.getConflictFunds());
@@ -90,19 +85,27 @@ public class ArrangementService {
 
     private void arrageConflictCompany(Resource resource, Set<Company> conflictCompany) {
         for (Company company : conflictCompany) {
-            for (OneOnOneMeetingRequest oneOnOneMeetingRequest : company.getOneOnOneMeetingRequestList()) {
+            List<OneOnOneMeetingRequest> requests = new ArrayList<OneOnOneMeetingRequest>(company.getOneOnOneMeetingRequestList());
+            for (int i = 0; i < requests.size(); i++) {
+                OneOnOneMeetingRequest oneOnOneMeetingRequest = requests.get(i);
                 Fund fund = oneOnOneMeetingRequest.getFund();
-                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company,fund);
+                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
                 if (timeFrameId != null) {
-                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_COMPANY_AND_ARRAGED);
-                    scheduleMeeting(oneOnOneMeetingRequest,timeFrameId);
+                    String fundName = fund.getFundName();
+                    for (int j = i + 1; j < requests.size(); j++) {
+                        fund = requests.get(j).getFund();
+                        if (fundName.equals(requests.get(j).getFund().getFundName())) {
+                            arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_COMPANY_AND_ARRAGED);
+                            scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
 
-                    fund.decreaseAvailbility();
-                    if (fund.isConflict()) {
-                        resource.addConflictFund(fund);
+                            fund.decreaseAvailbility();
+                            if (fund.isConflict()) {
+                                resource.addConflictFund(fund);
+                            }
+                        }
                     }
                 } else {
-                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest,  Status.CONFLICT_COMPANY_AND_NOT_ARRAGED);
+                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, Status.CONFLICT_COMPANY_AND_NOT_ARRAGED);
                 }
 
             }
@@ -117,14 +120,14 @@ public class ArrangementService {
             for (OneOnOneMeetingRequest oneOnOneMeetingRequest : fund.getOneOnOneMeetingRequests()) {
                 Company company = oneOnOneMeetingRequest.getCompany();
 
-                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company,fund);
+                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
                 if (timeFrameId != null) {
                     arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
-                    scheduleMeeting(oneOnOneMeetingRequest,timeFrameId);
+                    scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
 
 
                 } else {
-                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest,  Status.CONFLICT_FUND_AND_NOT_ARRAGED);
+                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, Status.CONFLICT_FUND_AND_NOT_ARRAGED);
                 }
 
 
@@ -139,10 +142,10 @@ public class ArrangementService {
         for (Company company : otherCompanies) {
             for (OneOnOneMeetingRequest oneOnOneMeetingRequest : company.getOneOnOneMeetingRequestList()) {
                 Fund fund = oneOnOneMeetingRequest.getFund();
-                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company,fund);
+                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
                 if (timeFrameId != null) {
                     arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.NOT_CONFLICT);
-                    scheduleMeeting(oneOnOneMeetingRequest,timeFrameId);
+                    scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
 
 
                 }
@@ -153,41 +156,36 @@ public class ArrangementService {
 
     }
 
-    private void scheduleMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest,Integer timeFrameId){
-        Schedule schedule  = new Schedule();
+    private void scheduleMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest, Integer timeFrameId) {
+        Schedule schedule = new Schedule();
         schedule.setColor("-1");
 
         Company company = oneOnOneMeetingRequest.getCompany();
 
         Fund fund = oneOnOneMeetingRequest.getFund();
 
-        schedule.setSubject(oneOnOneMeetingRequest.getCompany().getName()+"("+oneOnOneMeetingRequest.getCompany().getContact()+")"+"-"+ oneOnOneMeetingRequest.getFund().getFundName()+"("+oneOnOneMeetingRequest.getFund().getContactor()+")");
+        schedule.setSubject(oneOnOneMeetingRequest.getCompany().getName() + "(" + oneOnOneMeetingRequest.getCompany().getContact() + ")" + "-" + oneOnOneMeetingRequest.getFund().getFundName() + "(" + oneOnOneMeetingRequest.getFund().getContactor() + ")");
         schedule.setDescription(schedule.getSubject());
-        Timeframe timeFrame =timeframeDao.getTimeFrame(timeFrameId);
+        Timeframe timeFrame = timeframeDao.getTimeFrame(timeFrameId);
 
         schedule.setStartTime(timeFrame.getStartTime());
         schedule.setEndTime(timeFrame.getEndTime());
 
-        schedule.setLocation(getLocation(timeFrameId)+"");
-        String attendee =","+"f"+fund.getId()+","+ "c"+company.getId()+",";
+        schedule.setLocation(getLocation(timeFrameId) + "");
+        String attendee = "," + "f" + fund.getId() + "," + "c" + company.getId() + ",";
         schedule.setAttendee(attendee);
-        scheduleDAO.addDetailedSchedule(schedule)  ;
-
-
-
-
-
+        scheduleDAO.addDetailedSchedule(schedule);
 
 
     }
 
     private int getLocation(Integer timeFrameId) {
         Integer locationId = locationMap.get(timeFrameId);
-        if(locationId==null){
-            locationMap.put(timeFrameId,1);
+        if (locationId == null) {
+            locationMap.put(timeFrameId, 1);
             return 1;
-        }else{
-            locationMap.put(timeFrameId,locationId+1);
+        } else {
+            locationMap.put(timeFrameId, locationId + 1);
             return locationId;
         }
 
