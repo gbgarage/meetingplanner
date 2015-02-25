@@ -14,6 +14,7 @@ public class Status {
     public static final int CONFLICT_FUND_AND_ARRAGED=3;
     public static final int CONFLICT_FUND_AND_NOT_ARRAGED=4;
     public static final int NOT_CONFLICT=5;
+    public static final int FUND_CANCEL=6;
 
 
 

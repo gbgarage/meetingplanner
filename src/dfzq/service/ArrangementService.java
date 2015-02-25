@@ -52,16 +52,19 @@ public class ArrangementService {
 
     }
 
-    public void fundCancel(Long fundId, Integer companyId, Long timeframeId){
+    public void fundCancel(Long fundId, Integer companyId, Integer timeframeId){
         OneOnOneMeetingRequest oneOnOneMeetingRequest =  arrangeMeetingDao.getArrangeMeeting(fundId, companyId, timeframeId);
         cancelMeeting(oneOnOneMeetingRequest);
 
         Company company = companyDao.getCompanyById(companyId);
 
+
        List<OneOnOneMeetingRequest> interestingFundRequests = arrangeMeetingDao.findInterestingFunds(companyId, timeframeId);
        for(OneOnOneMeetingRequest interestingFundRequest: interestingFundRequests){
            Fund fund = fundDao.getFundById(interestingFundRequest.getFundId());
-           if(fundDao.checkTimeFrameAvailable(fund, interestingFundRequest.getTimeFrameId())){
+           if(fundDao.checkTimeFrameAvailable(fund, timeframeId)){
+
+               interestingFundRequest.setTimeFrameId(timeframeId);
                interestingFundRequest.setStatus(Status.CONFLICT_COMPANY_AND_ARRAGED);
                interestingFundRequest.setFund(fund);
                interestingFundRequest.setCompany(company);
@@ -83,6 +86,11 @@ public class ArrangementService {
     }
 
     private void cancelMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
+        oneOnOneMeetingRequest.setStatus(Status.FUND_CANCEL);
+        arrangeMeetingDao.updateMeetingStatus(oneOnOneMeetingRequest);
+        scheduleDAO.deleteSchedule(generateAttendee(oneOnOneMeetingRequest.getCompanyId(), oneOnOneMeetingRequest.getFundId()));
+
+
         
     }
 
@@ -204,11 +212,15 @@ public class ArrangementService {
         schedule.setEndTime(timeFrame.getEndTime());
 
         schedule.setLocation(getLocation(timeFrameId) + "");
-        String attendee = "," + "f" + fund.getId() + "," + "c" + company.getId() + ",";
+        String attendee = generateAttendee(company.getId(), fund.getId());
         schedule.setAttendee(attendee);
         scheduleDAO.addDetailedSchedule(schedule);
 
 
+    }
+
+    private String generateAttendee(Integer  companyId, Integer fundId) {
+        return "," + "f" +fundId + "," + "c" + companyId + ",";
     }
 
     private int getLocation(Integer timeFrameId) {

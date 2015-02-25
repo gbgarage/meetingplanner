@@ -14,10 +14,10 @@
     <typeAlias alias="Availability" type="dfzq.model.Availability"/>
     <typeAlias alias="Timeframe" type="dfzq.model.Timeframe"/>
     <typeAlias alias="FundAvailability" type="dfzq.model.FundAvailability"/>
-    <typeAlias alias="Availability" type="dfzq.model.Availability"/>  
-    <typeAlias alias="FundChangeRow" type="dfzq.model.FundChangeRow"/>  
-    <typeAlias alias="CompanyChangeRow" type="dfzq.model.CompanyChangeRow"/>   
-    
+    <typeAlias alias="Availability" type="dfzq.model.Availability"/>
+    <typeAlias alias="FundChangeRow" type="dfzq.model.FundChangeRow"/>
+    <typeAlias alias="CompanyChangeRow" type="dfzq.model.CompanyChangeRow"/>
+
     <insert id="insertFund" parameterClass="Fund">
         insert into fund( fund_name, phone_number,contact) values (
         #fundName#,#phoneNumber#,#contactor#)
@@ -50,46 +50,46 @@
       from company
       where name=#name#
     </select>
-    
-<!--     return fund list -->
-    
+
+    <!--     return fund list -->
+
     <resultMap id="fund-result" class="Fund">
-       <result column="id" property="id" />
-       <result column="fund_name" property="fundName" />
-       <result column="phone_number" property="phoneNumber" />
-       <result column="contact" property="contactor" />
+        <result column="id" property="id"/>
+        <result column="fund_name" property="fundName"/>
+        <result column="phone_number" property="phoneNumber"/>
+        <result column="contact" property="contactor"/>
     </resultMap>
 
     <select id="getFundList" parameterClass="java.util.Map" resultMap="fund-result">
       select * from fund
     </select>
-    
-    
-<!-- return fund by id -->
 
-<!--     <select id="getFundById" parameterClass="Integer" resultClass="Fund"> -->
-<!--       select * from fund where id=#fundid# -->
-<!--     </select> -->
 
-    
-<!--     return company list -->
+    <!-- return fund by id -->
+
+    <!--     <select id="getFundById" parameterClass="Integer" resultClass="Fund"> -->
+    <!--       select * from fund where id=#fundid# -->
+    <!--     </select> -->
+
+
+    <!--     return company list -->
 
     <resultMap id="company-result" class="Company">
-       <result column="id" property="id" />
-       <result column="name" property="name" />
-       <result column="contact" property="contact" />
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="contact" property="contact"/>
     </resultMap>
 
     <select id="getCompanyList" parameterClass="java.util.Map" resultMap="company-result">
       select * from company
     </select>
 
-<!-- return 1v1 company list for a fund -->
+    <!-- return 1v1 company list for a fund -->
 
     <resultMap id="1v1company-result" class="Company">
-       <result column="id" property="id" />
-       <result column="name" property="name" />
-       <result column="contact" property="contact" />
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="contact" property="contact"/>
     </resultMap>
 
     <select id="get1on1CompanyList" parameterClass="Integer" resultMap="1v1company-result">
@@ -99,16 +99,16 @@
       ON one_on_one_meeting_request.company_id = company.id 
       where fund_id = #fundid#
     </select>
-    
-<!--     return all time slots in JSON -->
+
+    <!--     return all time slots in JSON -->
 
     <resultMap id="timeframe-result" class="Timeframe">
-       <result column="id" property="id" />
-       <result column="date" property="date" />
-       <result column="time_window" property="time_window" />
-       <result column="region" property="region" />
-       <result column="start_time" property="startTime" />
-       <result column="end_time" property="endTime" />
+        <result column="id" property="id"/>
+        <result column="date" property="date"/>
+        <result column="time_window" property="time_window"/>
+        <result column="region" property="region"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
 
     </resultMap>
 
@@ -122,13 +122,13 @@
       where region=#region#
     </select>
 
-<!-- return fund time availability  -->
+    <!-- return fund time availability  -->
 
     <resultMap id="fundAvailTimeframe-result" class="Timeframe">
-       <result column="id" property="id" />
-       <result column="date" property="date" />
-       <result column="time_window" property="time_window" />
-       <result column="region" property="region" />
+        <result column="id" property="id"/>
+        <result column="date" property="date"/>
+        <result column="time_window" property="time_window"/>
+        <result column="region" property="region"/>
     </resultMap>
 
     <select id="getFundTime" parameterClass="Integer" resultMap="fundAvailTimeframe-result">
@@ -139,13 +139,13 @@
 		where fund_availbility.fund_id = #fundid#	
     </select>
 
-<!-- company time availability -->
+    <!-- company time availability -->
 
     <resultMap id="companyAvailTimeframe-result" class="Timeframe">
-       <result column="id" property="id" />
-       <result column="date" property="date" />
-       <result column="time_window" property="time_window" />
-       <result column="region" property="region" />
+        <result column="id" property="id"/>
+        <result column="date" property="date"/>
+        <result column="time_window" property="time_window"/>
+        <result column="region" property="region"/>
     </resultMap>
 
     <select id="getCompanyTime" parameterClass="Integer" resultMap="companyAvailTimeframe-result">
@@ -155,44 +155,44 @@
 		on company_availbility.time_frame_id = time_frame.id
 		where company_availbility.company_id = #companyid#
     </select>
-    
-<!--     delete all 1on1 request for a fund -->
+
+    <!--     delete all 1on1 request for a fund -->
 
     <delete id="deleteAll1on1Company" parameterClass="Integer">
     	delete from one_on_one_meeting_request 
     	where fund_id = #fundid#
     </delete>
-    
-<!--     delete all time slot available for a fund -->
+
+    <!--     delete all time slot available for a fund -->
 
     <delete id="deleteFundAllTimeslots" parameterClass="Integer">
     	delete from fund_availbility 
     	where fund_id = #fundid#
     </delete>
 
-<!--     delete all time slot available for a company -->
+    <!--     delete all time slot available for a company -->
 
     <delete id="deleteCompanyAllTimeslots" parameterClass="Integer">
     	delete from company_availbility 
     	where company_id = #companyid#
     </delete>
-    
-<!--     insert 1one1 request for a fund -->
-	<insert id="insert1on1Company" parameterClass="OneOnOneMeetingRequest">
+
+    <!--     insert 1one1 request for a fund -->
+    <insert id="insert1on1Company" parameterClass="OneOnOneMeetingRequest">
 		insert into one_on_one_meeting_request (fund_id, company_id)
 		value (#fund.id#, #company.id#)
 	</insert>
-	
-<!-- 	insert time slot for a fund -->
 
-	<insert id="insertFundTimeslot" parameterClass="FundAvailability">
+    <!-- 	insert time slot for a fund -->
+
+    <insert id="insertFundTimeslot" parameterClass="FundAvailability">
 		insert into fund_availbility (fund_id, time_frame_id)
 		value (#fund.id#, #timeFrameId#)
 	</insert>
 
-<!-- 	insert time slot for a company -->
+    <!-- 	insert time slot for a company -->
 
-	<insert id="insertCompanyTimeslot" parameterClass="Availability">
+    <insert id="insertCompanyTimeslot" parameterClass="Availability">
 		insert into company_availbility (company_id, time_frame_id)
 		value (#company.id#, #timeFrameId#)
 	</insert>
@@ -203,11 +203,11 @@
         where id=#id#
 
     </select>
-	
-<!--     get company by ID -->
-<!--     <select id="getCompanyById" parameterClass="Integer" resultClass="Company"> -->
-<!--     	select * from company where id = #companyid# -->
-<!--     </select> -->
+
+    <!--     get company by ID -->
+    <!--     <select id="getCompanyById" parameterClass="Integer" resultClass="Company"> -->
+    <!--     	select * from company where id = #companyid# -->
+    <!--     </select> -->
 
     <select id="loadAvailableMeetingRequest" parameterClass="map" resultClass="OneOnOneMeetingRequest">
 select  one.company_id as companyId , one.fund_id as fundId, one.must_have_flag as mustHaveFlag
@@ -269,68 +269,70 @@ group by  one.company_id , one.fund_id, one.must_have_flag
       where c.id=#id#
     </select>
 
-    <select id="getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+    <select id="getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId" parameterClass="map"
+            resultClass="OneOnOneMeetingRequest">
       select status as status, company_id as companyId , fund_id as fundId
       from one_on_one_meeting_request
       where company_id=#company_id# and time_frame_id=#availableTimeFrameId#
     </select>
 
 
-    <select id="getOneOnOneMeetingRequestByFundIdAndtimeFrameId" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+    <select id="getOneOnOneMeetingRequestByFundIdAndtimeFrameId" parameterClass="map"
+            resultClass="OneOnOneMeetingRequest">
       select status as status, company_id as companyId , fund_id as fundId
       from one_on_one_meeting_request
       where fund_id=#fund_id# and time_frame_id=#availableTimeFrameId#
     </select>
 
 
-<!-- 	save fund changes from frontend -->
-	<insert id="insertFundfromChanges" parameterClass="FundChangeRow">
-		insert into fund (fund_name, phone_number, contact)
-		value (#fundName#, #phoneNumber#, #contactor#)
+    <!-- 	save fund changes from frontend -->
+    <insert id="insertFundfromChanges" parameterClass="FundChangeRow">
+        insert into fund (fund_name, phone_number, contact)
+        value (#fundName#, #phoneNumber#, #contactor#)
         <selectKey resultClass="int" keyProperty="id">
             select LAST_INSERT_ID()
         </selectKey>
-	</insert>
+    </insert>
 
     <delete id="deleteFundfromChanges" parameterClass="FundChangeRow">
     	delete from fund
     	where id = #id#
     </delete>
-    
+
     <update id="updateFundfromChanges" parameterClass="FundChangeRow">
     	update fund
     	set fund_name = #fundName#, phone_number = #phoneNumber#, contact = #contactor#
     	where id = #id#
-    </update>    
-    
-    
-<!-- 	save company changes from frontend -->
-	<insert id="insertCompanyfromChanges" parameterClass="CompanyChangeRow">
-		insert into company (name, contact)
-		value (#name#, #contact#)
+    </update>
+
+
+    <!-- 	save company changes from frontend -->
+    <insert id="insertCompanyfromChanges" parameterClass="CompanyChangeRow">
+        insert into company (name, contact)
+        value (#name#, #contact#)
         <selectKey resultClass="int" keyProperty="id">
             select LAST_INSERT_ID()
         </selectKey>
-	</insert>
+    </insert>
 
     <delete id="deleteCompanyfromChanges" parameterClass="CompanyChangeRow">
     	delete from company
     	where id = #id#
     </delete>
-    
+
     <update id="updateCompanyfromChanges" parameterClass="CompanyChangeRow">
     	update company
     	set name = #name#, contact = #contact#
     	where id = #id#
-    </update>    
-    
-<!--     return 1on1 meeting request -->
-    
+    </update>
+
+    <!--     return 1on1 meeting request -->
+
     <resultMap id="meetreq-result" class="OneOnOneMeetingRequest">
-       <result column="fund_name" property="fund.fundName" />
-       <result column="name" property="company.name" />
-       <result column="fundid" property="fundId" />
-       <result column="companyid" property="companyId" />
+        <result column="fund_name" property="fund.fundName"/>
+        <result column="name" property="company.name"/>
+        <result column="fundid" property="fundId"/>
+        <result column="companyid" property="companyId"/>
     </resultMap>
 
     <select id="getMeetReqList" resultMap="meetreq-result">
@@ -338,13 +340,13 @@ group by  one.company_id , one.fund_id, one.must_have_flag
 		left join fund on one_on_one_meeting_request.fund_id = fund.id
 		left join company on one_on_one_meeting_request.company_id = company.id
     </select>
-    
-<!--     clear meeting request calculate result -->
+
+    <!--     clear meeting request calculate result -->
     <update id="updateOneOnOneMeetingRequest">
     	update one_on_one_meeting_request
     	set status = null, time_frame_id = null
     </update>
-    
+
     <delete id="deleteTblSchedule">
     	delete from tbl_schedule
     </delete>
@@ -362,12 +364,25 @@ group by  one.company_id , one.fund_id, one.must_have_flag
         select request.fund_id as fundId , request.company_id as companyId , request.time_frame_id as timeFrameId
         from   one_on_one_meeting_request request inner join  fund fund
         on fund.id= request.fund_id
-        where request.company_id = #companyId# and request.time_frame_id=#timeFrameId#  and  status=#status#
+        where request.company_id = #companyId#   and  status=#status#
         order by request.must_have_flag desc , fund.priority desc
 
 
 
     </select>
+
+
+    <update id="updateMeetingStatus" parameterClass="OneOnOneMeetingRequest">
+        update    one_on_one_meeting_request
+         set status=#status#  , time_frame_id=#timeFrameId#
+        where company_id = #companyId#  and  fund_id=#fundId#
+    </update>
+
+    <delete id="deleteScheduleByAttendee" parameterClass="string">
+        delete from tbl_schedule
+        where attendee=#attendee#
+
+    </delete>
 
 
 </sqlMap>

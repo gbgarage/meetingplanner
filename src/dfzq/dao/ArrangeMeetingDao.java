@@ -50,7 +50,7 @@ public class ArrangeMeetingDao extends BaseDao {
 
     }
 
-    public OneOnOneMeetingRequest getArrangeMeeting(Long fundId, Integer companyId, Long timeframeId) {
+    public OneOnOneMeetingRequest getArrangeMeeting(Long fundId, Integer companyId, Integer timeframeId) {
         Map map = new HashMap();
         map.put("fundId", fundId);
         map.put("companyId", companyId);
@@ -61,7 +61,7 @@ public class ArrangeMeetingDao extends BaseDao {
 
     }
 
-    public List<OneOnOneMeetingRequest> findInterestingFunds(Integer companyId, Long timeframeId) {
+    public List<OneOnOneMeetingRequest> findInterestingFunds(Integer companyId, Integer timeframeId) {
 
         Map map = new HashMap();
         map.put("companyId", companyId);

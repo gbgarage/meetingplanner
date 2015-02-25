@@ -180,7 +180,7 @@ public class ExcelService {
                 new String[]{"applicationContext.xml"});
 
         ArrangementService arrangementService = (ArrangementService)context.getBean("arrangementService");
-        arrangementService.cauclatingArrangeMeeting();
+        arrangementService.fundCancel(74l, 92, 2);
 //        ExcelService excelService = (ExcelService) context.getBean("excelService");
 //        excelService.readExcel();
 
