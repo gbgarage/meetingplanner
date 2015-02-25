@@ -563,6 +563,8 @@ CREATE TABLE IF NOT EXISTS `one_on_one_meeting_request` (
   `company_id` int(11) NOT NULL,
   `status` int(11) DEFAULT NULL,
   `time_frame_id` int(11) DEFAULT NULL,
+  `musthave` boolean default false,
+  `small` boolean default false,
   PRIMARY KEY (`fund_id`,`company_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

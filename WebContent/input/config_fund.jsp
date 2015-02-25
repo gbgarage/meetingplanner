@@ -20,11 +20,13 @@
 <!--     <tr><input id="btnEdit2" class="mini-buttonedit" onbuttonclick="on1v1CompanyButtonEdit"/></tr>     -->
     <tr><a id="btnEdit2" class="mini-button" iconCls="icon-edit" onclick="on1v1CompanyButtonEdit" tooltip="编辑"></a></tr>
                     <div id="companyGrid" class="mini-datagrid" style="width:250px;height:200px;" 
-                            showPageSize="false" showPageIndex="false"
+                            showPageSize="false" showPageIndex="false" ondrawcell="onDrawCellDisplayCompanyName"
                         pagerStyle="padding:2px;"
                         multiSelect="true" >
                         <div property="columns">
-                            <div field="name" width="150" headerAlign="center" allowSort="true">已选择上市公司</div>
+                            <div field="company" width="150" headerAlign="center" allowSort="true">已选择上市公司</div>
+                            <div type="checkboxcolumn" field="musthave" trueValue="1" falseValue="0" width="50" headerAlign="center">必须</div>     
+							<div type="checkboxcolumn" field="small" trueValue="1" falseValue="0" width="50" headerAlign="center">小规模</div>   
                         </div>
                     </div>
 
@@ -77,6 +79,7 @@
 
                 }
             }); 
+            mini.parse();
             }    
             
             function on1v1CompanyButtonEdit(e) {
@@ -179,6 +182,12 @@
                
 
 
+           }
+           
+           function onDrawCellDisplayCompanyName(e) {
+           	if (e.column.field=="company") {
+           		e.cellHtml = e.value.name;
+           	}
            }
              
     </script>

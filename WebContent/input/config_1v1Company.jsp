@@ -51,12 +51,13 @@
                 </td>
                 <td >
                     <h4 style="margin:0;line-height:22px;font-size:13px;">已选上市公司：</h4>
-                    <div id="selectedList" class="mini-listbox" style="width:250px;height:200px;"              
-                            showCheckBox="true" multiSelect="true">  
-<!--                     <div id="selectedList" class="mini-listbox" style="width:250px;height:200px;"               -->
-<%--                             showCheckBox="true" multiSelect="true" url="./get1on1CompanyList/<%=request.getParameter("fund")%>.do">                            --%>
+                    <div id="selectedList" class="mini-datagrid" style="width:250px;height:200px;"              
+                            multiSelect="true" allowCellEdit="true" url="./get1on1CompanyList/<%=request.getParameter("fund")%>.do" ondrawcell="onDrawCellDisplayCompanyName">  
                         <div property="columns">
-                            <div field="name" width="150" headerAlign="center" allowSort="true">上市公司</div>    
+                        	<div type="checkcolumn" width="20"></div>
+                            <div field="company" width="100" headerAlign="center" allowSort="true">上市公司</div>    
+							<div type="checkboxcolumn" field="musthave" trueValue="1" falseValue="0" width="50" headerAlign="center">必须</div>     
+							<div type="checkboxcolumn" field="small" trueValue="1" falseValue="0" width="50" headerAlign="center">小规模</div>                          
                         </div>
                     </div>                       
                 </td>
@@ -72,9 +73,16 @@
         <a class="mini-button" onclick="onOk" style="width:60px;margin-right:20px;">确定</a>       
         <a class="mini-button" onclick="onCancel" style="width:60px;">取消</a>       
     </div>
+
     
     <script type="text/javascript">
         mini.parse();
+        
+        function onDrawCellDisplayCompanyName(e) {
+        	if (e.column.field=="company") {
+        		e.cellHtml = e.value.name;
+        	}
+        }
 
         //////////////////////////////////////        
 
@@ -82,34 +90,40 @@
             //跨页面调用，克隆数据更安全
             data = mini.clone(data);
             grid.load();
-            
-            //get selected 1on1 companylist
-            $.ajax({
-                url: "./get1on1CompanyList/" + <%=request.getParameter("fund")%> + ".do",
-                type: "get",
-                success: function (text) {
-					selectedList.addItems(text.data);
-                }
-            });
-            
+            selectedList.load();
             grid.deselectAll();
 //             selectedList.removeAll();
 
         }
+        
         function GetData() {
             var rows = selectedList.getData();
-            var ids = [], texts = [];
             for (var i = 0, l = rows.length; i < l; i++) {
-                var row = rows[i];
-                ids.push(row.id);
-                texts.push(row.name);
+            	var row = rows[i];
+            	delete row._index;
+            	delete row._uid;
+            	delete row.company.conflict;
+            	delete row.fund.conflict;
             }
+            
+//             var ids = [], texts = [], musthave = [], small = [];
+//             for (var i = 0, l = rows.length; i < l; i++) {
+//                 var row = rows[i];
+//                 ids.push(row.id);
+//                 texts.push(row.name);
+//                 musthave.push(row.musthave);
+//                 small.push(row.small);
+//             }
 
 //             var data = {};
 //             data.id = ids.join(",");
 //             data.text = texts.join(",");
+//             data.musthave = musthave.join(",");
+//             data.small = small.join(",");
 //             return data;
-			return ids;
+
+			return rows;
+
         }
         function CloseWindow(action) {            
             if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
@@ -160,17 +174,38 @@
                 var o = items[i];
                 var id = o[idField];
                 if (idMaps[id] != null) items.removeAt(i);
-            }
+            }  
+            
+            var incRecords = new Array();
 
-            selectedList.addItems(items);
+            for (var i = 0, l = items.length; i < l; i++) {
+
+				var incRecord = {}, company = {}, fund = {};
+				incRecord.musthave = 0;
+				incRecord.small = 0;
+				company.name = items[i].name;
+				company.conflict = 0;
+				fund.conflict = 0;
+				incRecord.company = company;
+				incRecord.fund = fund;
+				incRecord.fundId = <%=request.getParameter("fund")%>;
+				incRecord.companyId = items[i].id;
+				
+				incRecords.push(incRecord);
+            }
+            
+            //selectedList.addRows(items);
+            selectedList.addRows(incRecords);
         }
 
         function removeSelecteds() {
             var items = selectedList.getSelecteds();
-            selectedList.removeItems(items);
+            //selectedList.removeItems(items);
+            selectedList.removeRows(items, false);
         }
         function removeAllSelecteds() {
-            selectedList.removeAll();
+            //selectedList.removeAll();
+            selectedList.clearRows();
         }
 
     </script>

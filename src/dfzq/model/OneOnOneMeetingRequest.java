@@ -20,8 +20,28 @@ public class OneOnOneMeetingRequest implements Comparable<OneOnOneMeetingRequest
     private Integer status;
 
     private Integer timeFrameId;
+    
+    private boolean musthave;
+    
+    private boolean small;
 
-    public Integer getStatus() {
+    public boolean isMusthave() {
+		return musthave;
+	}
+
+	public void setMusthave(boolean musthave) {
+		this.musthave = musthave;
+	}
+
+	public boolean isSmall() {
+		return small;
+	}
+
+	public void setSmall(boolean small) {
+		this.small = small;
+	}
+
+	public Integer getStatus() {
         return status;
     }
 
@@ -57,6 +77,17 @@ public class OneOnOneMeetingRequest implements Comparable<OneOnOneMeetingRequest
         this.fund = fund;
         this.company = company;
 
+    }
+    
+    public OneOnOneMeetingRequest(OneOnOneMeetingRequest meetingReq) {
+        this.fund = meetingReq.fund;
+        this.company = meetingReq.company;
+        this.fundId = meetingReq.fundId;
+        this.companyId = meetingReq.companyId;
+        this.status = meetingReq.status;
+        this.timeFrameId = meetingReq.timeFrameId;
+        this.musthave = meetingReq.musthave;
+        this.small = meetingReq.small;
     }
 
     public OneOnOneMeetingRequest() {

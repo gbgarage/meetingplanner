@@ -100,17 +100,28 @@ public class InputController {
 			@RequestParam(value="pageIndex", defaultValue="0") int pageIndex, 
 			@RequestParam(value="pageSize", defaultValue="999") int pageSize, 
 			Model model) {
-		List <Company> totalCompanies = fundDao.get1on1CompanyList(fundid);
-		
+//		List <Company> totalCompanies = fundDao.get1on1CompanyList(fundid);
+//		
+//		int fromIndex = pageIndex*pageSize;
+//		int toIndex = pageIndex*pageSize+pageSize;
+//		
+//		if (toIndex > totalCompanies.size()) toIndex = totalCompanies.size();
+//		
+//		List <Company> returnCompanies = totalCompanies.subList(fromIndex, toIndex);
+//		DataList dl = new DataList(totalCompanies.size(),returnCompanies);
+//		
+//		return dl;
+		List <OneOnOneMeetingRequest> totalMeetReq = oneOnoneMeetingRequestDao.getMeetReqListForFund(fundid);
 		int fromIndex = pageIndex*pageSize;
 		int toIndex = pageIndex*pageSize+pageSize;
 		
-		if (toIndex > totalCompanies.size()) toIndex = totalCompanies.size();
+		if (toIndex > totalMeetReq.size()) toIndex = totalMeetReq.size();
 		
-		List <Company> returnCompanies = totalCompanies.subList(fromIndex, toIndex);
-		DataList dl = new DataList(totalCompanies.size(),returnCompanies);
+		List <OneOnOneMeetingRequest> returnMeetReqs = totalMeetReq.subList(fromIndex, toIndex);
 		
+		DataList dl = new DataList(totalMeetReq.size(),returnMeetReqs);
 		return dl;
+		
 	}		
 	
 	//return all time slots in JSON
@@ -182,8 +193,12 @@ public class InputController {
 	//save 1v1 meeting request
 	@ResponseBody
 	@RequestMapping(value = "/save1on1Company/{id}")
-	public int save1on1Company(@PathVariable("id") Integer fundid, @RequestBody List<Integer> companyids, Model model) {
-		fundDao.save1on1Company(companyids, fundid);
+	public int save1on1Company(@PathVariable("id") Integer fundid, @RequestBody OneOnOneMeetingRequest[] companyids, Model model) {
+//		fundDao.save1on1Company(companyids, fundid);
+		
+		List<OneOnOneMeetingRequest> companylist = Arrays.asList(companyids);
+		fundDao.save1on1Company(companylist, fundid);
+
 		return 1;
 	}	
 	
@@ -274,7 +289,40 @@ public class InputController {
 		return dl;
 	}	
 	
+	//calendar change page
+	@RequestMapping(value = "/changeCalendar")
+	public String changeCalendarPage(Model model) {
+		return "input/change_calendar";
+	}	
 
+	//change calendar - cancel meeting for fund
+	@ResponseBody
+	@RequestMapping(value = "/cancelMeetingForFund/{id}")
+	public int cancelMeetingForFund(@PathVariable("id") Integer fundid, Model model) {
+		return 1;
+	}	
+	
+	//change calendar - AM to PM for fund 
+	@ResponseBody
+	@RequestMapping(value = "/AMtoPMForFund/{id}")
+	public int AMtoPMForFund(@PathVariable("id") Integer fundid, Model model) {
+		return 1;
+	}		
+	
+	//change calendar - cancel meeting for company
+	@ResponseBody
+	@RequestMapping(value = "/cancelMeetingForCompany/{id}")
+	public int cancelMeetingForCompany(@PathVariable("id") Integer companyid, Model model) {
+		return 1;
+	}	
+	
+	//change calendar - AM to PM for company 
+	@ResponseBody
+	@RequestMapping(value = "/AMtoPMForCompany/{id}")
+	public int AMtoPMForCompany(@PathVariable("id") Integer companyid, Model model) {
+		return 1;
+	}			
+	
 }
 
 class DataList <T> {

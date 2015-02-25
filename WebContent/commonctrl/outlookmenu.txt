@@ -9,6 +9,7 @@
 
 	{ id: "calendar", text: "会议日程管理"},
 	{ id: "calculateCalendar", pid: "calendar", text: "计算会议日程", iconCls: "Note", url: "./input/calCalendar.do", iconPosition: "top" },
-	{ id: "showCalendar", pid: "calendar", text: "显示会议日程", iconCls: "Reports", url: "./input/configCalendar.do", iconPosition: "top" }
+	{ id: "showCalendar", pid: "calendar", text: "显示会议日程", iconCls: "Reports", url: "./input/configCalendar.do", iconPosition: "top" },
+	{ id: "changeCalendar", pid: "calendar", text: "更改会议日程", iconCls: "Reports", url: "./input/changeCalendar.do", iconPosition: "top" }
 
 ]

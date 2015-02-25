@@ -55,17 +55,17 @@ public class FundDao extends BaseDao{
     }
     
     
-    public void save1on1Company(List<Integer> companyids, Integer fundid) {
+    public void save1on1Company(List<OneOnOneMeetingRequest> companyids, Integer fundid) {
     
     	getSqlMapClientTemplate().delete("deleteAll1on1Company", fundid);
     	
     	Fund fund = this.getFundById(fundid);
     
-    	Iterator<Integer> companyItr = companyids.iterator();
+    	Iterator<OneOnOneMeetingRequest> companyItr = companyids.iterator();
     	
     	while (companyItr.hasNext()) {
     		
-    		OneOnOneMeetingRequest request = new OneOnOneMeetingRequest(fund, companyDao.getCompanyById(companyItr.next()));
+    		OneOnOneMeetingRequest request = new OneOnOneMeetingRequest(companyItr.next());
     		getSqlMapClientTemplate().insert("insert1on1Company", request);
     	}
     	
