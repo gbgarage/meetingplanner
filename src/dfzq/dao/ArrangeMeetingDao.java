@@ -50,11 +50,11 @@ public class ArrangeMeetingDao extends BaseDao {
 
     }
 
-    public OneOnOneMeetingRequest getArrangeMeeting(Long fundId, Integer companyId, Integer timeframeId) {
+    public OneOnOneMeetingRequest getArrangeMeeting(Integer fundId, Integer companyId) {
         Map map = new HashMap();
         map.put("fundId", fundId);
         map.put("companyId", companyId);
-        map.put("timeframeId", timeframeId);
+
         return (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getArrangeMeeting", map);
 
 
@@ -75,5 +75,27 @@ public class ArrangeMeetingDao extends BaseDao {
 
     public void updateMeetingStatus(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
         getSqlMapClientTemplate().update("updateMeetingStatus", oneOnOneMeetingRequest);
+    }
+
+    public List<OneOnOneMeetingRequest> get1on1List(Integer fundId, int[] beforeTimeFrame) {
+        Map map = new HashMap();
+        map.put("fundId", fundId);
+        map.put("timeFrame", convertArrayToINString(beforeTimeFrame));
+
+        return getSqlMapClientTemplate().queryForList("get1on1List", map);
+    }
+
+    private String convertArrayToINString(int[] timeFrames) {
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("(");
+        for (int timeFrame : timeFrames) {
+            stringBuffer.append(timeFrame);
+            stringBuffer.append(",");
+        }
+
+        stringBuffer.deleteCharAt(stringBuffer.length() - 1);
+        stringBuffer.append(")");
+        return stringBuffer.toString();
+
     }
 }
