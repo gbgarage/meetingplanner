@@ -98,4 +98,12 @@ public class ArrangeMeetingDao extends BaseDao {
         return stringBuffer.toString();
 
     }
+
+    public OneOnOneMeetingRequest getArrangeMeetingByCompanyAndTime(Integer companyId, Integer timeFrameId) {
+        Map map = new HashMap();
+        map.put("companyId", companyId);
+        map.put("timeFrameId", timeFrameId);
+
+        return (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getArrangeMeetingByCompanyAndTime", map);
+    }
 }

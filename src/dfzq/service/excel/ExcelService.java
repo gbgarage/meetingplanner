@@ -181,7 +181,9 @@ public class ExcelService {
 
         ArrangementService arrangementService = (ArrangementService)context.getBean("arrangementService");
 //        arrangementService.fundCancel(74, 92, 2);
-        arrangementService.fundReschedule(70, new int[]{1,2,3}, new int[]{4,5,6});
+//        arrangementService.fundReschedule(70, new int[]{1,2,3}, new int[]{4,5,6});
+        arrangementService.companyCancel(92, 1);
+//        arrangementService.companyCancel(92, 2);
 //        ExcelService excelService = (ExcelService) context.getBean("excelService");
 //        excelService.readExcel();
 

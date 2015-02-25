@@ -273,7 +273,7 @@ group by  one.company_id , one.fund_id, one.must_have_flag
             resultClass="OneOnOneMeetingRequest">
       select status as status, company_id as companyId , fund_id as fundId
       from one_on_one_meeting_request
-      where company_id=#company_id# and time_frame_id=#availableTimeFrameId#
+      where company_id=#company_id# and time_frame_id=#availableTimeFrameId#  and status not in (9, 6)
     </select>
 
 
@@ -281,7 +281,7 @@ group by  one.company_id , one.fund_id, one.must_have_flag
             resultClass="OneOnOneMeetingRequest">
       select status as status, company_id as companyId , fund_id as fundId
       from one_on_one_meeting_request
-      where fund_id=#fund_id# and time_frame_id=#availableTimeFrameId#
+      where fund_id=#fund_id# and time_frame_id=#availableTimeFrameId#   and status not in (6,9)
     </select>
 
 
@@ -389,6 +389,26 @@ group by  one.company_id , one.fund_id, one.must_have_flag
              select fund_id as fundId , company_id as companyId , time_frame_id as timeFrameId
         from   one_on_one_meeting_request
                where fund_id = #fundId#   and  time_frame_id in $timeFrame$
+
+    </select>
+
+    <select id="getArrangeMeetingByCompanyAndTime" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+        select fund_id as fundId , company_id as companyId , time_frame_id as timeFrameId
+        from   one_on_one_meeting_request
+        where company_id = #companyId#   and  time_frame_id =#timeFrameId#
+
+
+
+    </select>
+
+
+    <select id="getInterestedAndUnScheduleCompanies" parameterClass="int" resultMap="company-result">
+         SELECT company.*
+      FROM one_on_one_meeting_request
+      INNER JOIN company
+      ON one_on_one_meeting_request.company_id = company.id
+      where fund_id = #fundid# and one_on_one_meeting_request.time_frame_id is null
+
 
     </select>
 

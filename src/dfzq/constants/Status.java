@@ -14,8 +14,15 @@ public class Status {
     public static final int CONFLICT_FUND_AND_ARRAGED=3;
     public static final int CONFLICT_FUND_AND_NOT_ARRAGED=4;
     public static final int NOT_CONFLICT=5;
+
     public static final int FUND_CANCEL=6;
     public static final int FUND_RESCHEDULE=7;
+    public static final int FUND_CANCEL_RESCHEDULE=8;
+
+
+    public static final int COMPANY_CANCEL=9;
+    public static final int COMPANY_RESCHEDULE=10;
+    public static final int COMPANY_CANCEL_RESCHEDULE=11;
 
 
 
