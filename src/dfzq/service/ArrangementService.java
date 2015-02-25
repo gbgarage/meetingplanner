@@ -1,15 +1,11 @@
 package dfzq.service;
 
 import dfzq.constants.Status;
-import dfzq.dao.ArrangeMeetingDao;
-import dfzq.dao.CompanyDao;
-import dfzq.dao.ScheduleDAO;
-import dfzq.dao.TimeframeDao;
+import dfzq.dao.*;
 import dfzq.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -31,6 +27,8 @@ public class ArrangementService {
     private TimeframeDao timeframeDao;
     @Autowired
     private ScheduleDAO scheduleDAO;
+    @Autowired
+    private FundDao fundDao;
 
     private Map<Integer, Integer> locationMap = new HashMap<Integer, Integer>();
 
@@ -52,6 +50,40 @@ public class ArrangementService {
         }
 
 
+    }
+
+    public void fundCancel(Long fundId, Integer companyId, Long timeframeId){
+        OneOnOneMeetingRequest oneOnOneMeetingRequest =  arrangeMeetingDao.getArrangeMeeting(fundId, companyId, timeframeId);
+        cancelMeeting(oneOnOneMeetingRequest);
+
+        Company company = companyDao.getCompanyById(companyId);
+
+       List<OneOnOneMeetingRequest> interestingFundRequests = arrangeMeetingDao.findInterestingFunds(companyId, timeframeId);
+       for(OneOnOneMeetingRequest interestingFundRequest: interestingFundRequests){
+           Fund fund = fundDao.getFundById(interestingFundRequest.getFundId());
+           if(fundDao.checkTimeFrameAvailable(fund, interestingFundRequest.getTimeFrameId())){
+               interestingFundRequest.setStatus(Status.CONFLICT_COMPANY_AND_ARRAGED);
+               interestingFundRequest.setFund(fund);
+               interestingFundRequest.setCompany(company);
+               arrangeMeeting(interestingFundRequest);
+               return;
+           }
+
+
+       }
+
+        //todo promote small group meeting
+
+
+    }
+
+    private void arrangeMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
+       arrangeMeetingDao.updateMeetingStatus(oneOnOneMeetingRequest);
+       scheduleMeeting(oneOnOneMeetingRequest, oneOnOneMeetingRequest.getTimeFrameId());
+    }
+
+    private void cancelMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
+        
     }
 
 

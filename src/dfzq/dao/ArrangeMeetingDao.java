@@ -1,12 +1,14 @@
 package dfzq.dao;
 
 import com.common.BaseDao;
+import dfzq.constants.Status;
 import dfzq.model.Company;
 import dfzq.model.Fund;
 import dfzq.model.OneOnOneMeetingRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,5 +48,32 @@ public class ArrangeMeetingDao extends BaseDao {
         getSqlMapClientTemplate().update("updateArrangement", parameters);
 
 
+    }
+
+    public OneOnOneMeetingRequest getArrangeMeeting(Long fundId, Integer companyId, Long timeframeId) {
+        Map map = new HashMap();
+        map.put("fundId", fundId);
+        map.put("companyId", companyId);
+        map.put("timeframeId", timeframeId);
+        return (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getArrangeMeeting", map);
+
+
+
+    }
+
+    public List<OneOnOneMeetingRequest> findInterestingFunds(Integer companyId, Long timeframeId) {
+
+        Map map = new HashMap();
+        map.put("companyId", companyId);
+        map.put("timeFrameId", timeframeId);
+        map.put("status", Status.CONFLICT_COMPANY_AND_NOT_ARRAGED);
+
+        return (List<OneOnOneMeetingRequest>) getSqlMapClientTemplate().queryForList("findInterestingFunds", map);
+
+
+    }
+
+    public void updateMeetingStatus(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
+        getSqlMapClientTemplate().update("updateMeetingStatus", oneOnOneMeetingRequest);
     }
 }

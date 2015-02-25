@@ -349,4 +349,25 @@ group by  one.company_id , one.fund_id, one.must_have_flag
     	delete from tbl_schedule
     </delete>
 
+
+    <select id="getArrangeMeeting" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+        select   fund_id as fundId , company_id as companyId , time_frame_id as timeFrameId
+        from one_on_one_meeting_request
+        where     fund_id=#fundId# and company_id=#companyId# and time_frame_id=#timeframeId#
+
+
+    </select>
+
+    <select id="findInterestingFunds" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+        select request.fund_id as fundId , request.company_id as companyId , request.time_frame_id as timeFrameId
+        from   one_on_one_meeting_request request inner join  fund fund
+        on fund.id= request.fund_id
+        where request.company_id = #companyId# and request.time_frame_id=#timeFrameId#  and  status=#status#
+        order by request.must_have_flag desc , fund.priority desc
+
+
+
+    </select>
+
+
 </sqlMap>
