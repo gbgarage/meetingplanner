@@ -51,20 +51,6 @@
       where name=#name#
     </select>
 
-    <!--     return fund list -->
-
-    <resultMap id="fund-result" class="Fund">
-        <result column="id" property="id"/>
-        <result column="fund_name" property="fundName"/>
-        <result column="phone_number" property="phoneNumber"/>
-        <result column="contact" property="contactor"/>
-    </resultMap>
-
-    <select id="getFundList" parameterClass="java.util.Map" resultMap="fund-result">
-      select * from fund
-    </select>
-
-
     <!-- return fund by id -->
 
     <!--     <select id="getFundById" parameterClass="Integer" resultClass="Fund"> -->
@@ -283,27 +269,6 @@ group by  one.company_id , one.fund_id, one.must_have_flag
       where fund_id=#fund_id# and time_frame_id=#availableTimeFrameId#   and status not in (6,9)
     </select>
 
-    <!-- 	save fund changes from frontend -->
-    <insert id="insertFundfromChanges" parameterClass="FundChangeRow">
-        insert into fund (fund_name, phone_number, contact)
-        value (#fundName#, #phoneNumber#, #contactor#)
-        <selectKey resultClass="int" keyProperty="id">
-            select LAST_INSERT_ID()
-        </selectKey>
-    </insert>
-
-    <delete id="deleteFundfromChanges" parameterClass="FundChangeRow">
-    	delete from fund
-    	where id = #id#
-    </delete>
-
-    <update id="updateFundfromChanges" parameterClass="FundChangeRow">
-    	update fund
-    	set fund_name = #fundName#, phone_number = #phoneNumber#, contact = #contactor#
-    	where id = #id#
-    </update>
-
-
     <!-- 	save company changes from frontend -->
     <insert id="insertCompanyfromChanges" parameterClass="CompanyChangeRow">
         insert into company (name, contact)
@@ -340,15 +305,7 @@ group by  one.company_id , one.fund_id, one.must_have_flag
 		left join fund on one_on_one_meeting_request.fund_id = fund.id
 		left join company on one_on_one_meeting_request.company_id = company.id
     </select>
-    
-<!--     return 1on1 meeting request for a fund-->
-    
-    <select id="getMeetReqListForFund" resultMap="meetreq-result">
-		select fund_name, name, fund.id as fundid, company.id as companyid, musthave, small from one_on_one_meeting_request 
-		left join fund on one_on_one_meeting_request.fund_id = fund.id
-		left join company on one_on_one_meeting_request.company_id = company.id
-		where fund.id = #fundid#
-    </select>
+   
 
     <!--     clear meeting request calculate result -->
     <update id="updateOneOnOneMeetingRequest">

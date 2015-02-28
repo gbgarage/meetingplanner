@@ -72,6 +72,23 @@ public class FundDao extends BaseDao{
     	
     }
     
+    public void saveSmallCompany(List<OneOnOneMeetingRequest> companyids, Integer fundid) {
+        
+    	getSqlMapClientTemplate().delete("deleteAllSmallCompany", fundid);
+    	
+    	Fund fund = this.getFundById(fundid);
+    
+    	Iterator<OneOnOneMeetingRequest> companyItr = companyids.iterator();
+    	
+    	while (companyItr.hasNext()) {
+    		
+    		OneOnOneMeetingRequest request = new OneOnOneMeetingRequest(companyItr.next());
+    		getSqlMapClientTemplate().insert("insertSmallCompany", request);
+    	}
+    	
+    	
+    }
+    
     public void saveTimeFund(List<Integer> timeids, Integer fundid) {
     	
     	getSqlMapClientTemplate().delete("deleteFundAllTimeslots", fundid);

@@ -16,7 +16,7 @@
 <!--     <tr><input id="btnEdit1" class="mini-buttonedit" onbuttonclick="onFundButtonEdit" name="a" textName="b"/></tr>    -->
     <tr><a id="btnEdit1" class="mini-button mini-button-iconRight" iconCls="icon-edit" onclick="onFundButtonEdit"></a></tr>   
     
-    <tr><h1>请选择需要一对一会议的上市公司</h1></tr>
+    <tr><h1>请选择需要会议的上市公司</h1></tr>
 <!--     <tr><input id="btnEdit2" class="mini-buttonedit" onbuttonclick="on1v1CompanyButtonEdit"/></tr>     -->
     <tr><a id="btnEdit2" class="mini-button" iconCls="icon-edit" onclick="on1v1CompanyButtonEdit" tooltip="编辑"></a></tr>
                     <div id="companyGrid" class="mini-datagrid" style="width:250px;height:200px;" 

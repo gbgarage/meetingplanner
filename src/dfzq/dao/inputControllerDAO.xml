@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+        
+<sqlMap>
+
+    <!--     return fund list -->
+
+    <resultMap id="fund-result" class="Fund">
+        <result column="id" property="id"/>
+        <result column="fund_name" property="fundName"/>
+        <result column="phone_number" property="phoneNumber"/>
+        <result column="contact" property="contactor"/>
+        <result column="priority" property="priority"/>
+    </resultMap>
+
+    <select id="getFundList" parameterClass="java.util.Map" resultMap="fund-result">
+      select * from fund
+    </select>
+
+    <!-- 	save fund changes from frontend -->
+    <insert id="insertFundfromChanges" parameterClass="FundChangeRow">
+        insert into fund (fund_name, phone_number, contact, priority)
+        value (#fundName#, #phoneNumber#, #contactor#, #priority#)
+        <selectKey resultClass="int" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <delete id="deleteFundfromChanges" parameterClass="FundChangeRow">
+    	delete from fund
+    	where id = #id#
+    </delete>
+
+    <update id="updateFundfromChanges" parameterClass="FundChangeRow">
+    	update fund
+    	set fund_name = #fundName#, phone_number = #phoneNumber#, contact = #contactor#, priority = #priority#
+    	where id = #id#
+    </update>
+
+    <!--     delete all small request for a fund -->
+
+    <delete id="deleteAllSmallCompany" parameterClass="Integer">
+    	delete from small_meeting_request 
+    	where fund_id = #fundid#
+    </delete>
+    
+<!--     insert small request for a fund -->
+	<insert id="insertSmallCompany" parameterClass="OneOnOneMeetingRequest">
+		insert into small_meeting_request (fund_id, company_id, musthave, small)
+		value (#fundId#, #companyId#, #musthave#, #small#)
+	</insert>
+	
+	
+<!--     return 1on1 meeting request for a fund-->
+    
+    <select id="getMeetReqListForFund" resultMap="meetreq-result">
+		select fund_name, name, fund.id as fundid, company.id as companyid, musthave, small from one_on_one_meeting_request 
+		left join fund on one_on_one_meeting_request.fund_id = fund.id
+		left join company on one_on_one_meeting_request.company_id = company.id
+        where fund.id = #fundid#
+	
+		union
+		
+		select fund_name, name, fund.id as fundid, company.id as companyid, musthave, small from small_meeting_request 
+		left join fund on small_meeting_request.fund_id = fund.id
+		left join company on small_meeting_request.company_id = company.id
+		where fund.id = #fundid#
+		
+    </select>
+
+</sqlMap>
+

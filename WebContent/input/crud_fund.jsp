@@ -40,12 +40,15 @@
             <div name="fundName" field="fundName" width="120" headerAlign="center" allowSort="true" style="width:30%;">基金公司名称
                 <input property="editor" class="mini-textbox" />
             </div>                      
-            <div name="contactor" field="contactor" width="100" allowSort="true" style="width:30%;">联系人
+            <div name="contactor" field="contactor" width="100" allowSort="true" style="width:20%;">联系人
                 <input property="editor" class="mini-textbox"/>
             </div>            
             <div name="phoneNumber" field="phoneNumber" width="100" allowSort="true" style="width:20%;">电话号码
                 <input property="editor" class="mini-textbox"/>
-            </div>            
+            </div>       
+            <div name="priority" field="priority" width="100" allowSort="true" style="width:10%;">优先级
+                <input property="editor" class="mini-textbox"/>
+            </div>          
         </div>
     </div>
     <script type="text/javascript">
@@ -114,16 +117,5 @@
         
     </script>
 
-    <div class="description">
-        <h3>Description</h3>
-        <ul>
-            <li>方向键导航单元格</li>
-            <li>按回车键进入编辑</li>
-            <li>按ESC键取消编辑</li>
-            <li>按Tab键进入下一个单元格编辑</li>
-            <li>editNextOnEnterKey="true"后，按回车键进入下一个单元格编辑</li>
-        </ul>
-    </div> 
- 
 </body>
 </html>

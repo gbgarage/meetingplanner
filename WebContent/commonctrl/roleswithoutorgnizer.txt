@@ -1,0 +1,4 @@
+﻿[
+    { "id": "fundmanager", "text": "基金经理" },
+    { "id": "companymanager", "text": "上市公司经理" },
+]

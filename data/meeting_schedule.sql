@@ -483,6 +483,7 @@ CREATE TABLE IF NOT EXISTS `fund` (
   `fund_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT '0',
   `phone_number` varchar(100) COLLATE utf8_unicode_ci DEFAULT '0',
   `contact` varchar(100) COLLATE utf8_unicode_ci DEFAULT '0',
+  `priority` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -556,6 +557,16 @@ CREATE TABLE IF NOT EXISTS `fund_availbility` (
 /*!40000 ALTER TABLE `fund_availbility` DISABLE KEYS */;
 /*!40000 ALTER TABLE `fund_availbility` ENABLE KEYS */;
 
+-- 导出  表 schedule_system.small_meeting_request 结构
+CREATE TABLE IF NOT EXISTS `small_meeting_request` (
+  `fund_id` int(11) NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `status` int(11) DEFAULT NULL,
+  `time_frame_id` int(11) DEFAULT NULL,
+  `musthave` boolean default false,
+  `small` boolean default false,
+  PRIMARY KEY (`fund_id`,`company_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- 导出  表 schedule_system.one_on_one_meeting_request 结构
 CREATE TABLE IF NOT EXISTS `one_on_one_meeting_request` (

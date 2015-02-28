@@ -2,6 +2,7 @@ package dfzq.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,6 +22,7 @@ import dfzq.dao.CompanyDao;
 import dfzq.dao.FundDao;
 import dfzq.dao.OneOnOneMeetingRequestDao;
 import dfzq.dao.TimeframeDao;
+import dfzq.model.Availability;
 import dfzq.model.Company;
 import dfzq.model.CompanyChangeRow;
 import dfzq.model.Fund;
@@ -194,11 +196,23 @@ public class InputController {
 	@ResponseBody
 	@RequestMapping(value = "/save1on1Company/{id}")
 	public int save1on1Company(@PathVariable("id") Integer fundid, @RequestBody OneOnOneMeetingRequest[] companyids, Model model) {
-//		fundDao.save1on1Company(companyids, fundid);
-		
-		List<OneOnOneMeetingRequest> companylist = Arrays.asList(companyids);
-		fundDao.save1on1Company(companylist, fundid);
 
+		List<OneOnOneMeetingRequest> companylist = Arrays.asList(companyids);
+		List<OneOnOneMeetingRequest> oneOnoneCompanyList = new ArrayList<OneOnOneMeetingRequest>();
+		List<OneOnOneMeetingRequest> smallCompanyList = new ArrayList<OneOnOneMeetingRequest>();
+
+    	Iterator<OneOnOneMeetingRequest> mrItr = companylist.iterator();
+    	
+    	while (mrItr.hasNext()) {
+    		OneOnOneMeetingRequest mr = mrItr.next();
+    		
+    		if (mr.isSmall() == true) smallCompanyList.add(mr);
+    		else oneOnoneCompanyList.add(mr);
+
+    	}
+		
+		fundDao.save1on1Company(oneOnoneCompanyList, fundid);
+		fundDao.saveSmallCompany(smallCompanyList, fundid);
 		return 1;
 	}	
 	
@@ -296,31 +310,38 @@ public class InputController {
 	}	
 
 	//change calendar - cancel meeting for fund
-	@ResponseBody
-	@RequestMapping(value = "/cancelMeetingForFund/{id}")
-	public int cancelMeetingForFund(@PathVariable("id") Integer fundid, Model model) {
-		return 1;
+	@RequestMapping(value = "/cancelMeetingForFund/{fundid}/{timeid}")
+	public String cancelMeetingForFund(@PathVariable("fundid") Integer fundid, @PathVariable("timeid") Integer timeid, Model model) {
+		
+		arrangementService.fundCancel(fundid, 1, fundid);
+		return "show_all_schedule";
 	}	
 	
 	//change calendar - AM to PM for fund 
-	@ResponseBody
 	@RequestMapping(value = "/AMtoPMForFund/{id}")
-	public int AMtoPMForFund(@PathVariable("id") Integer fundid, Model model) {
-		return 1;
+	public String AMtoPMForFund(@PathVariable("id") Integer fundid, Model model) {
+		int beforeTimeFrame[] = {1,2,3};
+		int afterTimeFrame[] = {4,5,6,7};
+		arrangementService.fundReschedule(fundid, beforeTimeFrame, afterTimeFrame);
+		return "show_all_schedule";
 	}		
 	
 	//change calendar - cancel meeting for company
-	@ResponseBody
-	@RequestMapping(value = "/cancelMeetingForCompany/{id}")
-	public int cancelMeetingForCompany(@PathVariable("id") Integer companyid, Model model) {
-		return 1;
+	@RequestMapping(value = "/cancelMeetingForCompany/{companyid}/{timeid}")
+	public String cancelMeetingForCompany(@PathVariable("companyid") Integer companyid, @PathVariable("timeid") Integer timeid, Model model) {
+		arrangementService.companyCancel(companyid, timeid);
+		return "show_all_schedule";
 	}	
 	
 	//change calendar - AM to PM for company 
-	@ResponseBody
 	@RequestMapping(value = "/AMtoPMForCompany/{id}")
-	public int AMtoPMForCompany(@PathVariable("id") Integer companyid, Model model) {
-		return 1;
+	public String AMtoPMForCompany(@PathVariable("id") Integer companyid, Model model) {
+		int beforeTimeFrame[] = {1,2,3};
+		int afterTimeFrame[] = {4,5,6,7};
+		
+		//no company reschedule available so far, placeholder!!!
+		arrangementService.fundReschedule(companyid, beforeTimeFrame, afterTimeFrame);
+		return "show_all_schedule";
 	}			
 	
 }

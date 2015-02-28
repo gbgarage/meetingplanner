@@ -18,12 +18,12 @@
 		
 			<div id="rolelistbox" class="mini-listbox" style="width:150px;height:100px;float:left;" 
 			    textField="text" valueField="id" onvaluechanged="onRoleChanged"
-			    url="../commonctrl/roles.txt">
+			    url="../commonctrl/roleswithoutorgnizer.txt">
 			</div>
 			
-			<div>
-			<a id="cancelMeetingButton" class="mini-button" style="margin: 20px">取消所有相关日程</a>
-			<a id="AMtoPMButton" class="mini-button" style="margin: 20px">上午会议改下午</a>
+			<div style="width:150px;height:100px;float:left;">
+			<a id="cancelMeetingButton" class="mini-button">取消选择的会议</a>
+			<a id="AMtoPMButton" class="mini-button">所有上午会议改下午</a>
 			</div>
 			
 		</div>
@@ -31,6 +31,8 @@
 		<br><br><br>
 		
 		<div id="selectname"></div>
+		<br>
+		<div id="selecttime"></div>
         
 <script>
 mini.parse();
@@ -108,12 +110,72 @@ function onRowclick(e) {
 	
 	if (roleid == "fundmanager") {
 		cancelMeetingButton.setHref("./cancelMeetingForFund/" + fundgrid.getSelected().id + ".do");		
-		AMtoPMButton.setHref("./AMtoPMForFund/" + fundgrid.getSelected().id + ".do");		
+		AMtoPMButton.setHref("./AMtoPMForFund/" + fundgrid.getSelected().id + ".do");	
+
+		var div = (function () {/*
+			<h1>请选择时间</h1>
+	        <div id="timegrid" class="mini-datagrid" style="width:800px;height:290px;"
+	            idField="id" allowResize="true"
+	            borderStyle="border-left:0;border-right:0;" onrowclick="onRowclicklv2"
+	        >
+            <div property="columns">
+                <div field="date" width="100" headerAlign="center" allowSort="true">已选择日期</div>     
+                <div field="time_window" width="150" headerAlign="center" allowSort="true">已选择时间</div>
+            </div>
+        	</div>	     
+			*/}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
+			
+		document.getElementById("selecttime").innerHTML = div;
+	        
+		mini.parse();
+ 	    var timegrid = mini.get("timegrid");	
+ 	    timegrid.setUrl("./getFundTime/" + fundgrid.getSelected().id + ".do");
+ 	    timegrid.reload();
 	}
 
 	if (roleid == "companymanager") {
 		cancelMeetingButton.setHref("./cancelMeetingForCompany/" + companygrid.getSelected().id + ".do");		
 		AMtoPMButton.setHref("./AMtoPMForCompany/" + companygrid.getSelected().id + ".do");	
+		
+		var div = (function () {/*
+			<h1>请选择时间</h1>
+	        <div id="timegrid" class="mini-datagrid" style="width:800px;height:290px;"
+	            idField="id" allowResize="true"
+	            borderStyle="border-left:0;border-right:0;" onrowclick="onRowclicklv2"
+	        >
+            <div property="columns">
+                <div field="date" width="100" headerAlign="center" allowSort="true">已选择日期</div>     
+                <div field="time_window" width="150" headerAlign="center" allowSort="true">已选择时间</div>
+            </div>
+        	</div>	     
+			*/}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
+			
+		document.getElementById("selecttime").innerHTML = div;
+	        
+		mini.parse();
+ 	    var timegrid = mini.get("timegrid");	
+ 	    timegrid.setUrl("./getCompanyTime/" + companygrid.getSelected().id + ".do");
+ 	    timegrid.reload();
+	}
+
+}
+
+
+function onRowclicklv2(e) {
+	
+	var roleid = rolelistbox.getValue();
+	var fundgrid = mini.get("fundgrid");
+	var companygrid = mini.get("companygrid");
+	var timegrid = mini.get("timegrid");
+	
+	if (roleid == "fundmanager") {
+		cancelMeetingButton.setHref("./cancelMeetingForFund/" + fundgrid.getSelected().id + "/" + timegrid.getSelected().id + ".do");		
+		AMtoPMButton.setHref("./AMtoPMForFund/" + fundgrid.getSelected().id + "/" + timegrid.getSelected().id + ".do");	
+	}
+
+	if (roleid == "companymanager") {
+		cancelMeetingButton.setHref("./cancelMeetingForCompany/" + companygrid.getSelected().id + "/" + timegrid.getSelected().id + ".do");		
+		AMtoPMButton.setHref("./AMtoPMForCompany/" + companygrid.getSelected().id + "/" + timegrid.getSelected().id + ".do");	
 	}
 
 }
