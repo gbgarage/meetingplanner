@@ -97,6 +97,7 @@ public class FundDao extends BaseDao{
         parameters.put("fund_id", fund.getId());
         parameters.put("availableTimeFrameId", availableTimeFrameId);
 
+
         OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getOneOnOneMeetingRequestByFundIdAndtimeFrameId", parameters);
         if (oneOnOneMeetingRequest == null) {
             return true;
@@ -133,7 +134,7 @@ public class FundDao extends BaseDao{
     	
     	
     }
-    
+
     public List<Company> getInterestedAndUnScheduleCompanies(Integer fundId) {
         return (List<Company>)getSqlMapClientTemplate().queryForList("getInterestedAndUnScheduleCompanies" , fundId);
     }

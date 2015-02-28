@@ -1,12 +1,14 @@
 package dfzq.dao;
 
 import com.common.BaseDao;
+import dfzq.constants.Status;
 import dfzq.model.Company;
 import dfzq.model.Fund;
 import dfzq.model.OneOnOneMeetingRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,5 +48,62 @@ public class ArrangeMeetingDao extends BaseDao {
         getSqlMapClientTemplate().update("updateArrangement", parameters);
 
 
+    }
+
+    public OneOnOneMeetingRequest getArrangeMeeting(Integer fundId, Integer companyId) {
+        Map map = new HashMap();
+        map.put("fundId", fundId);
+        map.put("companyId", companyId);
+
+        return (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getArrangeMeeting", map);
+
+
+
+    }
+
+    public List<OneOnOneMeetingRequest> findInterestingFunds(Integer companyId, Integer timeframeId) {
+
+        Map map = new HashMap();
+        map.put("companyId", companyId);
+        map.put("timeFrameId", timeframeId);
+        map.put("status", Status.CONFLICT_COMPANY_AND_NOT_ARRAGED);
+
+        return (List<OneOnOneMeetingRequest>) getSqlMapClientTemplate().queryForList("findInterestingFunds", map);
+
+
+    }
+
+    public void updateMeetingStatus(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
+        getSqlMapClientTemplate().update("updateMeetingStatus", oneOnOneMeetingRequest);
+    }
+
+    public List<OneOnOneMeetingRequest> get1on1List(Integer fundId, int[] beforeTimeFrame) {
+        Map map = new HashMap();
+        map.put("fundId", fundId);
+        map.put("timeFrame", convertArrayToINString(beforeTimeFrame));
+
+        return getSqlMapClientTemplate().queryForList("get1on1List", map);
+    }
+
+    private String convertArrayToINString(int[] timeFrames) {
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("(");
+        for (int timeFrame : timeFrames) {
+            stringBuffer.append(timeFrame);
+            stringBuffer.append(",");
+        }
+
+        stringBuffer.deleteCharAt(stringBuffer.length() - 1);
+        stringBuffer.append(")");
+        return stringBuffer.toString();
+
+    }
+
+    public OneOnOneMeetingRequest getArrangeMeetingByCompanyAndTime(Integer companyId, Integer timeFrameId) {
+        Map map = new HashMap();
+        map.put("companyId", companyId);
+        map.put("timeFrameId", timeFrameId);
+
+        return (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getArrangeMeetingByCompanyAndTime", map);
     }
 }

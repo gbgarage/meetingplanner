@@ -1,9 +1,6 @@
 package dfzq.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -84,7 +81,21 @@ public class Company {
 
 
     public boolean isConflict() {
-        return oneOnOneMeetingRequestList.size() > availableMeetingCount;
+
+
+        return caculateFundCompany(oneOnOneMeetingRequestList) > availableMeetingCount;
+    }
+
+    private int caculateFundCompany(Set<OneOnOneMeetingRequest> oneOnOneMeetingRequestList) {
+        Set<String> fundCompany = new HashSet<String>();
+        for(OneOnOneMeetingRequest request : oneOnOneMeetingRequestList){
+            fundCompany.add(request.getFund().getFundName());
+
+        }
+
+        return fundCompany.size();
+
+
     }
 
     @Override

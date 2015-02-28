@@ -64,4 +64,8 @@ public List<Schedule> listScheduleByRange(Timestamp st ,Timestamp et, String sAt
    public List<ConflictResult> listConflicts() {
        return (List<ConflictResult>)getSqlMapClientTemplate().queryForList("listConflicts");
       }
+
+    public void deleteSchedule(String attendee) {
+        getSqlMapClientTemplate().delete("deleteScheduleByAttendee", attendee);
+    }
 }
