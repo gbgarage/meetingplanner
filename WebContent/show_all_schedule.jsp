@@ -39,17 +39,36 @@
     </div>
 </div>
 
-
-
 <br/>
-资源冲突列表<br/>
-<div id="datagrid2" class="mini-datagrid" style="width:100%;height:400px" 
-    url="${contextPath}/listconflicts.do" showPager="false" pageSize="500" >
-    <div property="columns">
-          <div field="CompanyName" width="120">上市公司</div>
-          <div field="FundName" width="100">基金公司</div>
-          <div field="StatusCode" width="100">冲突</div>
-    </div>
+<div style="width:100%;height:400px">
+	<div style="width:70%;height:400px;float:left;">
+	资源冲突列表<br/>
+		<div id="datagrid2" class="mini-datagrid" style="width:100%;height:400px"
+		    url="${contextPath}/listconflicts.do" showPager="false" pageSize="500" >
+		    <div property="columns">
+		          <div field="CompanyName" width="120">上市公司</div>
+		          <div field="FundName" width="100">基金公司</div>
+		          <div field="StatusCode" width="100">冲突</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="width:30%;height:400px;float:left;">
+	&nbsp &nbsp 解决冲突方案 <br>
+	<div> <h4> 增加时间  </h4> 
+	<p> 工作餐时间 <a id="buttion1" class="mini-button">调整为工作餐</a> </p>
+	<p> 自定义时间 <a id="buttion2" class="mini-button">自定义时间</a> </p>
+	</div>
+	<div> <h4> 会议降级  </h4>
+		  <p> 将选中会议调整至一对多 <a id="buttion3" class="mini-button">降级</a> </p> 
+	</div>
+	<div> <h4> 替换调整 </h4>
+		  <p> 请将冲突拖动至可替换的位置 </p>
+	</div>
+	
+	
+	</div>
+
 </div>
 
 <script type="text/javascript">
