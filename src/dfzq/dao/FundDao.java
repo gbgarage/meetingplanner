@@ -134,5 +134,7 @@ public class FundDao extends BaseDao{
     	
     }
     
-
+    public List<Company> getInterestedAndUnScheduleCompanies(Integer fundId) {
+        return (List<Company>)getSqlMapClientTemplate().queryForList("getInterestedAndUnScheduleCompanies" , fundId);
+    }
 }

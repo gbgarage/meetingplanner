@@ -210,25 +210,27 @@
 <!--     </select> -->
 
     <select id="loadAvailableMeetingRequest" parameterClass="map" resultClass="OneOnOneMeetingRequest">
-select  one.company_id as companyId , one.fund_id as fundId
+select  one.company_id as companyId , one.fund_id as fundId, one.must_have_flag as mustHaveFlag
 from company c
 inner join one_on_one_meeting_request one
 on one.company_id= c.id
 where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ ) and
 not exists (select 1 from company_availbility where company_id=c.id and time_frame_id in  $otherTimeFrame$ )
-group by  one.company_id , one.fund_id
+group by  one.company_id , one.fund_id, one.must_have_flag
+
 
 
     </select>
 
     <select id="loadAvailableWholeDayCompanies" parameterClass="map" resultClass="OneOnOneMeetingRequest">
-select  one.company_id as companyId , one.fund_id as fundId
+select  one.company_id as companyId , one.fund_id as fundId , one.must_have_flag as mustHaveFlag
 from company c
 inner join one_on_one_meeting_request one
 on one.company_id= c.id
 where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ ) and
  exists (select 1 from company_availbility where company_id=c.id and time_frame_id in  $otherTimeFrame$ )
-group by  one.company_id , one.fund_id
+group by  one.company_id , one.fund_id, one.must_have_flag
+
 
 
     </select>
@@ -267,19 +269,19 @@ group by  one.company_id , one.fund_id
       where c.id=#id#
     </select>
 
-    <select id="getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+    <select id="getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId" parameterClass="map"
+            resultClass="OneOnOneMeetingRequest">
       select status as status, company_id as companyId , fund_id as fundId
       from one_on_one_meeting_request
-      where company_id=#company_id# and time_frame_id=#availableTimeFrameId#
+      where company_id=#company_id# and time_frame_id=#availableTimeFrameId#  and status not in (9, 6)
     </select>
 
-
-    <select id="getOneOnOneMeetingRequestByFundIdAndtimeFrameId" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+    <select id="getOneOnOneMeetingRequestByFundIdAndtimeFrameId" parameterClass="map"
+            resultClass="OneOnOneMeetingRequest">
       select status as status, company_id as companyId , fund_id as fundId
       from one_on_one_meeting_request
-      where fund_id=#fund_id# and time_frame_id=#availableTimeFrameId#
+      where fund_id=#fund_id# and time_frame_id=#availableTimeFrameId#   and status not in (6,9)
     </select>
-
 
 <!-- 	save fund changes from frontend -->
 	<insert id="insertFundfromChanges" parameterClass="FundChangeRow">
@@ -357,5 +359,66 @@ group by  one.company_id , one.fund_id
     <delete id="deleteTblSchedule">
     	delete from tbl_schedule
     </delete>
+
+
+    <select id="getArrangeMeeting" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+        select   fund_id as fundId , company_id as companyId , time_frame_id as timeFrameId
+        from one_on_one_meeting_request
+        where     fund_id=#fundId# and company_id=#companyId#
+
+
+    </select>
+
+    <select id="findInterestingFunds" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+        select request.fund_id as fundId , request.company_id as companyId , request.time_frame_id as timeFrameId
+        from   one_on_one_meeting_request request inner join  fund fund
+        on fund.id= request.fund_id
+        where request.company_id = #companyId#   and  status=#status#
+        order by request.must_have_flag desc , fund.priority desc
+
+
+
+    </select>
+
+
+    <update id="updateMeetingStatus" parameterClass="OneOnOneMeetingRequest">
+        update    one_on_one_meeting_request
+         set status=#status#  , time_frame_id=#timeFrameId#
+        where company_id = #companyId#  and  fund_id=#fundId#
+    </update>
+
+    <delete id="deleteScheduleByAttendee" parameterClass="string">
+        delete from tbl_schedule
+        where attendee=#attendee#
+
+    </delete>
+
+
+    <select id="get1on1List" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+             select fund_id as fundId , company_id as companyId , time_frame_id as timeFrameId
+        from   one_on_one_meeting_request
+               where fund_id = #fundId#   and  time_frame_id in $timeFrame$
+
+    </select>
+
+    <select id="getArrangeMeetingByCompanyAndTime" parameterClass="map" resultClass="OneOnOneMeetingRequest">
+        select fund_id as fundId , company_id as companyId , time_frame_id as timeFrameId
+        from   one_on_one_meeting_request
+        where company_id = #companyId#   and  time_frame_id =#timeFrameId#
+
+
+
+    </select>
+
+
+    <select id="getInterestedAndUnScheduleCompanies" parameterClass="int" resultMap="company-result">
+         SELECT company.*
+      FROM one_on_one_meeting_request
+      INNER JOIN company
+      ON one_on_one_meeting_request.company_id = company.id
+      where fund_id = #fundid# and one_on_one_meeting_request.time_frame_id is null
+
+
+    </select>
 
 </sqlMap>
