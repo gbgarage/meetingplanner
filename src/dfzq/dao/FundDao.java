@@ -42,8 +42,8 @@ public class FundDao extends BaseDao{
     }
 
     
-    public List<Fund> getFundList() {
-    	return (List<Fund>)getSqlMapClientTemplate().queryForList("getFundList");
+    public List<Fund> getFundList(String fundName) {
+    	return (List<Fund>)getSqlMapClientTemplate().queryForList("getFundList", "%" + fundName + "%");
     }
     
     public List<Timeframe> getFundTime(Integer fundid) {

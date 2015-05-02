@@ -22,7 +22,7 @@
 </head>
 <body>
     <div class="mini-toolbar" style="text-align:center;line-height:30px;" borderStyle="border:0;">
-          <label >名称：</label>
+          <label >基金名称：</label>
           <input id="key" class="mini-textbox" style="width:150px;" onenter="onKeyEnter"/>
           <a class="mini-button" style="width:60px;" onclick="search()">查询</a>
     </div>

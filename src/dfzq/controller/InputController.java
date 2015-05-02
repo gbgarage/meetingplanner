@@ -1,5 +1,6 @@
 package dfzq.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -62,8 +63,9 @@ public class InputController {
 	public DataList getFundList(
 			@RequestParam(value="pageIndex", defaultValue="0") int pageIndex, 
 			@RequestParam(value="pageSize", defaultValue="999") int pageSize, 
+			@RequestParam(value="key", defaultValue="%") String fundName,
 			Model model) {
-		List <Fund> totalFunds = fundDao.getFundList();
+		List <Fund> totalFunds = fundDao.getFundList(fundName);
 		int fromIndex = pageIndex*pageSize;
 		int toIndex = pageIndex*pageSize+pageSize;
 		
@@ -81,8 +83,9 @@ public class InputController {
 	public DataList getCompanyList(
 			@RequestParam(value="pageIndex", defaultValue="0") int pageIndex, 
 			@RequestParam(value="pageSize", defaultValue="999") int pageSize, 
+			@RequestParam(value="key", defaultValue="%") String companyName,
 			Model model) {
-		List <Company> totalCompanies = companyDao.getCompanyList();
+		List <Company> totalCompanies = companyDao.getCompanyList(companyName);
 		int fromIndex = pageIndex*pageSize;
 		int toIndex = pageIndex*pageSize+pageSize;
 		

@@ -66,8 +66,8 @@
         <result column="contact" property="contact"/>
     </resultMap>
 
-    <select id="getCompanyList" parameterClass="java.util.Map" resultMap="company-result">
-      select * from company
+    <select id="getCompanyList" parameterClass="String" resultMap="company-result">
+      select * from company where company.name like #companyName#
     </select>
 
     <!-- return 1v1 company list for a fund -->
@@ -196,26 +196,26 @@
     <!--     </select> -->
 
     <select id="loadAvailableMeetingRequest" parameterClass="map" resultClass="OneOnOneMeetingRequest">
-select  one.company_id as companyId , one.fund_id as fundId, one.must_have_flag as mustHaveFlag
+select  one.company_id as companyId , one.fund_id as fundId, one.musthave as mustHaveFlag
 from company c
 inner join one_on_one_meeting_request one
 on one.company_id= c.id
 where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ ) and
 not exists (select 1 from company_availbility where company_id=c.id and time_frame_id in  $otherTimeFrame$ )
-group by  one.company_id , one.fund_id, one.must_have_flag
+group by  one.company_id , one.fund_id, one.musthave
 
 
 
     </select>
 
     <select id="loadAvailableWholeDayCompanies" parameterClass="map" resultClass="OneOnOneMeetingRequest">
-select  one.company_id as companyId , one.fund_id as fundId , one.must_have_flag as mustHaveFlag
+select  one.company_id as companyId , one.fund_id as fundId , one.musthave as mustHaveFlag
 from company c
 inner join one_on_one_meeting_request one
 on one.company_id= c.id
 where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ ) and
  exists (select 1 from company_availbility where company_id=c.id and time_frame_id in  $otherTimeFrame$ )
-group by  one.company_id , one.fund_id, one.must_have_flag
+group by  one.company_id , one.fund_id, one.musthave
 
 
 
@@ -331,7 +331,7 @@ group by  one.company_id , one.fund_id, one.must_have_flag
         from   one_on_one_meeting_request request inner join  fund fund
         on fund.id= request.fund_id
         where request.company_id = #companyId#   and  status=#status#
-        order by request.must_have_flag desc , fund.priority desc
+        order by request.musthave desc , fund.priority desc
 
 
 

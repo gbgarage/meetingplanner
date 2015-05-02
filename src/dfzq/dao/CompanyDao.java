@@ -62,8 +62,8 @@ public class CompanyDao extends BaseDao {
 
     }
 
-    public List<Company> getCompanyList() {
-    	return (List<Company>)getSqlMapClientTemplate().queryForList("getCompanyList");
+    public List<Company> getCompanyList(String companyName) {
+    	return (List<Company>)getSqlMapClientTemplate().queryForList("getCompanyList", "%" + companyName + "%");
     }
    
     public List<Timeframe> getCompanyTime(Integer companyid) {

@@ -16,8 +16,8 @@
         <result column="priority" property="priority"/>
     </resultMap>
 
-    <select id="getFundList" parameterClass="java.util.Map" resultMap="fund-result">
-      select * from fund
+    <select id="getFundList" parameterClass="String" resultMap="fund-result">
+      select * from fund where fund.fund_name like #fundName#
     </select>
 
     <!-- 	save fund changes from frontend -->
