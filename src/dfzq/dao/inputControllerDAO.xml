@@ -70,6 +70,60 @@
 		where fund.id = #fundid#
 		
     </select>
+    
+<!-- return 1one1meetingrequest and small meetingrequest for a fund -->
+
+    <resultMap id="meetingrequest-result" class="MeetingRequestExcelItem">
+        <result column="company.name" property="companyName"/>
+        <result column="fund.fund_name" property="fundName"/>
+        <result column="time_frame.time_window" property="timeSlot"/>
+        <result column="11mr.time_frame_id" property="meetingType"/>
+        <result column="11mr.status" property="meetingStatus"/>
+    </resultMap>
+    
+    <select id="getFundRequest" resultMap="meetingrequest-result">
+    
+		SELECT fund.fund_name, company.name, 
+		time_frame.time_window, 11mr.status, 11mr.time_frame_id
+		FROM (((SELECT * FROM one_on_one_meeting_request WHERE fund_id=#fundid#) as 11mr 
+		INNER JOIN fund ON 11mr.fund_id = fund.id) 
+		INNER JOIN company ON 11mr.company_id = company.id)
+		INNER JOIN time_frame ON 11mr.time_frame_id = time_frame.id
+		
+		UNION
+		
+		SELECT fund.fund_name, company.name, 
+		time_frame.time_window, smmr.status, smmr.time_frame_id
+		FROM (((SELECT * FROM small_meeting_request WHERE fund_id=#fundid#) as smmr 
+		INNER JOIN fund ON smmr.fund_id = fund.id) 
+		INNER JOIN company ON smmr.company_id = company.id)
+		INNER JOIN time_frame ON smmr.time_frame_id = time_frame.id
+		
+		ORDER BY time_frame_id ASC;
+    
+    </select>
+
+    <select id="getCompanyRequest" resultMap="meetingrequest-result">
+    
+		SELECT fund.fund_name, company.name, 
+		time_frame.time_window, 11mr.status, 11mr.time_frame_id
+		FROM (((SELECT * FROM one_on_one_meeting_request WHERE company_id=#companyid#) as 11mr 
+		INNER JOIN fund ON 11mr.fund_id = fund.id) 
+		INNER JOIN company ON 11mr.company_id = company.id)
+		INNER JOIN time_frame ON 11mr.time_frame_id = time_frame.id
+		
+		UNION
+		
+		SELECT fund.fund_name, company.name, 
+		time_frame.time_window, smmr.status, smmr.time_frame_id
+		FROM (((SELECT * FROM small_meeting_request WHERE company_id=#companyid#) as smmr 
+		INNER JOIN fund ON smmr.fund_id = fund.id) 
+		INNER JOIN company ON smmr.company_id = company.id)
+		INNER JOIN time_frame ON smmr.time_frame_id = time_frame.id
+		
+		ORDER BY time_frame_id ASC;
+    
+    </select>
 
 </sqlMap>
 
