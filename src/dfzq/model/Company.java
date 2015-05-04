@@ -19,7 +19,7 @@ public class Company {
 
     private int availableMeetingCount;
 
-    private Set<OneOnOneMeetingRequest> oneOnOneMeetingRequestList = new TreeSet<OneOnOneMeetingRequest>();
+    private Set<MeetingRequest> meetingRequestList = new TreeSet<MeetingRequest>();
 
 
     public Company() {
@@ -63,19 +63,19 @@ public class Company {
         this.availableMeetingCount = availableMeetingCount;
     }
 
-    public Set<OneOnOneMeetingRequest> getOneOnOneMeetingRequestList() {
-        return oneOnOneMeetingRequestList;
+    public Set<MeetingRequest> getOneOnOneMeetingRequestList() {
+        return meetingRequestList;
     }
 
-    public void addOneOnOneMeetingRequest(OneOnOneMeetingRequest request) {
-        oneOnOneMeetingRequestList.add(request);
+    public void addOneOnOneMeetingRequest(MeetingRequest request) {
+        meetingRequestList.add(request);
     }
 
     @Override
     public String toString() {
         return "Company{" +
                 "name='" + name + '\'' +
-                ", oneOnOneMeetingRequestList=" + oneOnOneMeetingRequestList +
+                ", oneOnOneMeetingRequestList=" + meetingRequestList +
                 '}';
     }
 
@@ -83,14 +83,16 @@ public class Company {
     public boolean isConflict() {
 
 
-        return caculateFundCompany(oneOnOneMeetingRequestList) > availableMeetingCount;
+        return caculateFundCompany(meetingRequestList) > availableMeetingCount;
     }
 
-    private int caculateFundCompany(Set<OneOnOneMeetingRequest> oneOnOneMeetingRequestList) {
+    private int caculateFundCompany(Set<MeetingRequest> meetingRequestList) {
         Set<String> fundCompany = new HashSet<String>();
-        for(OneOnOneMeetingRequest request : oneOnOneMeetingRequestList){
-            fundCompany.add(request.getFund().getFundName());
-
+        for (MeetingRequest request : meetingRequestList) {
+            if (request instanceof OneOnOneMeetingRequest) {
+                OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) request;
+                fundCompany.add(oneOnOneMeetingRequest.getFund().getFundName());
+            }
         }
 
         return fundCompany.size();

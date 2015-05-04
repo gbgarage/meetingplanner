@@ -24,7 +24,7 @@ public class Fund implements Comparable<Fund> {
     private int priority;
 
 
-    private List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = new ArrayList<OneOnOneMeetingRequest>();
+    private List<MeetingRequest> meetingRequests = new ArrayList<MeetingRequest>();
 
 
     public int getPriority() {
@@ -86,12 +86,12 @@ public class Fund implements Comparable<Fund> {
         this.fundAvailabilityCount = fundAvailabilityCount;
     }
 
-    public void addOneOnOneMeetingRequest(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
-        oneOnOneMeetingRequests.add(oneOnOneMeetingRequest);
+    public void addOneOnOneMeetingRequest(MeetingRequest meetingRequest) {
+        meetingRequests.add(meetingRequest);
     }
 
-    public List<OneOnOneMeetingRequest> getOneOnOneMeetingRequests() {
-        return oneOnOneMeetingRequests;
+    public List<MeetingRequest> getOneOnOneMeetingRequests() {
+        return meetingRequests;
     }
 
     @Override
@@ -103,7 +103,7 @@ public class Fund implements Comparable<Fund> {
     }
 
     public boolean isConflict() {
-        return oneOnOneMeetingRequests.size() > fundAvailabilityCount;
+        return meetingRequests.size() > fundAvailabilityCount;
     }
 
     @Override

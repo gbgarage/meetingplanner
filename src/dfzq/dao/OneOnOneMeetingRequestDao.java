@@ -1,25 +1,21 @@
 package dfzq.dao;
 
-import java.util.Iterator;
 import java.util.List;
 
+import dfzq.model.MeetingRequest;
 import org.springframework.stereotype.Component;
 
 import com.common.BaseDao;
 
-import dfzq.model.Company;
-import dfzq.model.Fund;
-import dfzq.model.OneOnOneMeetingRequest;
-
 @Component
 public class OneOnOneMeetingRequestDao extends BaseDao{
 
-    public List<OneOnOneMeetingRequest> getMeetReqList() {
-    	return (List<OneOnOneMeetingRequest>)getSqlMapClientTemplate().queryForList("getMeetReqList");
+    public List<MeetingRequest> getMeetReqList() {
+    	return (List<MeetingRequest>)getSqlMapClientTemplate().queryForList("getMeetReqList");
     }
     
-    public List<OneOnOneMeetingRequest> getMeetReqListForFund(Integer fundid) {
-    	return (List<OneOnOneMeetingRequest>)getSqlMapClientTemplate().queryForList("getMeetReqListForFund", fundid);
+    public List<MeetingRequest> getMeetReqListForFund(Integer fundid) {
+    	return (List<MeetingRequest>)getSqlMapClientTemplate().queryForList("getMeetReqListForFund", fundid);
     }
    
 }

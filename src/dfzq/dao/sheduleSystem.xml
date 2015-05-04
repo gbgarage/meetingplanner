@@ -10,6 +10,8 @@
 
     <typeAlias alias="Fund" type="dfzq.model.Fund"/>
     <typeAlias alias="OneOnOneMeetingRequest" type="dfzq.model.OneOnOneMeetingRequest"/>
+    <typeAlias alias="OneManyMeetingRequest" type="dfzq.model.OneManyMeetingRequest"/>
+    <typeAlias alias="SmallGroupMeetingRequest" type="dfzq.model.SmallGroupMeetingRequest"/>
     <typeAlias alias="Company" type="dfzq.model.Company"/>
     <typeAlias alias="Availability" type="dfzq.model.Availability"/>
     <typeAlias alias="Timeframe" type="dfzq.model.Timeframe"/>
@@ -162,9 +164,9 @@
     	delete from company_availbility 
     	where company_id = #companyid#
     </delete>
-    
-<!--     insert 1one1 request for a fund -->
-	<insert id="insert1on1Company" parameterClass="OneOnOneMeetingRequest">
+
+    <!--     insert 1one1 request for a fund -->
+    <insert id="insert1on1Company" parameterClass="OneOnOneMeetingRequest">
 		insert into one_on_one_meeting_request (fund_id, company_id, musthave, small)
 		value (#fundId#, #companyId#, #musthave#, #small#)
 	</insert>
@@ -208,13 +210,55 @@ group by  one.company_id , one.fund_id, one.musthave
 
     </select>
 
+
+    <select id="loadAvailableSmallGroupMeetingRequest" parameterClass="map" resultClass="SmallGroupMeetingRequest">
+        select small.company_id as companyId
+        from company c
+        inner join small_meeting_request small
+        on small.company_id= c.id
+        where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ )
+        <dynamic>
+            <isNotEmpty prepend="AND" property="otherTimeFrame">
+                not exists (select 1 from company_availbility where company_id=c.id and time_frame_id in
+                $otherTimeFrame$ )
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+    <select id="loadFundIdByCompnayId" parameterClass="map" resultClass="int">
+        select small.fund_id as id
+        from company c
+        inner join small_meeting_request small
+        on small.company_id= c.id
+        where small.company_id=#companyId# and
+        exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ )
+        <dynamic>
+            <isNotEmpty prepend="AND" property="otherTimeFrame">
+                not exists (select 1 from company_availbility where company_id=c.id and time_frame_id in
+                $otherTimeFrame$ )
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+    <select id="loadAvailableOneToManyMeetingRequest" parameterClass="map" resultClass="OneManyMeetingRequest">
+        select c.id as companyId
+        from company c
+        where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ )
+        <dynamic>
+            <isNotEmpty prepend="AND" property="otherTimeFrame">
+                not exists (select 1 from company_availbility where company_id=c.id and time_frame_id in
+                $otherTimeFrame$ )
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
     <select id="loadAvailableWholeDayCompanies" parameterClass="map" resultClass="OneOnOneMeetingRequest">
 select  one.company_id as companyId , one.fund_id as fundId , one.musthave as mustHaveFlag
 from company c
 inner join one_on_one_meeting_request one
 on one.company_id= c.id
-where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ ) and
- exists (select 1 from company_availbility where company_id=c.id and time_frame_id in  $otherTimeFrame$ )
+where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ )
+
 group by  one.company_id , one.fund_id, one.musthave
 
 
@@ -245,6 +289,24 @@ group by  one.company_id , one.fund_id, one.musthave
         update one_on_one_meeting_request
         set status=#status#, time_frame_id=#timeFrameId#
         where fund_id=#fund_id# and company_id=#company_id#
+
+
+    </update>
+
+
+    <update id="updateSmallGroupArrangement" parameterClass="map">
+        update small_meeting_request
+        set status=#status#, time_frame_id=#timeFrameId#
+        where company_id=#company_id#
+
+
+    </update>
+
+
+    <update id="saveOneManyArrangement" parameterClass="map">
+        insert into  one_many_meeting_request(company_id, time_frame_id, status)
+       values(#companyId#,#timeFrameId#,##)
+
 
 
     </update>
@@ -292,12 +354,12 @@ group by  one.company_id , one.fund_id, one.musthave
     <!--     return 1on1 meeting request -->
 
     <resultMap id="meetreq-result" class="OneOnOneMeetingRequest">
-       <result column="fund_name" property="fund.fundName" />
-       <result column="name" property="company.name" />
-       <result column="fundid" property="fundId" />
-       <result column="companyid" property="companyId" />
-       <result column="musthave" property="musthave" />
-       <result column="small" property="small" />
+        <result column="fund_name" property="fund.fundName"/>
+        <result column="name" property="company.name"/>
+        <result column="fundid" property="fundId"/>
+        <result column="companyid" property="companyId"/>
+        <result column="musthave" property="musthave"/>
+        <result column="small" property="small"/>
     </resultMap>
 
     <select id="getMeetReqList" resultMap="meetreq-result">
@@ -305,7 +367,7 @@ group by  one.company_id , one.fund_id, one.musthave
 		left join fund on one_on_one_meeting_request.fund_id = fund.id
 		left join company on one_on_one_meeting_request.company_id = company.id
     </select>
-   
+
 
     <!--     clear meeting request calculate result -->
     <update id="updateOneOnOneMeetingRequest">

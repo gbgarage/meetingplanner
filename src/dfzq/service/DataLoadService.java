@@ -27,13 +27,13 @@ public class DataLoadService {
     public void saveFund(Fund fund) {
         Integer id = fundDao.saveFund(fund);
         fund.setId(id);
-        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : fund.getOneOnOneMeetingRequests()) {
-            if (oneOnOneMeetingRequest != null) {
-                Company company = oneOnOneMeetingRequest.getCompany();
+        for (MeetingRequest meetingRequest : fund.getOneOnOneMeetingRequests()) {
+            if (meetingRequest != null) {
+                Company company = meetingRequest.getCompany();
 
                 company = companyDao.saveOrGetId(company);
-                oneOnOneMeetingRequest.setCompany(company);
-                fundDao.saveOneOnOneMeetingRequest(oneOnOneMeetingRequest);
+                meetingRequest.setCompany(company);
+                fundDao.saveOneOnOneMeetingRequest(meetingRequest);
             }
         }
 
@@ -54,34 +54,36 @@ public class DataLoadService {
 
 
     public Resource loadResource(int[] timeFrames, int[] otherTimeFrames) {
-        List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = companyDao.loadAvailableCompanies(timeFrames,otherTimeFrames);
-        return createResource(oneOnOneMeetingRequests);
+        List<MeetingRequest> meetingRequests = companyDao.loadAvailableCompanies(timeFrames, otherTimeFrames);
+        return createResource(meetingRequests);
 
 
     }
 
-    private Resource createResource(List<OneOnOneMeetingRequest> oneOnOneMeetingRequests) {
+    private Resource createResource(List<MeetingRequest> meetingRequests) {
         Resource resource = new Resource();
-        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : oneOnOneMeetingRequests) {
-            Company company = oneOnOneMeetingRequest.getCompany();
+        for (MeetingRequest meetingRequest : meetingRequests) {
+            Company company = meetingRequest.getCompany();
             if (company.isConflict()) {
                 resource.addConflictCompany(company);
             } else {
                 resource.addNoneConflictCompany(company);
             }
-
-            Fund fund = oneOnOneMeetingRequest.getFund();
-            if (fund.isConflict()) {
-                resource.addConflictFund(fund);
+            if (meetingRequest instanceof OneOnOneMeetingRequest) {
+                OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) meetingRequest;
+                Fund fund = oneOnOneMeetingRequest.getFund();
+                if (fund.isConflict()) {
+                    resource.addConflictFund(fund);
+                }
             }
 
         }
         return resource;
     }
 
-    public Resource loadAvailableWholeDayCompanies(int[] timeFrames, int[] otherTimeFrames) {
-        List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = companyDao.loadAvailableWholeDayCompanies(timeFrames,otherTimeFrames);
-        return createResource(oneOnOneMeetingRequests);
+    public Resource loadAvailableWholeDayCompanies(int[] timeFrames) {
+        List<MeetingRequest> meetingRequests = companyDao.loadAvailableWholeDayCompanies(timeFrames);
+        return createResource(meetingRequests);
 
 
     }
