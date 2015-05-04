@@ -17,5 +17,9 @@ public class MeetingRequestExcelDao extends BaseDao{
     public List<MeetingRequestExcelItem> getCompanyRequest(int companyid) {
     	return (List<MeetingRequestExcelItem>)getSqlMapClientTemplate().queryForList("getCompanyRequest", companyid);
     }
+    
+    public List<MeetingRequestExcelItem> getAllRequest() {
+    	return (List<MeetingRequestExcelItem>)getSqlMapClientTemplate().queryForList("getAllRequest");
+    }
 
 }

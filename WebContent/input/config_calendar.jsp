@@ -22,6 +22,7 @@
 			</div>
 			
 			<a id="submitbutton" class="mini-button" style="margin: 20px">提交</a>
+			<a id="exportexcelbutton" class="mini-button" style="margin: 20px">导出</a>
 		
 		</div>
 		
@@ -32,6 +33,7 @@ mini.parse();
 
 var rolelistbox = mini.get("rolelistbox");
 var submitbutton = mini.get("submitbutton");
+var exportexcelbutton = mini.get("exportexcelbutton");
 
 function onRoleChanged(e) {
 	
@@ -90,6 +92,7 @@ function onRoleChanged(e) {
 	
 	if (roleid == "organizer") {
 		submitbutton.setHref("../show_all_schedule.jsp");
+		exportexcelbutton.setHref("../export/excelschedule.do?usertype=organizer");
 	}
 	
 }
@@ -102,10 +105,12 @@ function onRowclick(e) {
 	
 	if (roleid == "fundmanager") {
 		submitbutton.setHref("../schedule.jsp?attendee=f" + fundgrid.getSelected().id); 
+		exportexcelbutton.setHref("../export/excelschedule.do?usertype=fundmanager&id="+ fundgrid.getSelected().id);
 	}
 
 	if (roleid == "companymanager") {
 		submitbutton.setHref("../schedule.jsp?attendee=c" + companygrid.getSelected().id); 
+		exportexcelbutton.setHref("../export/excelschedule.do?usertype=companymanager&id="+ companygrid.getSelected().id); 
 	}
 
 }

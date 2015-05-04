@@ -79,10 +79,6 @@
        <property name="sqlMapClient" ref="sqlMapClient"/>
     </bean> 
 
-
-
-
-
     <!--  定时器开关  结束-->
 
 
