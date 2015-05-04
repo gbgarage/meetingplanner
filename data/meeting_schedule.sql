@@ -816,3 +816,10 @@ INSERT INTO `time_frame` (`id`, `date`, `time_window`, `region`, `start_time`, `
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+
+CREATE TABLE IF NOT EXISTS `one_many_meeting_request` (
+  `company_id` int(11) NOT NULL,
+  `status` int(11) DEFAULT NULL,
+  `time_frame_id` int(11) DEFAULT NULL
+  PRIMARY KEY (`company_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

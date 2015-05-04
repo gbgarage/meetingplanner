@@ -27,6 +27,7 @@ import dfzq.model.Availability;
 import dfzq.model.Company;
 import dfzq.model.CompanyChangeRow;
 import dfzq.model.Fund;
+import dfzq.model.MeetingRequest;
 import dfzq.model.OneOnOneMeetingRequest;
 import dfzq.model.Timeframe;
 import dfzq.model.FundChangeRow;
@@ -116,13 +117,13 @@ public class InputController {
 //		DataList dl = new DataList(totalCompanies.size(),returnCompanies);
 //		
 //		return dl;
-		List <OneOnOneMeetingRequest> totalMeetReq = oneOnoneMeetingRequestDao.getMeetReqListForFund(fundid);
+		List <MeetingRequest> totalMeetReq = oneOnoneMeetingRequestDao.getMeetReqListForFund(fundid);
 		int fromIndex = pageIndex*pageSize;
 		int toIndex = pageIndex*pageSize+pageSize;
 		
 		if (toIndex > totalMeetReq.size()) toIndex = totalMeetReq.size();
 		
-		List <OneOnOneMeetingRequest> returnMeetReqs = totalMeetReq.subList(fromIndex, toIndex);
+		List <MeetingRequest> returnMeetReqs = totalMeetReq.subList(fromIndex, toIndex);
 		
 		DataList dl = new DataList(totalMeetReq.size(),returnMeetReqs);
 		return dl;
@@ -294,13 +295,13 @@ public class InputController {
 			@RequestParam(value="pageIndex", defaultValue="0") int pageIndex, 
 			@RequestParam(value="pageSize", defaultValue="999") int pageSize, 
 			Model model) {
-		List <OneOnOneMeetingRequest> totalMeetReq = oneOnoneMeetingRequestDao.getMeetReqList();
+		List <MeetingRequest> totalMeetReq = oneOnoneMeetingRequestDao.getMeetReqList();
 		int fromIndex = pageIndex*pageSize;
 		int toIndex = pageIndex*pageSize+pageSize;
 		
 		if (toIndex > totalMeetReq.size()) toIndex = totalMeetReq.size();
 		
-		List <OneOnOneMeetingRequest> returnMeetReqs = totalMeetReq.subList(fromIndex, toIndex);
+		List <MeetingRequest> returnMeetReqs = totalMeetReq.subList(fromIndex, toIndex);
 		
 		DataList dl = new DataList(totalMeetReq.size(),returnMeetReqs);
 		return dl;

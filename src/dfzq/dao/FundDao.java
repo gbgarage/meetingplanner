@@ -9,6 +9,7 @@ import com.common.BaseDao;
 import dfzq.model.Company;
 import dfzq.model.Fund;
 import dfzq.model.FundAvailability;
+import dfzq.model.MeetingRequest;
 import dfzq.model.OneOnOneMeetingRequest;
 import dfzq.model.Timeframe;
 import dfzq.model.FundChangeRow;
@@ -37,7 +38,7 @@ public class FundDao extends BaseDao{
     }
 
 
-    public void saveOneOnOneMeetingRequest(OneOnOneMeetingRequest oneOnOneMeetingRequest){
+    public void saveOneOnOneMeetingRequest(MeetingRequest oneOnOneMeetingRequest){
         getSqlMapClientTemplate().insert("insertOneOnOneMeetingRequest",oneOnOneMeetingRequest);
     }
 

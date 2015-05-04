@@ -123,6 +123,14 @@
 		INNER JOIN company ON smmr.company_id = company.id)
 		INNER JOIN time_frame ON smmr.time_frame_id = time_frame.id
 		
+		UNION
+		
+		SELECT '*' as fund_name, company.name, 
+		time_frame.time_window, 1mmr.status, 1mmr.time_frame_id, '1toMany' as meetingtype
+		FROM ((SELECT * FROM one_many_meeting_request WHERE company_id=#companyid#) as 1mmr 
+		INNER JOIN company ON 1mmr.company_id = company.id)
+		INNER JOIN time_frame ON 1mmr.time_frame_id = time_frame.id
+		
 		ORDER BY time_frame_id ASC;
     
     </select>
@@ -144,6 +152,14 @@
 		INNER JOIN fund ON smmr.fund_id = fund.id) 
 		INNER JOIN company ON smmr.company_id = company.id)
 		INNER JOIN time_frame ON smmr.time_frame_id = time_frame.id
+		
+		UNION
+		
+		SELECT '*' as fund_name, company.name, 
+		time_frame.time_window, 1mmr.status, 1mmr.time_frame_id, '1toMany' as meetingtype
+		FROM ((SELECT * FROM one_many_meeting_request) as 1mmr 
+		INNER JOIN company ON 1mmr.company_id = company.id)
+		INNER JOIN time_frame ON 1mmr.time_frame_id = time_frame.id
 		
 		ORDER BY time_frame_id ASC;
     
