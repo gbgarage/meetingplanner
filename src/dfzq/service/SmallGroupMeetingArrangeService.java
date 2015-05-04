@@ -50,4 +50,23 @@ public class SmallGroupMeetingArrangeService {
     }
 
 
+    public void arrageConflictFund(SmallGroupMeetingRequest smallGroupMeetingRequest) {
+
+        Company company = smallGroupMeetingRequest.getCompany();
+
+
+        Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, smallGroupMeetingRequest.getFunds());
+        if (timeFrameId != null) {
+            arrangeMeetingDao.saveArrangement(smallGroupMeetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
+            meetingScheduleService.scheduleMeeting(smallGroupMeetingRequest, timeFrameId);
+
+
+        } else {
+            arrangeMeetingDao.saveArrangement(smallGroupMeetingRequest, Status.CONFLICT_FUND_AND_NOT_ARRAGED);
+        }
+
+
+    }
+
+
 }

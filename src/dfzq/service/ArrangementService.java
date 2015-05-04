@@ -235,40 +235,26 @@ public class ArrangementService {
 
     }
 
-    private void arrageConflictFunds(Set<Fund> conflictFunds) {
+    public void arrageConflictFunds(Set<Fund> conflictFunds) {
         for (Fund fund : conflictFunds) {
             for (MeetingRequest meetingRequest : fund.getOneOnOneMeetingRequests()) {
-                Company company = meetingRequest.getCompany();
+                if(meetingRequest instanceof  OneOnOneMeetingRequest){
+                    OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest)meetingRequest;
+                    oneOnOneMeetingArrangeService.arrageConflictFund(oneOnOneMeetingRequest);
 
-                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
-                if (timeFrameId != null) {
-                    arrangeMeetingDao.saveArrangement(meetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
-                    scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
+                }else if(meetingRequest instanceof  SmallGroupMeetingRequest){
+                    SmallGroupMeetingRequest smallGroupMeetingRequest = (SmallGroupMeetingRequest)meetingRequest;
+                    smallGroupMeetingArrangeService.arrageConflictFund(smallGroupMeetingRequest);
 
-
-                } else {
-                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, Status.CONFLICT_FUND_AND_NOT_ARRAGED);
                 }
-
-
             }
-
-
         }
-
     }
 
     private void arrageOtherCompany(Set<Company> otherCompanies) {
         for (Company company : otherCompanies) {
-            for (OneOnOneMeetingRequest oneOnOneMeetingRequest : company.getOneOnOneMeetingRequestList()) {
-                Fund fund = oneOnOneMeetingRequest.getFund();
-                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
-                if (timeFrameId != null) {
-                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.NOT_CONFLICT);
-                    scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
+            for (MeetingRequest meetingRequest : company.getOneOnOneMeetingRequestList()) {
 
-
-                }
 
             }
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -60,7 +61,23 @@ public class OneOnOneMeetingArrangeService {
     }
 
 
+    public void arrageConflictFund(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
 
+        Company company = oneOnOneMeetingRequest.getCompany();
+        Fund fund = oneOnOneMeetingRequest.getFund();
+
+        Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
+        if (timeFrameId != null) {
+            arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
+            meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
+
+
+        } else {
+            arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, Status.CONFLICT_FUND_AND_NOT_ARRAGED);
+        }
+
+
+    }
 
 
 }
