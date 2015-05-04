@@ -7,20 +7,12 @@ package dfzq.model;
  * Time: 上午9:43
  * To change this template use File | Settings | File Templates.
  */
-public class OneOnOneMeetingRequest implements Comparable<OneOnOneMeetingRequest> {
+public class OneOnOneMeetingRequest extends MeetingRequest {
 
     private Fund fund;
 
-    private Company company;
-
     private Integer fundId;
 
-    private Integer companyId;
-
-    private Integer status;
-
-    private Integer timeFrameId;
-    
     private boolean musthave;
     
     private boolean small;
@@ -41,36 +33,12 @@ public class OneOnOneMeetingRequest implements Comparable<OneOnOneMeetingRequest
 		this.small = small;
 	}
 
-	public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getTimeFrameId() {
-        return timeFrameId;
-    }
-
-    public void setTimeFrameId(Integer timeFrameId) {
-        this.timeFrameId = timeFrameId;
-    }
-
     public Integer getFundId() {
         return fundId;
     }
 
     public void setFundId(Integer fundId) {
         this.fundId = fundId;
-    }
-
-    public Integer getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
     }
 
     public OneOnOneMeetingRequest(Fund fund, Company company) {
@@ -101,14 +69,6 @@ public class OneOnOneMeetingRequest implements Comparable<OneOnOneMeetingRequest
         this.fund = fund;
     }
 
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
 
     @Override
     public String toString() {
@@ -117,15 +77,12 @@ public class OneOnOneMeetingRequest implements Comparable<OneOnOneMeetingRequest
                 '}';
     }
 
-    @Override
-    public int compareTo(OneOnOneMeetingRequest o) {
-        return this.fund.compareTo(o.fund);
-    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OneOnOneMeetingRequest)) return false;
+        if (!(o instanceof MeetingRequest)) return false;
 
         OneOnOneMeetingRequest that = (OneOnOneMeetingRequest) o;
 

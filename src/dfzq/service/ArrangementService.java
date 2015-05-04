@@ -29,8 +29,15 @@ public class ArrangementService {
     private ScheduleDAO scheduleDAO;
     @Autowired
     private FundDao fundDao;
+    @Autowired
+    private OneOnOneMeetingArrangeService oneOnOneMeetingArrangeService;
+    @Autowired
+    private MeetingScheduleService meetingScheduleService;
+    @Autowired
+    private OneManyMeetingArrangeService oneManyMeetingArrangeService;
+    @Autowired
+    private SmallGroupMeetingArrangeService smallGroupMeetingArrangeService;
 
-    private Map<Integer, Integer> locationMap = new HashMap<Integer, Integer>();
 
     public void cauclatingArrangeMeeting() {
 
@@ -44,12 +51,27 @@ public class ArrangementService {
             }
             arrageMeeting(morningtimeFrames, afternoonTimeFrames);
             arrageMeeting(afternoonTimeFrames, morningtimeFrames);
-            arrageWholeMeeting(morningtimeFrames, afternoonTimeFrames);
+            int[] wholeDayArray = combineTwoArrays(morningtimeFrames, afternoonTimeFrames);
+            arrageWholeMeeting(wholeDayArray);
 
 
         }
 
 
+    }
+
+    private int[] combineTwoArrays(int[] morningtimeFrames, int[] afternoonTimeFrames) {
+        int[] result = new int[morningtimeFrames.length + afternoonTimeFrames.length];
+        int i = 0;
+        for (int value : morningtimeFrames) {
+            result[i++] = value;
+        }
+
+        for (int value : afternoonTimeFrames) {
+            result[i++] = value;
+
+        }
+        return result;
     }
 
     public void fundCancel(Integer fundId, Integer companyId, Integer timeframeId) {
@@ -81,10 +103,10 @@ public class ArrangementService {
     }
 
     public void fundReschedule(Integer fundId, int[] beforeTimeFrame, int[] afterTimeFrame) {
-        List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = arrangeMeetingDao.get1on1List(fundId, beforeTimeFrame);
+        List<OneOnOneMeetingRequest> meetingRequests = arrangeMeetingDao.get1on1List(fundId, beforeTimeFrame);
 
         Fund fund = fundDao.getFundById(fundId);
-        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : oneOnOneMeetingRequests) {
+        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : meetingRequests) {
             cancelMeeting(oneOnOneMeetingRequest, Status.FUND_CANCEL);
 
 
@@ -95,7 +117,7 @@ public class ArrangementService {
 
         for (Company company : companies) {
             for (int timeFrameId : afterTimeFrame) {
-                if(checkAvailable(fund, company, timeFrameId)){
+                if (checkAvailable(fund, company, timeFrameId)) {
                     OneOnOneMeetingRequest oneOnOneMeetingRequest = arrangeMeetingDao.getArrangeMeeting(fundId, company.getId());
                     oneOnOneMeetingRequest.setTimeFrameId(timeFrameId);
                     oneOnOneMeetingRequest.setCompany(company);
@@ -117,7 +139,7 @@ public class ArrangementService {
     }
 
 
-    public void companyCancel(Integer companyId, Integer timeFrameId){
+    public void companyCancel(Integer companyId, Integer timeFrameId) {
 
         OneOnOneMeetingRequest oneOnOneMeetingRequest = arrangeMeetingDao.getArrangeMeetingByCompanyAndTime(companyId, timeFrameId);
 
@@ -127,8 +149,8 @@ public class ArrangementService {
 
         List<Company> companies = fundDao.getInterestedAndUnScheduleCompanies(oneOnOneMeetingRequest.getFundId());
 
-        for(Company company:  companies){
-            if(checkAvailable(fund, company, timeFrameId)){
+        for (Company company : companies) {
+            if (checkAvailable(fund, company, timeFrameId)) {
                 OneOnOneMeetingRequest pendingRequest = arrangeMeetingDao.getArrangeMeeting(fund.getId(), company.getId());
                 pendingRequest.setStatus(Status.COMPANY_CANCEL_RESCHEDULE);
                 pendingRequest.setTimeFrameId(timeFrameId);
@@ -145,13 +167,13 @@ public class ArrangementService {
 
     private void arrangeMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
         arrangeMeetingDao.updateMeetingStatus(oneOnOneMeetingRequest);
-        scheduleMeeting(oneOnOneMeetingRequest, oneOnOneMeetingRequest.getTimeFrameId());
+        meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, oneOnOneMeetingRequest.getTimeFrameId());
     }
 
     private void cancelMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest, int status) {
         oneOnOneMeetingRequest.setStatus(status);
         arrangeMeetingDao.updateMeetingStatus(oneOnOneMeetingRequest);
-        scheduleDAO.deleteSchedule(generateAttendee(oneOnOneMeetingRequest.getCompanyId(), oneOnOneMeetingRequest.getFundId()));
+        scheduleDAO.deleteSchedule(meetingScheduleService.generateAttendee(oneOnOneMeetingRequest.getCompanyId(), oneOnOneMeetingRequest.getFundId()));
 
 
     }
@@ -169,9 +191,9 @@ public class ArrangementService {
     }
 
 
-    private void arrageWholeMeeting(int[] timeFrames, int[] otherTimeFrames) {
+    private void arrageWholeMeeting(int[] timeFrames) {
 
-        Resource resource = dataLoadService.loadAvailableWholeDayCompanies(timeFrames, otherTimeFrames);
+        Resource resource = dataLoadService.loadAvailableWholeDayCompanies(timeFrames);
 
         arrageConflictCompany(resource, resource.getConflictCompany());
         arrageConflictFunds(resource.getConflictFunds());
@@ -180,35 +202,31 @@ public class ArrangementService {
 
     }
 
-    private int[] getOtherTimeFrames(int[] timeFrames) {
-        return new int[]{4, 5, 6, 7};  //To change body of created methods use File | Settings | File Templates.
-    }
+//    private int[] getOtherTimeFrames(int[] timeFrames) {
+//        return new int[]{4, 5, 6, 7};  //To change body of created methods use File | Settings | File Templates.
+//    }
 
 
     private void arrageConflictCompany(Resource resource, Set<Company> conflictCompany) {
         for (Company company : conflictCompany) {
-            List<OneOnOneMeetingRequest> requests = new ArrayList<OneOnOneMeetingRequest>(company.getOneOnOneMeetingRequestList());
+            List<MeetingRequest> requests = new ArrayList<MeetingRequest>(company.getOneOnOneMeetingRequestList());
             for (int i = 0; i < requests.size(); i++) {
-                OneOnOneMeetingRequest oneOnOneMeetingRequest = requests.get(i);
-                Fund fund = oneOnOneMeetingRequest.getFund();
-                Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
-                if (timeFrameId != null) {
-                    String fundName = fund.getFundName();
-                    for (int j = i + 1; j < requests.size(); j++) {
-                        fund = requests.get(j).getFund();
-                        if (fundName.equals(requests.get(j).getFund().getFundName())) {
-                            arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_COMPANY_AND_ARRAGED);
-                            scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
+                MeetingRequest meetingRequest = requests.get(i);
+                if (meetingRequest instanceof OneOnOneMeetingRequest) {
+                    OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) meetingRequest;
+                    oneOnOneMeetingArrangeService.arrangeConflictCompany(resource, oneOnOneMeetingRequest, requests, i);
+                } else if (meetingRequest instanceof OneManyMeetingRequest) {
+                    OneManyMeetingRequest oneManyMeetingRequest = (OneManyMeetingRequest) meetingRequest;
+                    oneManyMeetingArrangeService.arrangeConflictCompany(resource, oneManyMeetingRequest, requests, i);
 
-                            fund.decreaseAvailbility();
-                            if (fund.isConflict()) {
-                                resource.addConflictFund(fund);
-                            }
-                        }
-                    }
-                } else {
-                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, Status.CONFLICT_COMPANY_AND_NOT_ARRAGED);
+
+                } else if (meetingRequest instanceof SmallGroupMeetingRequest) {
+                    SmallGroupMeetingRequest smallGroupMeetingRequest = (SmallGroupMeetingRequest) meetingRequest;
+                    smallGroupMeetingArrangeService.arrangeConflictCompany(resource, smallGroupMeetingRequest, requests, i);
+
+
                 }
+
 
             }
 
@@ -219,12 +237,12 @@ public class ArrangementService {
 
     private void arrageConflictFunds(Set<Fund> conflictFunds) {
         for (Fund fund : conflictFunds) {
-            for (OneOnOneMeetingRequest oneOnOneMeetingRequest : fund.getOneOnOneMeetingRequests()) {
-                Company company = oneOnOneMeetingRequest.getCompany();
+            for (MeetingRequest meetingRequest : fund.getOneOnOneMeetingRequests()) {
+                Company company = meetingRequest.getCompany();
 
                 Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
                 if (timeFrameId != null) {
-                    arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
+                    arrangeMeetingDao.saveArrangement(meetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
                     scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
 
 
@@ -258,43 +276,5 @@ public class ArrangementService {
 
     }
 
-    private void scheduleMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest, Integer timeFrameId) {
-        Schedule schedule = new Schedule();
-        schedule.setColor("-1");
-
-        Company company = oneOnOneMeetingRequest.getCompany();
-
-        Fund fund = oneOnOneMeetingRequest.getFund();
-
-        schedule.setSubject(oneOnOneMeetingRequest.getCompany().getName() + "(" + oneOnOneMeetingRequest.getCompany().getContact() + ")" + "-" + oneOnOneMeetingRequest.getFund().getFundName() + "(" + oneOnOneMeetingRequest.getFund().getContactor() + ")");
-        schedule.setDescription(schedule.getSubject());
-        Timeframe timeFrame = timeframeDao.getTimeFrame(timeFrameId);
-
-        schedule.setStartTime(timeFrame.getStartTime());
-        schedule.setEndTime(timeFrame.getEndTime());
-
-        schedule.setLocation(getLocation(timeFrameId) + "");
-        String attendee = generateAttendee(company.getId(), fund.getId());
-        schedule.setAttendee(attendee);
-        scheduleDAO.addDetailedSchedule(schedule);
-
-
-    }
-
-    private String generateAttendee(Integer companyId, Integer fundId) {
-        return "," + "f" + fundId + "," + "c" + companyId + ",";
-    }
-
-    private int getLocation(Integer timeFrameId) {
-        Integer locationId = locationMap.get(timeFrameId);
-        if (locationId == null) {
-            locationMap.put(timeFrameId, 1);
-            return 1;
-        } else {
-            locationMap.put(timeFrameId, locationId + 1);
-            return locationId;
-        }
-
-    }
 
 }

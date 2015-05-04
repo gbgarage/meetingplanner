@@ -24,6 +24,8 @@ public class Status {
     public static final int COMPANY_RESCHEDULE=10;
     public static final int COMPANY_CANCEL_RESCHEDULE=11;
 
+    public static final int ONE_TO_MANY_PORIORITY=3;
+
 
 
 }

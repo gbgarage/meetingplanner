@@ -2,6 +2,7 @@ package dfzq.service.excel;
 
 import dfzq.model.Company;
 import dfzq.model.Fund;
+import dfzq.model.MeetingRequest;
 import dfzq.model.OneOnOneMeetingRequest;
 import dfzq.service.ArrangementService;
 import dfzq.service.DataLoadService;
@@ -153,9 +154,9 @@ public class ExcelService {
             if (!"".equals(companyName)) {
                 Company company = getCompanyFromMap(companyName);
 
-                OneOnOneMeetingRequest oneOnOneMeetingRequest = new OneOnOneMeetingRequest(fund, company);
-                fund.addOneOnOneMeetingRequest(oneOnOneMeetingRequest);
-                company.addOneOnOneMeetingRequest(oneOnOneMeetingRequest);
+                MeetingRequest meetingRequest = new OneOnOneMeetingRequest(fund, company);
+                fund.addOneOnOneMeetingRequest(meetingRequest);
+                company.addOneOnOneMeetingRequest(meetingRequest);
             }
 
 

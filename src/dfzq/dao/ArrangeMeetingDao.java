@@ -2,9 +2,10 @@ package dfzq.dao;
 
 import com.common.BaseDao;
 import dfzq.constants.Status;
-import dfzq.model.Company;
-import dfzq.model.Fund;
+import dfzq.model.MeetingRequest;
+import dfzq.model.OneManyMeetingRequest;
 import dfzq.model.OneOnOneMeetingRequest;
+import dfzq.model.SmallGroupMeetingRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -20,33 +21,70 @@ import java.util.Map;
  */
 @Component
 public class ArrangeMeetingDao extends BaseDao {
-	
-	public void clearArrangement() {
-		getSqlMapClientTemplate().update("updateOneOnOneMeetingRequest");
-		getSqlMapClientTemplate().delete("deleteTblSchedule");
-	}
+
+    public void clearArrangement() {
+        getSqlMapClientTemplate().update("updateOneOnOneMeetingRequest");
+        getSqlMapClientTemplate().delete("deleteTblSchedule");
+    }
 
     public void saveArrangement(OneOnOneMeetingRequest oneOnOneMeetingRequest, int timeFrameId, int status) {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("status", status);
         parameters.put("timeFrameId", timeFrameId);
-        parameters.put("fund_id",oneOnOneMeetingRequest.getFundId());
-        parameters.put("company_id",oneOnOneMeetingRequest.getCompanyId());
+        parameters.put("fund_id", oneOnOneMeetingRequest.getFundId());
+        parameters.put("company_id", oneOnOneMeetingRequest.getCompanyId());
 
         getSqlMapClientTemplate().update("updateArrangement", parameters);
 
 
     }
 
+    public void saveArrangement(OneManyMeetingRequest oneManyMeetingRequest, int timeFrameId, int status) {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("status", status);
+        parameters.put("timeFrameId", timeFrameId);
+        parameters.put("company_id", oneManyMeetingRequest.getCompanyId());
+
+        getSqlMapClientTemplate().update("updateOneManyArrangement", parameters);
+    }
+
+
+    public void saveArrangement(SmallGroupMeetingRequest smallGroupMeetingRequest, int timeFrameId, int status) {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("status", status);
+        parameters.put("timeFrameId", timeFrameId);
+        parameters.put("company_id", smallGroupMeetingRequest.getCompanyId());
+
+
+        getSqlMapClientTemplate().update("updateSmallGroupArrangement", parameters);
+    }
+
     public void saveArrangement(OneOnOneMeetingRequest oneOnOneMeetingRequest, int status) {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("status", status);
         parameters.put("timeFrameId", null);
-        parameters.put("fund_id",oneOnOneMeetingRequest.getFundId());
-        parameters.put("company_id",oneOnOneMeetingRequest.getCompanyId());
-
+        parameters.put("fund_id", oneOnOneMeetingRequest.getFundId());
+        parameters.put("company_id", oneOnOneMeetingRequest.getCompanyId());
         getSqlMapClientTemplate().update("updateArrangement", parameters);
 
+
+    }
+    public void saveArrangement(OneManyMeetingRequest oneManyMeetingRequest, int status) {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("status", status);
+        parameters.put("timeFrameId", null);
+        parameters.put("company_id", oneManyMeetingRequest.getCompanyId());
+        getSqlMapClientTemplate().update("updateOneManyArrangement", parameters);
+
+
+    }
+
+    public void saveArrangement(SmallGroupMeetingRequest smallGroupMeetingRequest, int status) {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("status", status);
+        parameters.put("timeFrameId", null);
+        parameters.put("company_id", smallGroupMeetingRequest.getCompanyId());
+        getSqlMapClientTemplate().update("updateSmallGroupArrangement", parameters);
 
     }
 
@@ -56,7 +94,6 @@ public class ArrangeMeetingDao extends BaseDao {
         map.put("companyId", companyId);
 
         return (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getArrangeMeeting", map);
-
 
 
     }
@@ -73,8 +110,8 @@ public class ArrangeMeetingDao extends BaseDao {
 
     }
 
-    public void updateMeetingStatus(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
-        getSqlMapClientTemplate().update("updateMeetingStatus", oneOnOneMeetingRequest);
+    public void updateMeetingStatus(MeetingRequest meetingRequest) {
+        getSqlMapClientTemplate().update("updateMeetingStatus", meetingRequest);
     }
 
     public List<OneOnOneMeetingRequest> get1on1List(Integer fundId, int[] beforeTimeFrame) {

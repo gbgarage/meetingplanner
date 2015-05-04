@@ -1,24 +1,12 @@
 package dfzq.dao;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import com.common.BaseDao;
 
-import dfzq.model.Availability;
-import dfzq.model.Company;
-import dfzq.model.CompanyChangeRow;
-import dfzq.model.Fund;
-import dfzq.model.FundAvailability;
-import dfzq.model.FundChangeRow;
-import dfzq.model.Timeframe;
-import dfzq.model.OneOnOneMeetingRequest;
+import dfzq.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -62,66 +50,154 @@ public class CompanyDao extends BaseDao {
 
     }
 
+
     public List<Company> getCompanyList(String companyName) {
-    	return (List<Company>)getSqlMapClientTemplate().queryForList("getCompanyList", "%" + companyName + "%");
+        return (List<Company>) getSqlMapClientTemplate().queryForList("getCompanyList", "%" + companyName + "%");
+
     }
-   
+
     public List<Timeframe> getCompanyTime(Integer companyid) {
-    	return (List<Timeframe>)getSqlMapClientTemplate().queryForList("getCompanyTime", companyid);
+        return (List<Timeframe>) getSqlMapClientTemplate().queryForList("getCompanyTime", companyid);
     }
-    
+
     public Company getCompanyById(Integer companyid) {
-    	return (Company)getSqlMapClientTemplate().queryForObject("getCompanyById", companyid);
+        return (Company) getSqlMapClientTemplate().queryForObject("getCompanyById", companyid);
     }
-    
+
     public void saveTimeCompany(List<Integer> timeids, Integer companyid) {
-    	
-    	getSqlMapClientTemplate().delete("deleteCompanyAllTimeslots", companyid);
-    	
-    	Company company = this.getCompanyById(companyid);
-    
-    	Iterator<Integer> timeItr = timeids.iterator();
-    	
-    	while (timeItr.hasNext()) {
-    		
-    		Availability compAvail = new Availability(company, timeItr.next());
-    		getSqlMapClientTemplate().insert("insertCompanyTimeslot", compAvail);
-    	}
+
+        getSqlMapClientTemplate().delete("deleteCompanyAllTimeslots", companyid);
+
+        Company company = this.getCompanyById(companyid);
+
+        Iterator<Integer> timeItr = timeids.iterator();
+
+        while (timeItr.hasNext()) {
+
+            Availability compAvail = new Availability(company, timeItr.next());
+            getSqlMapClientTemplate().insert("insertCompanyTimeslot", compAvail);
+        }
     }
 
-    public List<OneOnOneMeetingRequest> loadAvailableCompanies(int[] timeFrames, int[] otherTimeFrames) {
+    public List<MeetingRequest> loadAvailableCompanies(int[] timeFrames, int[] otherTimeFrames) {
 
         Map<String, String> parameterMap = initParameterMap(timeFrames, otherTimeFrames);
-        List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableMeetingRequest", parameterMap);
+        //load one on one meeting request
+        List<MeetingRequest> meetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableMeetingRequest", parameterMap);
+
+        //load small group  meeting request
+        List<MeetingRequest> oneToManyMeetingRequests = loadOneToManyMeetingRequest(parameterMap);
+
+        //load one to many meeting request
+
+        List<MeetingRequest> smallGroupMeetingRequests = loadSmallGroupMeetingRequest(parameterMap);
+
+        meetingRequests.addAll(oneToManyMeetingRequests);
+        meetingRequests.addAll(smallGroupMeetingRequests);
+
+        Collections.sort(meetingRequests);
 
         Map<Integer, Company> companyMap = new HashMap<Integer, Company>();
         Map<Integer, Fund> fundMap = new HashMap<Integer, Fund>();
 
-        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : oneOnOneMeetingRequests) {
-            initCompanyAndFund(oneOnOneMeetingRequest, companyMap, fundMap, timeFrames);
+        for (MeetingRequest meetingRequest : meetingRequests) {
+            initCompany(meetingRequest, companyMap, timeFrames);
+            if (meetingRequest instanceof OneOnOneMeetingRequest) {
+                OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) meetingRequest;
+                initCompanyAndFund(oneOnOneMeetingRequest, companyMap, fundMap, timeFrames);
+            } else if (meetingRequest instanceof SmallGroupMeetingRequest) {
+                SmallGroupMeetingRequest smallGroupMeetingRequest = (SmallGroupMeetingRequest) meetingRequest;
 
+                initFundForSmallGroup(smallGroupMeetingRequest, fundMap, timeFrames);
+
+
+            }
         }
 
 
-        return oneOnOneMeetingRequests;
+        return meetingRequests;
 
 
     }
-    public List<OneOnOneMeetingRequest> loadAvailableWholeDayCompanies(int[] timeFrames, int[] otherTimeFrames) {
 
-        Map<String, String> parameterMap = initParameterMap(timeFrames, otherTimeFrames);
-        List<OneOnOneMeetingRequest> oneOnOneMeetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableWholeDayCompanies", parameterMap);
+    private void initFundForSmallGroup(SmallGroupMeetingRequest smallGroupMeetingRequest, Map<Integer, Fund> fundMap, int[] timeFrames) {
+        List<Fund> funds = new ArrayList<Fund>();
+        for (Integer fundId : smallGroupMeetingRequest.getFundIds()) {
+            Fund fund = getFund(fundMap, fundId);
+            fund.setFundAvailabilityCount(timeFrames.length);
+            funds.add(fund);
+            fund.addOneOnOneMeetingRequest(smallGroupMeetingRequest);
+        }
+        smallGroupMeetingRequest.setFunds(funds);
+
+    }
+
+    private void initCompany(MeetingRequest meetingRequest, Map<Integer, Company> companyMap, int[] timeFrames) {
+        Integer companyId = meetingRequest.getCompanyId();
+
+        Company company = getCompany(companyMap, companyId);
+        company.setAvailableMeetingCount(getCompanyAvailableTimeCount(timeFrames, companyId));
+        meetingRequest.setCompany(company);
+        company.addOneOnOneMeetingRequest(meetingRequest);
+    }
+
+    private List<MeetingRequest> loadSmallGroupMeetingRequest(Map<String, String> parameterMap) {
+        List<MeetingRequest> meetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableSmallGroupMeetingRequest", parameterMap);
+        for (MeetingRequest meetingRequest : meetingRequests) {
+            SmallGroupMeetingRequest smallGroupMeetingRequest = (SmallGroupMeetingRequest) meetingRequest;
+            loadFundId(smallGroupMeetingRequest, parameterMap);
+
+        }
+        return meetingRequests;
+    }
+
+    private void loadFundId(SmallGroupMeetingRequest smallGroupMeetingRequest, Map<String, String> parameterMap) {
+        parameterMap.put("companyId", smallGroupMeetingRequest.getCompanyId().toString());
+        List<Integer> fundIds = getSqlMapClientTemplate().queryForList("loadFundIdByCompnayId", parameterMap);
+        smallGroupMeetingRequest.setFundIds(fundIds);
+    }
+
+    private List<MeetingRequest> loadOneToManyMeetingRequest(Map<String, String> parameterMap) {
+        List<MeetingRequest> meetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableOneToManyMeetingRequest", parameterMap);
+        return meetingRequests;
+
+    }
+
+    public List<MeetingRequest> loadAvailableWholeDayCompanies(int[] timeFrames) {
+
+        Map<String, String> parameterMap = initParameterMap(timeFrames, null);
+        List<MeetingRequest> meetingRequests = getSqlMapClientTemplate().queryForList("loadAvailableWholeDayCompanies", parameterMap);
+
+
+        //load small group  meeting request
+        List<MeetingRequest> oneToManyMeetingRequests = loadOneToManyMeetingRequest(parameterMap);
+
+        List<MeetingRequest> smallGroupMeetingRequests = loadSmallGroupMeetingRequest(parameterMap);
+
+        meetingRequests.addAll(oneToManyMeetingRequests);
+        meetingRequests.addAll(smallGroupMeetingRequests);
+
+        Collections.sort(meetingRequests);
 
         Map<Integer, Company> companyMap = new HashMap<Integer, Company>();
         Map<Integer, Fund> fundMap = new HashMap<Integer, Fund>();
 
-        for (OneOnOneMeetingRequest oneOnOneMeetingRequest : oneOnOneMeetingRequests) {
-            initCompanyAndFund(oneOnOneMeetingRequest, companyMap, fundMap, timeFrames);
+        for (MeetingRequest meetingRequest : meetingRequests) {
+            initCompany(meetingRequest, companyMap, timeFrames);
+            if (meetingRequest instanceof OneOnOneMeetingRequest) {
+                OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) meetingRequest;
+                initCompanyAndFund(oneOnOneMeetingRequest, companyMap, fundMap, timeFrames);
+            } else if (meetingRequest instanceof SmallGroupMeetingRequest) {
+                SmallGroupMeetingRequest smallGroupMeetingRequest = (SmallGroupMeetingRequest) meetingRequest;
 
+                initFundForSmallGroup(smallGroupMeetingRequest, fundMap, timeFrames);
+
+
+            }
         }
 
 
-        return oneOnOneMeetingRequests;
+        return meetingRequests;
 
 
     }
@@ -171,7 +247,9 @@ public class CompanyDao extends BaseDao {
     private Map<String, String> initParameterMap(int[] timeFrames, int[] otherTimeFrames) {
         Map<String, String> parameterMap = new HashMap<String, String>();
         parameterMap.put("timeFrame", convertArrayToINString(timeFrames));
-        parameterMap.put("otherTimeFrame", convertArrayToINString(otherTimeFrames));
+        if (otherTimeFrames != null) {
+            parameterMap.put("otherTimeFrame", convertArrayToINString(otherTimeFrames));
+        }
         return parameterMap;
 
     }
@@ -191,13 +269,42 @@ public class CompanyDao extends BaseDao {
     }
 
 
-    public Integer getNextAvailableTimeFrame(Company company,Fund fund) {
+    public Integer getNextAvailableTimeFrame(Company company, Fund fund) {
         List<Integer> availableTimeFrames = (List<Integer>) getSqlMapClientTemplate().queryForList("getNextAvailableTimeFrame", company);
         if (availableTimeFrames.isEmpty()) {
             return null;
         } else {
             for (Integer availableTimeFrameId : availableTimeFrames) {
-                if (checkTimeFrameAvailable(company, availableTimeFrameId)&& fundDao.checkTimeFrameAvailable(fund, availableTimeFrameId)) {
+                if (fund == null) {
+                    return availableTimeFrameId;
+                }
+                if (checkTimeFrameAvailable(company, availableTimeFrameId) && fundDao.checkTimeFrameAvailable(fund, availableTimeFrameId)) {
+                    return availableTimeFrameId;
+                }
+            }
+            return null;
+        }
+    }
+
+    public Integer getNextAvailableTimeFrame(Company company, List<Fund> funds) {
+        List<Integer> availableTimeFrames = (List<Integer>) getSqlMapClientTemplate().queryForList("getNextAvailableTimeFrame", company);
+        if (availableTimeFrames.isEmpty()) {
+            return null;
+        } else {
+            for (Integer availableTimeFrameId : availableTimeFrames) {
+                if (!checkTimeFrameAvailable(company, availableTimeFrameId)) {
+                    continue;
+                }
+                boolean flag = true;
+
+                for (Fund fund : funds) {
+                    if (fundDao.checkTimeFrameAvailable(fund, availableTimeFrameId)) {
+                        flag = false;
+                        break;
+                    }
+
+                }
+                if (flag) {
                     return availableTimeFrameId;
                 }
             }
@@ -210,41 +317,41 @@ public class CompanyDao extends BaseDao {
         parameters.put("company_id", company.getId());
         parameters.put("availableTimeFrameId", availableTimeFrameId);
 
-        OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) getSqlMapClientTemplate().queryForObject("getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId", parameters);
-        if (oneOnOneMeetingRequest == null) {
+        MeetingRequest meetingRequest = (MeetingRequest) getSqlMapClientTemplate().queryForObject("getOneOnOneMeetingRequestByCompanyIdAndtimeFrameId", parameters);
+        if (meetingRequest == null) {
             return true;
         } else {
             return false;
         }
 
     }
-    
-    //save company changes from frontend
-    public void saveCompanyChanges (List<CompanyChangeRow> rows) {
 
-    	Iterator<CompanyChangeRow> rowItr = rows.iterator();
-    	
-    	while (rowItr.hasNext()) {
-    		
-    		CompanyChangeRow row = rowItr.next();
-    		
-    		//if the change is for add
-    		if (row.get_state().equals("added")) {
-    			getSqlMapClientTemplate().insert("insertCompanyfromChanges", row);
-    		}
-    				
-    		//if the change is for modify
-    		
-    		if (row.get_state().equals("modified")) {
-    			getSqlMapClientTemplate().update("updateCompanyfromChanges", row);
-    		}
-    				
-    		//if the change is for remove
-    		if (row.get_state().equals("removed")) {
-    			getSqlMapClientTemplate().delete("deleteCompanyfromChanges", row);
-    		}	
-    	}
-    	
-    	
+    //save company changes from frontend
+    public void saveCompanyChanges(List<CompanyChangeRow> rows) {
+
+        Iterator<CompanyChangeRow> rowItr = rows.iterator();
+
+        while (rowItr.hasNext()) {
+
+            CompanyChangeRow row = rowItr.next();
+
+            //if the change is for add
+            if (row.get_state().equals("added")) {
+                getSqlMapClientTemplate().insert("insertCompanyfromChanges", row);
+            }
+
+            //if the change is for modify
+
+            if (row.get_state().equals("modified")) {
+                getSqlMapClientTemplate().update("updateCompanyfromChanges", row);
+            }
+
+            //if the change is for remove
+            if (row.get_state().equals("removed")) {
+                getSqlMapClientTemplate().delete("deleteCompanyfromChanges", row);
+            }
+        }
+
+
     }
 }
