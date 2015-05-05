@@ -16,6 +16,8 @@ public class SmallGroupMeetingRequest extends  MeetingRequest {
     private List<Fund> funds;
 
 
+
+
     public List<Integer> getFundIds() {
         return fundIds;
     }
@@ -30,5 +32,21 @@ public class SmallGroupMeetingRequest extends  MeetingRequest {
 
     public void setFunds(List<Fund> funds) {
         this.funds = funds;
+    }
+
+    @Override
+    public int compareTo(MeetingRequest o) {
+        int result = this.priority - o.priority;
+        if (result != 0) {
+            return result;
+
+        } else {
+            if (o instanceof OneOnOneMeetingRequest) {
+                return -1;
+            } else{
+
+                return this.companyId-o.companyId;
+            }
+        }
     }
 }

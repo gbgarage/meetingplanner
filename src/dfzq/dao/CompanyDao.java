@@ -95,16 +95,17 @@ public class CompanyDao extends BaseDao {
         meetingRequests.addAll(oneToManyMeetingRequests);
         meetingRequests.addAll(smallGroupMeetingRequests);
 
-        Collections.sort(meetingRequests);
+//        Collections.sort(meetingRequests);
 
         Map<Integer, Company> companyMap = new HashMap<Integer, Company>();
         Map<Integer, Fund> fundMap = new HashMap<Integer, Fund>();
 
         for (MeetingRequest meetingRequest : meetingRequests) {
-            initCompany(meetingRequest, companyMap, timeFrames);
+            Company company = initCompany(meetingRequest, companyMap, timeFrames);
             if (meetingRequest instanceof OneOnOneMeetingRequest) {
                 OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) meetingRequest;
                 initCompanyAndFund(oneOnOneMeetingRequest, companyMap, fundMap, timeFrames);
+
             } else if (meetingRequest instanceof SmallGroupMeetingRequest) {
                 SmallGroupMeetingRequest smallGroupMeetingRequest = (SmallGroupMeetingRequest) meetingRequest;
 
@@ -112,6 +113,7 @@ public class CompanyDao extends BaseDao {
 
 
             }
+            company.addOneOnOneMeetingRequest(meetingRequest);
         }
 
 
@@ -132,13 +134,14 @@ public class CompanyDao extends BaseDao {
 
     }
 
-    private void initCompany(MeetingRequest meetingRequest, Map<Integer, Company> companyMap, int[] timeFrames) {
+    private Company initCompany(MeetingRequest meetingRequest, Map<Integer, Company> companyMap, int[] timeFrames) {
         Integer companyId = meetingRequest.getCompanyId();
 
         Company company = getCompany(companyMap, companyId);
         company.setAvailableMeetingCount(getCompanyAvailableTimeCount(timeFrames, companyId));
         meetingRequest.setCompany(company);
-        company.addOneOnOneMeetingRequest(meetingRequest);
+        return company;
+
     }
 
     private List<MeetingRequest> loadSmallGroupMeetingRequest(Map<String, String> parameterMap) {
@@ -177,7 +180,7 @@ public class CompanyDao extends BaseDao {
         meetingRequests.addAll(oneToManyMeetingRequests);
         meetingRequests.addAll(smallGroupMeetingRequests);
 
-        Collections.sort(meetingRequests);
+//        Collections.sort(meetingRequests);
 
         Map<Integer, Company> companyMap = new HashMap<Integer, Company>();
         Map<Integer, Fund> fundMap = new HashMap<Integer, Fund>();
@@ -275,8 +278,8 @@ public class CompanyDao extends BaseDao {
             return null;
         } else {
             for (Integer availableTimeFrameId : availableTimeFrames) {
-                if (fund == null) {
-                    return availableTimeFrameId;
+                if (fund == null &&  checkTimeFrameAvailable(company, availableTimeFrameId)) {
+                     return availableTimeFrameId;
                 }
                 if (checkTimeFrameAvailable(company, availableTimeFrameId) && fundDao.checkTimeFrameAvailable(fund, availableTimeFrameId)) {
                     return availableTimeFrameId;
@@ -286,7 +289,7 @@ public class CompanyDao extends BaseDao {
         }
     }
 
-    public Integer getNextAvailableTimeFrame(Company company, List<Fund> funds) {
+    public Integer getNextAvailableTimeFrameForSmallGroup(Company company, List<Fund> funds) {
         List<Integer> availableTimeFrames = (List<Integer>) getSqlMapClientTemplate().queryForList("getNextAvailableTimeFrame", company);
         if (availableTimeFrames.isEmpty()) {
             return null;
@@ -298,7 +301,7 @@ public class CompanyDao extends BaseDao {
                 boolean flag = true;
 
                 for (Fund fund : funds) {
-                    if (fundDao.checkTimeFrameAvailable(fund, availableTimeFrameId)) {
+                    if (!fundDao.checkTimeFrameAvailable(fund, availableTimeFrameId)) {
                         flag = false;
                         break;
                     }

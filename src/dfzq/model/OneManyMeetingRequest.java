@@ -8,6 +8,25 @@ package dfzq.model;
  * To change this template use File | Settings | File Templates.
  */
 public class OneManyMeetingRequest extends MeetingRequest {
+    public OneManyMeetingRequest() {
+        this.priority=3;
+    }
+
+    @Override
+    public int compareTo(MeetingRequest o) {
+        int result = this.priority - o.priority;
+        if (result != 0) {
+            return result;
+
+        } else {
+            if (o instanceof OneOnOneMeetingRequest) {
+                return -1;
+            } else{
+                return this.company.getId()- o.companyId;
+            }
+        }
+    }
+
 
 
 }

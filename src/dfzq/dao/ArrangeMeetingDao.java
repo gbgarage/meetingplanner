@@ -45,11 +45,11 @@ public class ArrangeMeetingDao extends BaseDao {
         parameters.put("timeFrameId", timeFrameId);
         parameters.put("company_id", oneManyMeetingRequest.getCompanyId());
 
-        getSqlMapClientTemplate().update("updateOneManyArrangement", parameters);
+        getSqlMapClientTemplate().update("saveOneManyArrangement", parameters);
     }
 
 
-    public void saveArrangement(SmallGroupMeetingRequest smallGroupMeetingRequest, int timeFrameId, int status) {
+    public void saveArrangement(SmallGroupMeetingRequest smallGroupMeetingRequest, Integer timeFrameId, int status) {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("status", status);
         parameters.put("timeFrameId", timeFrameId);
@@ -74,7 +74,7 @@ public class ArrangeMeetingDao extends BaseDao {
         parameters.put("status", status);
         parameters.put("timeFrameId", null);
         parameters.put("company_id", oneManyMeetingRequest.getCompanyId());
-        getSqlMapClientTemplate().update("updateOneManyArrangement", parameters);
+        getSqlMapClientTemplate().update("saveOneManyArrangement", parameters);
 
 
     }

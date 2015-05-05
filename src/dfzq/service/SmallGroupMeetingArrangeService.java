@@ -30,7 +30,7 @@ public class SmallGroupMeetingArrangeService {
 
         List<Fund> funds = smallGroupMeetingRequest.getFunds();
         Company company = smallGroupMeetingRequest.getCompany();
-        Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, funds);
+        Integer timeFrameId = companyDao.getNextAvailableTimeFrameForSmallGroup(company, funds);
         if (timeFrameId != null) {
             arrangeMeetingDao.saveArrangement(smallGroupMeetingRequest, timeFrameId, Status.CONFLICT_COMPANY_AND_ARRAGED);
             meetingScheduleService.scheduleMeeting(smallGroupMeetingRequest, timeFrameId);
@@ -55,7 +55,7 @@ public class SmallGroupMeetingArrangeService {
         Company company = smallGroupMeetingRequest.getCompany();
 
 
-        Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, smallGroupMeetingRequest.getFunds());
+        Integer timeFrameId = companyDao.getNextAvailableTimeFrameForSmallGroup(company, smallGroupMeetingRequest.getFunds());
         if (timeFrameId != null) {
             arrangeMeetingDao.saveArrangement(smallGroupMeetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
             meetingScheduleService.scheduleMeeting(smallGroupMeetingRequest, timeFrameId);
@@ -66,6 +66,19 @@ public class SmallGroupMeetingArrangeService {
         }
 
 
+    }
+
+
+    public void arrageOtherCompany(SmallGroupMeetingRequest smallGroupMeetingRequest) {
+        List<Fund> funds = smallGroupMeetingRequest.getFunds();
+        Company company = smallGroupMeetingRequest.getCompany();
+        Integer timeFrameId = companyDao.getNextAvailableTimeFrameForSmallGroup(company, funds);
+        if (timeFrameId != null) {
+            arrangeMeetingDao.saveArrangement(smallGroupMeetingRequest, timeFrameId, Status.NOT_CONFLICT);
+            meetingScheduleService.scheduleMeeting(smallGroupMeetingRequest, timeFrameId);
+        }else{
+            arrangeMeetingDao.saveArrangement(smallGroupMeetingRequest,Status.CONFLICT_FUND_AND_NOT_ARRAGED);
+        }
     }
 
 

@@ -79,5 +79,13 @@ public class OneOnOneMeetingArrangeService {
 
     }
 
-
+    public void arrageOtherCompany(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
+        Fund fund = oneOnOneMeetingRequest.getFund();
+        Company company = oneOnOneMeetingRequest.getCompany();
+        Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
+        if (timeFrameId != null) {
+            arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.NOT_CONFLICT);
+            meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
+        }
+    }
 }

@@ -55,8 +55,5 @@ public abstract class MeetingRequest implements Comparable<MeetingRequest> {
         this.company = company;
     }
 
-    @Override
-    public int compareTo(MeetingRequest o) {
-        return this.priority - o.priority;
-    }
+
 }
