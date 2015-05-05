@@ -36,12 +36,22 @@ public class OneManyMeetingArrangeService {
             meetingScheduleService.scheduleMeeting(oneManyMeetingRequest, timeFrameId);
 
 
-        }else{
-        arrangeMeetingDao.saveArrangement(oneManyMeetingRequest, Status.CONFLICT_COMPANY_AND_NOT_ARRAGED);
+        } else {
+            arrangeMeetingDao.saveArrangement(oneManyMeetingRequest, Status.CONFLICT_COMPANY_AND_NOT_ARRAGED);
+        }
+
+
     }
 
+    public void arrageOtherCompany(OneManyMeetingRequest oneManyMeetingRequest) {
 
-}
+        Company company = oneManyMeetingRequest.getCompany();
+        Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, null);
+        if (timeFrameId != null) {
+            arrangeMeetingDao.saveArrangement(oneManyMeetingRequest, timeFrameId, Status.NOT_CONFLICT);
+            meetingScheduleService.scheduleMeeting(oneManyMeetingRequest, timeFrameId);
+        }
+    }
 
 
 }

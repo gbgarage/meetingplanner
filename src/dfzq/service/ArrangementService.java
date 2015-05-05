@@ -238,12 +238,12 @@ public class ArrangementService {
     public void arrageConflictFunds(Set<Fund> conflictFunds) {
         for (Fund fund : conflictFunds) {
             for (MeetingRequest meetingRequest : fund.getOneOnOneMeetingRequests()) {
-                if(meetingRequest instanceof  OneOnOneMeetingRequest){
-                    OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest)meetingRequest;
+                if (meetingRequest instanceof OneOnOneMeetingRequest) {
+                    OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) meetingRequest;
                     oneOnOneMeetingArrangeService.arrageConflictFund(oneOnOneMeetingRequest);
 
-                }else if(meetingRequest instanceof  SmallGroupMeetingRequest){
-                    SmallGroupMeetingRequest smallGroupMeetingRequest = (SmallGroupMeetingRequest)meetingRequest;
+                } else if (meetingRequest instanceof SmallGroupMeetingRequest) {
+                    SmallGroupMeetingRequest smallGroupMeetingRequest = (SmallGroupMeetingRequest) meetingRequest;
                     smallGroupMeetingArrangeService.arrageConflictFund(smallGroupMeetingRequest);
 
                 }
@@ -254,7 +254,20 @@ public class ArrangementService {
     private void arrageOtherCompany(Set<Company> otherCompanies) {
         for (Company company : otherCompanies) {
             for (MeetingRequest meetingRequest : company.getOneOnOneMeetingRequestList()) {
+                if (meetingRequest instanceof OneOnOneMeetingRequest) {
+                    OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) meetingRequest;
+                    oneOnOneMeetingArrangeService.arrageOtherCompany(oneOnOneMeetingRequest);
+                } else if (meetingRequest instanceof OneManyMeetingRequest) {
+                    OneManyMeetingRequest oneManyMeetingRequest = (OneManyMeetingRequest) meetingRequest;
+                    oneManyMeetingArrangeService.arrageOtherCompany(oneManyMeetingRequest);
 
+
+                } else if (meetingRequest instanceof SmallGroupMeetingRequest) {
+                    SmallGroupMeetingRequest smallGroupMeetingRequest = (SmallGroupMeetingRequest) meetingRequest;
+                    smallGroupMeetingArrangeService.arrageOtherCompany(smallGroupMeetingRequest);
+
+
+                }
 
             }
 

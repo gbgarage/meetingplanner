@@ -198,7 +198,7 @@
     <!--     </select> -->
 
     <select id="loadAvailableMeetingRequest" parameterClass="map" resultClass="OneOnOneMeetingRequest">
-select  one.company_id as companyId , one.fund_id as fundId, one.musthave as mustHaveFlag
+select  one.company_id as companyId , one.fund_id as fundId, one.musthave as mustHaveFlag , one.priority as priority
 from company c
 inner join one_on_one_meeting_request one
 on one.company_id= c.id
@@ -212,7 +212,7 @@ group by  one.company_id , one.fund_id, one.musthave
 
 
     <select id="loadAvailableSmallGroupMeetingRequest" parameterClass="map" resultClass="SmallGroupMeetingRequest">
-        select small.company_id as companyId
+        select  small.company_id as companyId, small.priority as priority
         from company c
         inner join small_meeting_request small
         on small.company_id= c.id
@@ -223,6 +223,7 @@ group by  one.company_id , one.fund_id, one.musthave
                 $otherTimeFrame$ )
             </isNotEmpty>
         </dynamic>
+        group by       small.company_id,   small.priority
     </select>
 
     <select id="loadFundIdByCompnayId" parameterClass="map" resultClass="int">
@@ -241,7 +242,7 @@ group by  one.company_id , one.fund_id, one.musthave
     </select>
 
     <select id="loadAvailableOneToManyMeetingRequest" parameterClass="map" resultClass="OneManyMeetingRequest">
-        select c.id as companyId
+        select distinct c.id as companyId
         from company c
         where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ )
         <dynamic>
@@ -250,16 +251,17 @@ group by  one.company_id , one.fund_id, one.musthave
                 $otherTimeFrame$ )
             </isNotEmpty>
         </dynamic>
+
     </select>
 
     <select id="loadAvailableWholeDayCompanies" parameterClass="map" resultClass="OneOnOneMeetingRequest">
-select  one.company_id as companyId , one.fund_id as fundId , one.musthave as mustHaveFlag
+select  one.company_id as companyId , one.fund_id as fundId , one.musthave as mustHaveFlag, one.priority as priority
 from company c
 inner join one_on_one_meeting_request one
 on one.company_id= c.id
 where exists(select 1 from company_availbility where company_id=c.id and time_frame_id in $timeFrame$ )
 
-group by  one.company_id , one.fund_id, one.musthave
+group by  one.company_id , one.fund_id, one.musthave, one.priority
 
 
 
@@ -303,13 +305,13 @@ group by  one.company_id , one.fund_id, one.musthave
     </update>
 
 
-    <update id="saveOneManyArrangement" parameterClass="map">
+    <insert id="saveOneManyArrangement" parameterClass="map">
         insert into  one_many_meeting_request(company_id, time_frame_id, status)
-       values(#companyId#,#timeFrameId#,##)
+       values(#company_id#,#timeFrameId#,#status#)
 
 
 
-    </update>
+    </insert>
 
     <select id="getNextAvailableTimeFrame" parameterClass="Company" resultClass="int">
       select ca.time_frame_id

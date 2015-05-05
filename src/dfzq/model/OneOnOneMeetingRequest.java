@@ -14,24 +14,24 @@ public class OneOnOneMeetingRequest extends MeetingRequest {
     private Integer fundId;
 
     private boolean musthave;
-    
+
     private boolean small;
 
     public boolean isMusthave() {
-		return musthave;
-	}
+        return musthave;
+    }
 
-	public void setMusthave(boolean musthave) {
-		this.musthave = musthave;
-	}
+    public void setMusthave(boolean musthave) {
+        this.musthave = musthave;
+    }
 
-	public boolean isSmall() {
-		return small;
-	}
+    public boolean isSmall() {
+        return small;
+    }
 
-	public void setSmall(boolean small) {
-		this.small = small;
-	}
+    public void setSmall(boolean small) {
+        this.small = small;
+    }
 
     public Integer getFundId() {
         return fundId;
@@ -46,7 +46,7 @@ public class OneOnOneMeetingRequest extends MeetingRequest {
         this.company = company;
 
     }
-    
+
     public OneOnOneMeetingRequest(OneOnOneMeetingRequest meetingReq) {
         this.fund = meetingReq.fund;
         this.company = meetingReq.company;
@@ -77,7 +77,26 @@ public class OneOnOneMeetingRequest extends MeetingRequest {
                 '}';
     }
 
+    @Override
+    public int compareTo(MeetingRequest o) {
+        try {
+            int result = this.priority - o.priority;
+            if (result != 0) {
+                return result;
 
+            } else {
+                if (!(o instanceof OneOnOneMeetingRequest)) {
+                    return 1;
+                } else {
+                    OneOnOneMeetingRequest meetingRequest = (OneOnOneMeetingRequest) o;
+                    return this.fund.compareTo(meetingRequest.fund);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -87,11 +87,13 @@ public class Company {
     }
 
     private int caculateFundCompany(Set<MeetingRequest> meetingRequestList) {
-        Set<String> fundCompany = new HashSet<String>();
+        Set fundCompany = new HashSet();
         for (MeetingRequest request : meetingRequestList) {
             if (request instanceof OneOnOneMeetingRequest) {
                 OneOnOneMeetingRequest oneOnOneMeetingRequest = (OneOnOneMeetingRequest) request;
                 fundCompany.add(oneOnOneMeetingRequest.getFund().getFundName());
+            }else{
+               fundCompany.add(new Object());
             }
         }
 
