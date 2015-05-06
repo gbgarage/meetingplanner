@@ -24,6 +24,8 @@ public class ArrangeMeetingDao extends BaseDao {
 
     public void clearArrangement() {
         getSqlMapClientTemplate().update("updateOneOnOneMeetingRequest");
+        getSqlMapClientTemplate().update("updateSmallMeetingRequest");
+        getSqlMapClientTemplate().delete("deleteOneManyMeetingRequest");
         getSqlMapClientTemplate().delete("deleteTblSchedule");
     }
 

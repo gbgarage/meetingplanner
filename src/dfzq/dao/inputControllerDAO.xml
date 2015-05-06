@@ -164,5 +164,18 @@
 		ORDER BY time_frame_id ASC;
     
     </select>
+    
+ <!--     clear small meeting request calculate result -->
+    <update id="updateSmallMeetingRequest">
+    	update small_meeting_request
+    	set status = null, time_frame_id = null
+    </update>
+
+ <!--     delete all one many meeting request calculate result -->
+    <delete id="deleteOneManyMeetingRequest">
+    	delete from one_many_meeting_request
+    </delete>
+    
+    
 </sqlMap>
 
