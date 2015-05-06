@@ -83,7 +83,7 @@
         });
 
 
-        var timeslot = new Array("MeetingDate", "MeetingVenue", "T0900", "T1000", "T1100", "T1200", "T1330", "T1430", "T1530", "T1630");
+        var timeslot = new Array("MeetingDate", "MeetingVenue", "T0900", "T1000", "T1100", "T1200", "T1300", "T1400", "T1500", "T1600");
         function getTDField(data, fieldName) {
             var td1 = $("<td></td>");
             td1.html(data[fieldName]);
