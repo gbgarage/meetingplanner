@@ -8,6 +8,7 @@
 <head>
     <script src="${contextPath}/src/jquery.js"></script>
     <script src="${contextPath}/src/jquery-ui.min.js"></script>
+    <script src="${contextPath}/script/miniui/miniui.js" type="text/javascript"></script>
 
     <link href="${contextPath}/script/miniui/themes/default/miniui.css" rel="stylesheet" type="text/css"/>
     <link href="${contextPath}/styles/main.css" rel="stylesheet" type="text/css"/>
@@ -28,7 +29,12 @@
     </style>
 
     <script type="text/javascript">
-
+    
+    $(document).ready(function(){
+    	
+    	var conflictdata;
+    	var scheduledata;
+    
         function addNotificationList(c1, c2) {
             var notif = $("#notification_list")[0];
             var newTR = notif.insertRow(notif.rows.length);
@@ -92,6 +98,7 @@
         }
 
         function getListDvt(data, textStatus, jqXHR) {
+        	scheduledata = data;
             var datagrid1 = $("#datagrid1");
             if (textStatus == "success") {
                 //console.log(data);
@@ -119,9 +126,10 @@
             }
         }
 
-        var conflictList = new Array("CompanyName", "StatusCode");
+        var conflictList = new Array("FundName", "StatusCode", "fund_id", "company_id");
 
         function getListConflicts(data, textStatus, jqXHR) {
+        	conflictdata = data;
             var datagrid2 = $("#datagrid2");
             if (textStatus == "success") {
                 //console.log(data);
@@ -144,7 +152,11 @@
                     }
 
                     td1 =$("<td></td>");
-                    td1.html("<input type=checkbox />");
+                    td1.html("<input type='checkbox' name='conflictcheck' id='" + i + "'/>");
+                    tr1.append(td1);
+                    
+                    td1 =$("<td></td>");
+                    td1.html("<span name='isResolved' id='isResolved" + i + "'>");
                     tr1.append(td1);
 
                     datagrid2.append(tr1);
@@ -154,7 +166,54 @@
 
             }
         }
+        
+        $("#addlunchbutton").click(function () {
+        	var flag = 0; 
+        	var id = 0;
 
+        	$("[name='conflictcheck']").each(function () { 
+		        	if ($(this).attr("checked")) { 
+		        	flag += 1;  	
+		        	id = $(this).attr("id");
+	        	} 
+        	});
+        	if (flag > 1) alert("请不要复选");
+        	else {
+        		if (flag==1) alert("当前选中的是： "+ id);
+        		
+        		//open lunch select window
+        		
+                    var btnEdit = this;
+                    mini.open({
+        				url:  "./schedule/select_lunch.jsp",
+                        title: "选择列表",
+                        width: 650,
+                        height: 380,
+                        ondestroy: function (action) {
+                            if (action == "ok") {
+                                var iframe = this.getIFrameEl();
+                                var windowdata = iframe.contentWindow.GetData();
+                                windowdata = mini.clone(windowdata);    //必须
+                                if (windowdata) {
+                            		//post fund_id and company_id to backend to add lunch
+                                    jQuery.post(
+                                            "./addlunch.do",
+                                            { fund_id: conflictdata[id]["fund_id"], 
+                                            	company_id: conflictdata[id]["company_id"]
+                                            	, lunchtime_id: windowdata.id } ,
+                                            function(data) {
+                                            		if (data!=1) alert("error");
+                                            		else $("#isResolved" + id).text("已解决");
+                                            });
+                                }
+                            }
+
+                        }
+                    }); 
+                    
+                 }    
+        });	    
+    });
     </script>
     <title>会议安排清单</title>
 </head>
@@ -189,7 +248,10 @@
                     <tr>
                         <th class="mini-grid-headerCell">会议安排</th>
                         <th class="mini-grid-headerCell">冲突情况</th>
-                        <th class="mini-grid-headerCell">选择</th>
+                        <th class="mini-grid-headerCell">基金公司ID</th>
+                        <th class="mini-grid-headerCell">上市公司ID</th>
+                        <th class="mini-grid-headerCell">选择</th>       
+                        <th class="mini-grid-headerCell">是否解决</th>                
                     </tr>
                 </table>
             </div>
@@ -198,13 +260,9 @@
             冲突解决<br/>
 
             <div style="width:100%;height:350px;overflow:hidden;background:#F8F8F8">
-                增加时间
-                工作餐时间 <input type=button value="调整为工作餐"><br/>
-                自定义时间<input type=button value="自定义时间"> <br/>
-                会议降级<br/>
-                将选中会议调整至一对多<br/>
-                替换调整<br/>
-                请将冲突拖动至替换位置<br/>
+                <p>将选中冲突需求加入工作餐时间 <input type="button" id="addlunchbutton" value="调整为工作餐" /></p>
+                <p>将选中会议调整至一对多 <input type="button" value="调整为一对多会议" /></p>
+                <p>请将冲突拖动至替换位置</p>
             </div>
         </td>
     </tr>

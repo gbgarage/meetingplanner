@@ -7,7 +7,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,15 +18,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
+import dfzq.dao.CompanyDao;
+import dfzq.dao.FundDao;
+import dfzq.dao.OneOnOneMeetingRequestDao;
 import dfzq.dao.ScheduleDAO;
+import dfzq.dao.TimeframeDao;
 import dfzq.model.ConflictResult;
+import dfzq.model.DataList;
+import dfzq.model.MeetingRequest;
+import dfzq.model.OneOnOneMeetingRequest;
 import dfzq.model.Schedule;
 import dfzq.model.ScheduleByDVT;
+import dfzq.model.Timeframe;
+import dfzq.service.MeetingScheduleService;
 import dfzq.util.DateFormatter;
 import dfzq.util.StringUtil;
 
 @Controller
 public class ScheduleController {
+	
+	@Autowired
+	TimeframeDao timeframeDao;
+	
+	@Autowired
+	FundDao fundDao;
+	
+	@Autowired
+	CompanyDao companyDao;
+	
+	@Autowired
+	OneOnOneMeetingRequestDao oneononemeetingrequestDao;
+	
+	
+	@Autowired
+	MeetingScheduleService meetingScheduleService;
 
 	//private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger("ScheduleController");
@@ -444,8 +472,55 @@ public class ScheduleController {
 			jo.put("CompanyName", conflictItem.getCompanyName());
 			jo.put("FundName", conflictItem.getFundName());
 			jo.put("StatusCode", (conflictItem.getConflictStatusCode()==2?"上市公司 资源冲突":"基金公司 资源冲突"));
+			jo.put("fund_id", conflictItem.getFund_id());
+			jo.put("company_id", conflictItem.getCompany_id());
 			resultJsonArray.put(jo);
 		}
 		return StringUtil.toUnicodeFormat(resultJsonArray.toString());//.replaceAll("\\\\\\\\", "\\\\");
 	}
+	
+	//add lunch, input is fund id and company id, add lunch
+	@ResponseBody
+	@RequestMapping(value = "/addlunch", method = RequestMethod.POST)
+	public int addlunch(@RequestParam("fund_id") int fund_id, @RequestParam("company_id") int company_id,
+			@RequestParam("lunchtime_id") int lunchtime_id) {
+//		print out the add lunch request detail
+//		System.out.println("received add lunch request, fund_id= " + fund_id + " company_id= " 
+//				+ company_id + " lunchtime_id= " + lunchtime_id);
+		
+		// construct the 1 one 1 meeting request
+		OneOnOneMeetingRequest request = oneononemeetingrequestDao.getMeetReqForFundCompany(fund_id, company_id);
+	
+		// add one meeting for this meeting request into the schedule table
+		meetingScheduleService.scheduleMeeting(request, lunchtime_id);
+		
+		// update this 1 one 1 request status in  1 one 1 meeting request table to success status
+		oneononemeetingrequestDao.updateMeetingRequestStatus(fund_id, company_id, 5);
+//		
+		//1 for success
+		return 1;
+	}
+	
+	//return lunch time window, could be more than 1
+	@ResponseBody
+	@RequestMapping(value = "/schedule/getLunchTime")
+	public DataList getLunchTime(@RequestParam(value="pageIndex", defaultValue="0") int pageIndex, 
+			@RequestParam(value="pageSize", defaultValue="999") int pageSize) {
+		
+		List <Timeframe> totalTimeframes = timeframeDao.getLunchTimeList();
+		 
+		int fromIndex = pageIndex*pageSize;
+		int toIndex = pageIndex*pageSize+pageSize;
+		
+		if (toIndex > totalTimeframes.size()) toIndex = totalTimeframes.size();		
+		
+		List <Timeframe> returnTimeframes = totalTimeframes.subList(fromIndex, toIndex);
+		DataList dl = new DataList(totalTimeframes.size(),returnTimeframes);
+				
+		return dl;
+	}
+	
+	
 }
+
+

@@ -53,6 +53,47 @@
 		value (#fundId#, #companyId#, #musthave#, #small#)
 	</insert>
 	
+<!--     return 1on1 meeting request for a fund and a company-->
+
+    <resultMap id="11meetingrequest-result" class="OneOnOneMeetingRequest">
+        <result column="fundid" property="fundId"/>
+        <result column="companyid" property="companyId"/>
+        <result column="musthave" property="musthave"/>
+        <result column="small" property="small"/>    
+		<result property="fund" column="fundid" select="selectFundById" />
+		<result property="company" column="companyid" select="selectCompanyById" />
+    </resultMap>	
+    
+    <resultMap id="selectbyfundid-result" class="Fund">
+        <result column="id" property="id"/>
+        <result column="fund_name" property="fundName"/>
+        <result column="contact" property="contactor"/>
+    </resultMap>	
+    
+    <resultMap id="selectbycompanyid-result" class="Company">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="contact" property="contact"/>
+    </resultMap>	
+	
+	  <statement id="selectFundById" parameterClass="int" resultMap="selectbyfundid-result">
+	    select * from Fund where id = #value#
+	  </statement>
+	
+	  <statement id="selectCompanyById" parameterClass="int" resultMap="selectbycompanyid-result">
+	    select * from Company where id = #value#
+	  </statement>
+
+    <select id="get11MeetReqListForFundCompany" parameterClass="map" resultMap="11meetingrequest-result">
+		select fund_name, name, fund.id as fundid, company.id as companyid, musthave, small from one_on_one_meeting_request 
+		left join fund on one_on_one_meeting_request.fund_id = fund.id
+		left join company on one_on_one_meeting_request.company_id = company.id
+        where fund.id = #fundid# and company.id = #companyid#;
+		
+    </select>
+    
+<!--     end - return 1on1 meeting request for a fund and a company-->
+
 	
 <!--     return 1on1 meeting request for a fund-->
     
@@ -176,6 +217,11 @@
     	delete from one_many_meeting_request
     </delete>
     
+    <update id="updateMeetingRequestStatus" parameterClass="map">
+    	update one_on_one_meeting_request as mr
+    	set status = #status#
+    	where mr.fund_id = #fundid# and mr.company_id = #companyid#
+    </update>
     
 </sqlMap>
 

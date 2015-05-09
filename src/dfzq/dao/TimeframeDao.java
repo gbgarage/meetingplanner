@@ -33,4 +33,8 @@ public class TimeframeDao extends BaseDao {
         return timeFrameIds;
 
     }
+    
+    public List<Timeframe> getLunchTimeList() {
+    	return (List<Timeframe>)getSqlMapClientTemplate().queryForList("getLunchTimeList");
+    }
 }

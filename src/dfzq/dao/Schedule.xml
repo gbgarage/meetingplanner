@@ -33,6 +33,8 @@
     <result property="fundName" column="Fund_Name"/>
     <result property="companyName" column="Company_Name"/>
     <result property="conflictStatusCode" column="Conflict_Status"/>
+    <result property="fund_id" column="o.fund_id"/>
+    <result property="company_id" column="o.company_id"/>
 </resultMap> 
 
     <typeAlias alias="Schedule" type="com.dfzq.model.Schedule"/>
@@ -126,12 +128,20 @@
     
     <select id="listConflicts" resultMap="conflictMap">
     SELECT C.name AS Company_Name, F.fund_name AS Fund_Name,
-	       O.status AS Conflict_Status
+	       O.status AS Conflict_Status, o.fund_id, o.company_id
 	FROM
 	    `schedule_system`.`one_on_one_meeting_request` O
 	    LEFT JOIN `schedule_system`.`fund` F ON O.fund_id = F.id
 	    LEFT JOIN `schedule_system`.`company` C ON O.company_id = C.id
 	WHERE O.`status` IN (2 , 4);
     </select>
+    
+<!--     get all lunchtime time window -->
+
+	<select id="getLunchTimeList" resultMap="timeframe-result">
+		SELECT * FROM schedule_system.time_frame
+			WHERE region = '1c'
+	</select>
+    
 </sqlMap>
 

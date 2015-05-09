@@ -26,6 +26,7 @@ import dfzq.dao.TimeframeDao;
 import dfzq.model.Availability;
 import dfzq.model.Company;
 import dfzq.model.CompanyChangeRow;
+import dfzq.model.DataList;
 import dfzq.model.Fund;
 import dfzq.model.MeetingRequest;
 import dfzq.model.OneOnOneMeetingRequest;
@@ -350,19 +351,6 @@ public class InputController {
 	
 }
 
-class DataList <T> {
-	private int total;
-	private List<T> data;
-	DataList(int total, List<T> data) {
-		this.total = total;
-		this.data = data;
-	}
-	public int getTotal() {
-		return total;
-	}
-	public List<T> getData() {
-		return data;
-	}
-}
+
 
 
