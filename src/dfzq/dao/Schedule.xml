@@ -7,16 +7,16 @@
 <sqlMap>
 
  <resultMap id="scheduleMap" class="dfzq.model.Schedule">
-    <result property="id" column="id"/>
-    <result property="subject" column="subject"/>
+    <result property="id" column="Id"/>
+    <result property="subject" column="Subject"/>
     <result property="location" column="Venue"/>
-    <result property="description" column="description"/>
+    <result property="description" column="Description"/>
     <result property="startTime" column="startTime"/>
     <result property="endTime" column="endTime"/>
-    <result property="isAllDayEvent" column="isAllDayEvent"/>
-    <result property="color" column="color"/>
-    <result property="recurringRule" column="recurringRule"/>
-    <result property="attendee" column="attendee"/>
+    <result property="isAllDayEvent" column="IsAllDayEvent"/>
+    <result property="color" column="Color"/>
+    <result property="recurringRule" column="RecurringRule"/>
+    <result property="attendee" column="Attendee"/>
 </resultMap>
 
  <resultMap id="scheduleByDVTMap" class="dfzq.model.ScheduleByDVT">
@@ -78,16 +78,19 @@
        where `id` = #id#
     </delete>
     
-    <update id="updateDetailedSchedule">
+    <update id="updateDetailedSchedule" parameterClass="dfzq.model.Schedule">
        update `tbl_schedule` set
-          `starttime`=#startTime#,
-	      `endtime`=#endTime#,
-          `subject`=#subject#,
-		  `isalldayevent`=#isAllDayEvent#, 
-           `description`=#description#,
-		   `venue`=#location#,
-           `color`=#color# 
-        where `id`= #id#
+          `StartTime`=#startTime#,
+	      `EndTime`=#endTime#,
+          `Subject`=#subject#,
+		  `IsAllDayEvent`=#isAllDayEvent#, 
+           `Description`=#description#,
+		   `Venue`=#location#,
+           `Color`=#color#,
+           `RecurringRule`=#recurringRule#, 
+           `Attendee`=#attendee# 
+        where `Id`= #id#
+
     </update>
     
     <select id="listScheduleByDVT" resultMap="scheduleByDVTMap"  parameterClass="Map">
@@ -142,6 +145,28 @@
 		SELECT * FROM schedule_system.time_frame
 			WHERE region = '1c'
 	</select>
+	
+<!-- 	get all meeting for a company -->
+	
+	<select id="getMeetingForCompany"  resultMap="scheduleMap" parameterClass="String">
+	SELECT * FROM schedule_system.tbl_schedule
+	WHERE Attendee like #companyid#
+    </select>
+    
+<!--     add a fund to a meeting -->
+    
+    <update id="addFundToMeeting">
+       update `tbl_schedule` set 
+          `Attendee` = #attendee#
+       where `id` = #meetingid#
+    </update>
+    
+<!--     get attendee for a meeting -->
+
+	<select id="getAttendeeForMeeting"  parameterClass="Integer" resultClass="String">
+	SELECT Attendee FROM schedule_system.tbl_schedule
+	WHERE id = #meeting_id#
+    </select>
     
 </sqlMap>
 

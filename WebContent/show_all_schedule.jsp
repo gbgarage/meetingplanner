@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -34,6 +35,10 @@
     	
     	var conflictdata;
     	var scheduledata;
+        var timeslot = new Array("MeetingDate", "MeetingVenue", "T0900", 
+        		"T1000", "T1100", "T1200", 
+        		"T1300", "T1400", "T1500",
+        		"T1600");
     
         function addNotificationList(c1, c2) {
             var notif = $("#notification_list")[0];
@@ -65,10 +70,44 @@
 
             //swap objects
             swapObject(ui.helper[0].id, this.id);
-
+            
+            //set id for meetingblock and conflict block which will be swapped
+            var meetingblockid;
+            var conflictblockid;
+            
+            if (getOriginalClass($("#" + ui.helper[0].id).attr('class')) == "mtobject" ) {
+            	meetingblockid = ui.helper[0].id;
+            } 
+            else meetingblockid = this.id;
+            
+            if (getOriginalClass($("#" + this.id).attr('class')) == "cfobject" ) {
+            	conflictblockid = this.id;
+            } 
+            else conflictblockid = ui.helper[0].id;
+            
+            //id of the meeting which will swap attendee
+            var meeting_id = scheduledata[meetingblockid.split("_")[1]][timeslot[parseInt(meetingblockid.split("_")[2])] +"ID"];
+            
+            //id of the conflict which will be resolved after the swap
+            var conflict_fundid = conflictdata[conflictblockid.split("_")[1]]["fund_id"];
+            var conflict_companyid = conflictdata[conflictblockid.split("_")[1]]["company_id"];
+            
+            //post meetingid, fundid, companyid to server side
+            
+            jQuery.post(
+            	"./schedule/swapmeeting.do",
+                { meeting_id: meeting_id, 
+                	conflict_fundid: conflict_fundid, 
+                	conflict_companyid: conflict_companyid },
+                function(data) {
+                	if (data!=1) alert("error");
+                }
+            );
+            
             //add Notifications
             var dragSourceText = $("#" + ui.helper[0].id).text();
             var dragTargetText = $("#" + this.id).text();
+            
             addNotificationList(dragSourceText + " => " + dragTargetText, "会议/冲突 交换");
         }
 
@@ -88,8 +127,6 @@
 
         });
 
-
-        var timeslot = new Array("MeetingDate", "MeetingVenue", "T0900", "T1000", "T1100", "T1200", "T1300", "T1400", "T1500", "T1600");
         function getTDField(data, fieldName) {
             var td1 = $("<td></td>");
             td1.html(data[fieldName]);
@@ -98,7 +135,7 @@
         }
 
         function getListDvt(data, textStatus, jqXHR) {
-        	scheduledata = data;
+        	scheduledata = mini.clone(data);
             var datagrid1 = $("#datagrid1");
             if (textStatus == "success") {
                 //console.log(data);
@@ -107,7 +144,7 @@
 
                     for (var j = 0; j < timeslot.length; j++) {
                         var td1 = getTDField(data[i], timeslot[j])
-                        td1.attr("id", "m" + "_" + i + "_" + j);
+						td1.attr("id", "m" + "_" + i + "_" + j);
 
                         if (td1.html() != "" && timeslot[j].substring(0, 1) == "T") {
 
@@ -129,7 +166,7 @@
         var conflictList = new Array("FundName", "StatusCode", "fund_id", "company_id");
 
         function getListConflicts(data, textStatus, jqXHR) {
-        	conflictdata = data;
+        	conflictdata = mini.clone(data);
             var datagrid2 = $("#datagrid2");
             if (textStatus == "success") {
                 //console.log(data);
@@ -179,7 +216,9 @@
         	});
         	if (flag > 1) alert("请不要复选");
         	else {
-        		if (flag==1) alert("当前选中的是： "+ id);
+        		
+        		//show current selection
+//         		if (flag==1) alert("当前选中的是： "+ id);
         		
         		//open lunch select window
         		
@@ -201,6 +240,54 @@
                                             { fund_id: conflictdata[id]["fund_id"], 
                                             	company_id: conflictdata[id]["company_id"]
                                             	, lunchtime_id: windowdata.id } ,
+                                            function(data) {
+                                            		if (data!=1) alert("error");
+                                            		else $("#isResolved" + id).text("已解决");
+                                            });
+                                }
+                            }
+
+                        }
+                    }); 
+                    
+                 }    
+        });	    
+        
+        $("#changetosmallbutton").click(function () {
+        	var flag = 0; 
+        	var id = 0;
+
+        	$("[name='conflictcheck']").each(function () { 
+		        	if ($(this).attr("checked")) { 
+		        	flag += 1;  	
+		        	id = $(this).attr("id");
+	        	} 
+        	});
+        	if (flag > 1) alert("请不要复选");
+        	else {
+        		//show current selection
+//         		if (flag==1) alert("当前选中的是： "+ id);
+        		
+        		//open company other 1 on 1 meeting and select to change to small window
+        		
+                    var btnEdit = this;
+                    mini.open({
+        				url:  "./schedule/select_changesmall.jsp?companyid=" + conflictdata[id]["company_id"],
+                        title: "选择列表",
+                        width: 650,
+                        height: 380,
+                        ondestroy: function (action) {
+                            if (action == "ok") {
+                                var iframe = this.getIFrameEl();
+                                var windowdata = iframe.contentWindow.GetData();
+                                windowdata = mini.clone(windowdata);    //必须
+                                if (windowdata) {
+                            		//post fund_id and company_id to backend to add lunch
+                                    jQuery.post(
+                                            "./schedule/changesmall.do",
+                                            { fund_id: conflictdata[id]["fund_id"], 
+                                            	company_id: conflictdata[id]["company_id"],
+                                            	meeting_id: windowdata.id},
                                             function(data) {
                                             		if (data!=1) alert("error");
                                             		else $("#isResolved" + id).text("已解决");
@@ -260,8 +347,8 @@
             冲突解决<br/>
 
             <div style="width:100%;height:350px;overflow:hidden;background:#F8F8F8">
-                <p>将选中冲突需求加入工作餐时间 <input type="button" id="addlunchbutton" value="调整为工作餐" /></p>
-                <p>将选中会议调整至一对多 <input type="button" value="调整为一对多会议" /></p>
+                <p>将选中冲突会议需求加入工作餐时间 <input type="button" id="addlunchbutton" value="调整为工作餐" /></p>
+                <p>将选中冲突会议需求调整至一对多 <input type="button" id="changetosmallbutton" value="调整为一对多会议" /></p>
                 <p>请将冲突拖动至替换位置</p>
             </div>
         </td>

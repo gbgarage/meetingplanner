@@ -5,6 +5,7 @@ import com.common.*;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dfzq.model.ConflictResult;
 import dfzq.model.Schedule;
@@ -52,6 +53,7 @@ public List<Schedule> listScheduleByRange(Timestamp st ,Timestamp et, String sAt
    
    
    public void updateDetailedSchedule(Schedule s) {
+	   
 	   getSqlMapClientTemplate().update("updateDetailedSchedule", s);
    }
    
@@ -68,4 +70,22 @@ public List<Schedule> listScheduleByRange(Timestamp st ,Timestamp et, String sAt
     public void deleteSchedule(String attendee) {
         getSqlMapClientTemplate().delete("deleteScheduleByAttendee", attendee);
     }
+    
+    public List<Schedule> getschedule(int companyid) {
+
+ 	   return (List<Schedule>)getSqlMapClientTemplate().queryForList("getMeetingForCompany", "%,c" + companyid + ",%");
+    }
+    
+    public void addFundToMeeting(int fund_id, int company_id, int meeting_id) {
+    	
+        Map map = new HashMap();
+        map.put("fundid", fund_id);
+        map.put("companyid", company_id);
+        map.put("meetingid", meeting_id);
+        String Attendee = (String) getSqlMapClientTemplate().queryForObject("getAttendeeForMeeting", meeting_id);     
+        map.put("attendee", Attendee + "f" + fund_id + ",");
+        getSqlMapClientTemplate().update("addFundToMeeting", map);
+    }
+    
+     
 }

@@ -47,6 +47,9 @@ public class ScheduleController {
 	CompanyDao companyDao;
 	
 	@Autowired
+	ScheduleDAO scheduleDao;
+	
+	@Autowired
 	OneOnOneMeetingRequestDao oneononemeetingrequestDao;
 	
 	
@@ -440,12 +443,19 @@ public class ScheduleController {
 				dateVenueJsonObject = new JSONObject();
 				dateVenueJsonObject.put("MeetingDate", scheduleResultItem.getMeetingDate());
 				dateVenueJsonObject.put("MeetingVenue", scheduleResultItem.getVenue());
+				
 			}
 			
 			// for all the time put T0900, Subject into the defined dateVenueJsonObject
 			dateVenueJsonObject.put("T"+scheduleResultItem.getMeetingTime(), 
 					scheduleResultItem.getSubject()==null?"":scheduleResultItem.getSubject()
 					);
+			
+			//added by leo 20150510, add meetingid into the return page to allow swap
+			dateVenueJsonObject.put("T"+scheduleResultItem.getMeetingTime() + "ID", 
+					scheduleResultItem.getSubject()==null?"":scheduleResultItem.getMeetingId()
+					);
+			
 		}
 		//in case any left during the loop
 		if (!currentDateVenueCombination.equals("")) {
@@ -495,8 +505,8 @@ public class ScheduleController {
 		meetingScheduleService.scheduleMeeting(request, lunchtime_id);
 		
 		// update this 1 one 1 request status in  1 one 1 meeting request table to success status
-		oneononemeetingrequestDao.updateMeetingRequestStatus(fund_id, company_id, 5);
-//		
+		oneononemeetingrequestDao.updateMeetingRequestStatus(fund_id, company_id, 5, lunchtime_id);
+
 		//1 for success
 		return 1;
 	}
@@ -515,11 +525,101 @@ public class ScheduleController {
 		if (toIndex > totalTimeframes.size()) toIndex = totalTimeframes.size();		
 		
 		List <Timeframe> returnTimeframes = totalTimeframes.subList(fromIndex, toIndex);
-		DataList dl = new DataList(totalTimeframes.size(),returnTimeframes);
+		DataList dl = new DataList(totalTimeframes.size(), returnTimeframes);
 				
 		return dl;
 	}
 	
+	//return company related meeting, could be more than 1
+	@ResponseBody
+	@RequestMapping(value = "/schedule/getSmallMeeting")
+	public DataList getSmallMeeting(@RequestParam(value="pageIndex", defaultValue="0") int pageIndex, 
+			@RequestParam(value="pageSize", defaultValue="999") int pageSize,
+			@RequestParam(value="companyid") int companyid) {
+		
+		List <Schedule> meetingrequests = scheduleDao.getschedule(companyid);
+
+		int fromIndex = pageIndex*pageSize;
+		int toIndex = pageIndex*pageSize+pageSize;
+		
+		if (toIndex > meetingrequests.size()) toIndex = meetingrequests.size();		
+		
+		List <Schedule> returnMeetingRequests = meetingrequests.subList(fromIndex, toIndex);
+		DataList dl = new DataList(meetingrequests.size(), returnMeetingRequests);
+				
+		return dl;
+	}
+	
+	//add lunch, input is fund id and company id, add lunch
+	@ResponseBody
+	@RequestMapping(value = "/schedule/changesmall", method = RequestMethod.POST)
+	public int changesmall(@RequestParam("fund_id") int fund_id, @RequestParam("company_id") int company_id,
+			@RequestParam("meeting_id") int meeting_id) {
+		
+		// use meeting_id to search for the meeting in tbl_schedule and then add 
+		scheduleDao.addFundToMeeting(fund_id, company_id, meeting_id);
+		
+		// update this 1 on 1 request status in  1 one 1 meeting request table to success status and add meetingtime
+		// however does not change the meeting request to small, in re-calculation it still will be 1 on 1
+		oneononemeetingrequestDao.updateMeetingRequestStatus(fund_id, company_id, 5, meeting_id);
+
+		//1 for success
+		return 1;
+	}
+	
+	//swap meeting, use conflict fundid and conflict companyid to replace the original attendee in the meeting (meetingid)
+	@ResponseBody
+	@RequestMapping(value = "/schedule/swapmeeting", method = RequestMethod.POST)
+	public int swapmeeting(@RequestParam("conflict_fundid") int conflict_fundid, 
+			@RequestParam("conflict_companyid") int conflict_companyid,
+			@RequestParam("meeting_id") int meeting_id) {
+		
+		//get the original attendee
+		Schedule schedule = scheduleDao.listSchedule(meeting_id);
+		String originalattendee = schedule.getAttendee();
+		
+		//construct new attendee string, set to schedule
+		String newAttendee = ",f" + conflict_fundid + ",c" + conflict_companyid + ",";
+		schedule.setAttendee(newAttendee);
+		
+		//get oriignal fund id and company id
+		int original_fundid = 0;
+		int original_companyid = 0;
+		
+		String[] tempStr = originalattendee.split(",");
+		for (int i=0; i<tempStr.length; i++) {
+			if (tempStr[i].indexOf('c') != -1) {
+				original_companyid = Integer.parseInt(tempStr[i].replaceAll("c",""));
+			}
+			
+			if (tempStr[i].indexOf('f') != -1) {
+				original_fundid = Integer.parseInt(tempStr[i].replaceAll("f",""));
+			}
+		}
+		
+		//set new subject and description
+        schedule.setSubject(companyDao.getCompanyById(conflict_companyid).getName() 
+        		+ "(" + companyDao.getCompanyById(conflict_companyid).getContact() 
+        		+ ")" + "-" + fundDao.getFundById(conflict_fundid).getFundName() 
+        		+ "(" + fundDao.getFundById(conflict_fundid).getContactor() + ")");
+        schedule.setDescription(schedule.getSubject());
+		
+		//update original schedule
+		scheduleDao.updateDetailedSchedule(schedule);
+	
+		//get the original meeting time_frame_id
+		OneOnOneMeetingRequest mr = oneononemeetingrequestDao.getMeetReqForFundCompany(original_fundid, original_companyid);
+		int time_frame_id = mr.getTimeFrameId();
+		
+		//change conflict meeting request to success status
+		oneononemeetingrequestDao.updateMeetingRequestStatus(conflict_fundid, conflict_companyid, 5, time_frame_id);
+		
+		//change original meeting request to fail status, 7 represents the meeting is swapped
+		oneononemeetingrequestDao.updateMeetingRequestStatus(original_fundid, original_companyid, 7, null);
+		
+		//return success failure
+		return 1;
+	}
 	
 }
 

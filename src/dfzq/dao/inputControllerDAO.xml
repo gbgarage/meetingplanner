@@ -62,6 +62,9 @@
         <result column="small" property="small"/>    
 		<result property="fund" column="fundid" select="selectFundById" />
 		<result property="company" column="companyid" select="selectCompanyById" />
+		<result property="timeFrameId" column="time_frame_id" />
+		<result property="status" column="status" />
+		<result property="priority" column="mr.priority" />
     </resultMap>	
     
     <resultMap id="selectbyfundid-result" class="Fund">
@@ -85,9 +88,10 @@
 	  </statement>
 
     <select id="get11MeetReqListForFundCompany" parameterClass="map" resultMap="11meetingrequest-result">
-		select fund_name, name, fund.id as fundid, company.id as companyid, musthave, small from one_on_one_meeting_request 
-		left join fund on one_on_one_meeting_request.fund_id = fund.id
-		left join company on one_on_one_meeting_request.company_id = company.id
+		select fund_name, name, fund.id as fundid, company.id as companyid, 
+			musthave, small, time_frame_id, status, mr.priority from one_on_one_meeting_request AS mr
+		left join fund on mr.fund_id = fund.id
+		left join company on mr.company_id = company.id
         where fund.id = #fundid# and company.id = #companyid#;
 		
     </select>
@@ -219,7 +223,8 @@
     
     <update id="updateMeetingRequestStatus" parameterClass="map">
     	update one_on_one_meeting_request as mr
-    	set status = #status#
+    	set status = #status#, time_frame_id = #lunchtimeid#
+    	
     	where mr.fund_id = #fundid# and mr.company_id = #companyid#
     </update>
     
