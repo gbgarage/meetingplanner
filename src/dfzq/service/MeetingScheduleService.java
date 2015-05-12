@@ -27,6 +27,10 @@ public class MeetingScheduleService {
     @Autowired
     private ScheduleDAO scheduleDAO;
 
+    public void cleanLocalMap(){
+        locationMap.clear();
+    }
+
     public void scheduleMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest, Integer timeFrameId) {
         Schedule schedule = new Schedule();
         schedule.setColor("-1");
