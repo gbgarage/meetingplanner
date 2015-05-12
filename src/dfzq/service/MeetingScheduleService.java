@@ -45,6 +45,7 @@ public class MeetingScheduleService {
         schedule.setLocation(getLocation(timeFrameId) + "");
         String attendee = generateAttendee(company.getId(), fund.getId());
         schedule.setAttendee(attendee);
+        schedule.setType(Schedule.ONE_ON_ONE);
         scheduleDAO.addDetailedSchedule(schedule);
 
 
@@ -67,6 +68,7 @@ public class MeetingScheduleService {
         schedule.setLocation(getLocation(timeFrameId) + "");
         String attendee = generateAttendee(company.getId(), 0);
         schedule.setAttendee(attendee);
+        schedule.setType(Schedule.ONE_MANY);
         scheduleDAO.addDetailedSchedule(schedule);
 
 
@@ -89,6 +91,7 @@ public class MeetingScheduleService {
         schedule.setLocation(getLocation(timeFrameId) + "");
         String attendee = generateAttendee(company.getId(),smallGroupMeetingRequest.getFundIds() );
         schedule.setAttendee(attendee);
+        schedule.setType(Schedule.SMALL_GROUP);
         scheduleDAO.addDetailedSchedule(schedule);
 
 

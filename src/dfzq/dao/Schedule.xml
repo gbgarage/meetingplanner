@@ -48,8 +48,8 @@
     </insert>
     
     <insert id="addDetailedSchedule">
-       insert into `tbl_schedule` (`subject`, `starttime`, `endtime`, `isalldayevent`, `description`, `venue`, `color`, `attendee`)
-       values (#subject#, #startTime#, #endTime#, #isAllDayEvent#, #description#, #location#, #color#, #attendee#)
+       insert into `tbl_schedule` (`subject`, `starttime`, `endtime`, `isalldayevent`, `description`, `venue`, `color`, `attendee`,`type`)
+       values (#subject#, #startTime#, #endTime#, #isAllDayEvent#, #description#, #location#, #color#, #attendee#,#type#)
        <selectKey keyProperty="id" resultClass="java.lang.Integer" type="post" >
           SELECT LAST_INSERT_ID()
        </selectKey>
