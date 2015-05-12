@@ -3,6 +3,11 @@ package dfzq.model;
 import java.sql.Timestamp;
 
 public class Schedule {
+    public static final String ONE_ON_ONE="O";
+    public static final String SMALL_GROUP="S";
+    public static final String ONE_MANY="P";
+
+
 	private long id;
 	private String subject;
 	private String location;
@@ -13,8 +18,17 @@ public class Schedule {
 	private String color;
 	private String recurringRule;
 	private String attendee;
-	
-	public String getAttendee() {
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getAttendee() {
 		return attendee;
 	}
 	public void setAttendee(String pAttendee) {
