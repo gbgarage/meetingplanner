@@ -806,6 +806,7 @@ CREATE TABLE IF NOT EXISTS `tbl_schedule` (
   `Color` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   `RecurringRule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
   `Attendee` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
+  `Type` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

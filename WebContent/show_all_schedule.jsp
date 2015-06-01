@@ -87,7 +87,10 @@
             
             //id of the meeting which will swap attendee
             var meeting_id = scheduledata[meetingblockid.split("_")[1]][timeslot[parseInt(meetingblockid.split("_")[2])] +"ID"];
-            
+ 
+            //id of the meeting which will swap attendee
+            var meeting_type = scheduledata[meetingblockid.split("_")[1]][timeslot[parseInt(meetingblockid.split("_")[2])] +"TYPE"];
+ 
             //id of the conflict which will be resolved after the swap
             var conflict_fundid = conflictdata[conflictblockid.split("_")[1]]["fund_id"];
             var conflict_companyid = conflictdata[conflictblockid.split("_")[1]]["company_id"];

@@ -1,6 +1,7 @@
 package dfzq.controller;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import dfzq.dao.CompanyDao;
 import dfzq.dao.FundDao;
 import dfzq.dao.OneOnOneMeetingRequestDao;
 import dfzq.dao.ScheduleDAO;
+import dfzq.dao.SmallMeetingRequestDao;
 import dfzq.dao.TimeframeDao;
 import dfzq.model.ConflictResult;
 import dfzq.model.DataList;
@@ -48,6 +50,9 @@ public class ScheduleController {
 	
 	@Autowired
 	ScheduleDAO scheduleDao;
+	
+	@Autowired
+	SmallMeetingRequestDao smallmeetingrequestDao;
 	
 	@Autowired
 	OneOnOneMeetingRequestDao oneononemeetingrequestDao;
@@ -456,6 +461,11 @@ public class ScheduleController {
 					scheduleResultItem.getSubject()==null?"":scheduleResultItem.getMeetingId()
 					);
 			
+			//added by leo 20150510, add meetintype into the return page to allow swap
+			dateVenueJsonObject.put("T"+scheduleResultItem.getMeetingTime() + "TYPE", 
+					scheduleResultItem.getSubject()==null?"":scheduleResultItem.getMeetingId()
+					);
+			
 		}
 		//in case any left during the loop
 		if (!currentDateVenueCombination.equals("")) {
@@ -574,16 +584,29 @@ public class ScheduleController {
 			@RequestParam("conflict_companyid") int conflict_companyid,
 			@RequestParam("meeting_id") int meeting_id) {
 		
-		//get the original attendee
+		//get the original attendee and type
 		Schedule schedule = scheduleDao.listSchedule(meeting_id);
 		String originalattendee = schedule.getAttendee();
+		String originalMeetingType = schedule.getType();
 		
 		//construct new attendee string, set to schedule
 		String newAttendee = ",f" + conflict_fundid + ",c" + conflict_companyid + ",";
 		schedule.setAttendee(newAttendee);
 		
-		//get oriignal fund id and company id
-		int original_fundid = 0;
+		//set new subject and description
+		String subject = companyDao.getCompanyById(conflict_companyid).getName() 
+        		+ "(" + companyDao.getCompanyById(conflict_companyid).getContact() 
+        		+ ")" + "-" + fundDao.getFundById(conflict_fundid).getFundName() 
+        		+ "(" + fundDao.getFundById(conflict_fundid).getContactor() + ")";
+        
+        schedule.setSubject(subject);
+        schedule.setDescription(subject);
+		
+		//update original schedule
+		scheduleDao.updateDetailedSchedule(schedule);
+		
+		//get original fund id and company id
+		List<Integer> original_fundids = new ArrayList<Integer>();
 		int original_companyid = 0;
 		
 		String[] tempStr = originalattendee.split(",");
@@ -593,29 +616,31 @@ public class ScheduleController {
 			}
 			
 			if (tempStr[i].indexOf('f') != -1) {
-				original_fundid = Integer.parseInt(tempStr[i].replaceAll("f",""));
+				original_fundids.add(Integer.parseInt(tempStr[i].replaceAll("f","")));
 			}
 		}
 		
-		//set new subject and description
-        schedule.setSubject(companyDao.getCompanyById(conflict_companyid).getName() 
-        		+ "(" + companyDao.getCompanyById(conflict_companyid).getContact() 
-        		+ ")" + "-" + fundDao.getFundById(conflict_fundid).getFundName() 
-        		+ "(" + fundDao.getFundById(conflict_fundid).getContactor() + ")");
-        schedule.setDescription(schedule.getSubject());
-		
-		//update original schedule
-		scheduleDao.updateDetailedSchedule(schedule);
-	
-		//get the original meeting time_frame_id
-		OneOnOneMeetingRequest mr = oneononemeetingrequestDao.getMeetReqForFundCompany(original_fundid, original_companyid);
+		//get the original meeting time_frame_id from the FIRST fund meeting request
+		OneOnOneMeetingRequest mr = 
+				oneononemeetingrequestDao.getMeetReqForFundCompany(original_fundids.get(0), original_companyid);
 		int time_frame_id = mr.getTimeFrameId();
 		
 		//change conflict meeting request to success status
 		oneononemeetingrequestDao.updateMeetingRequestStatus(conflict_fundid, conflict_companyid, 5, time_frame_id);
 		
 		//change original meeting request to fail status, 7 represents the meeting is swapped
-		oneononemeetingrequestDao.updateMeetingRequestStatus(original_fundid, original_companyid, 7, null);
+		for (Integer fundid:original_fundids) {
+			
+			if ( originalMeetingType == "O" ) {
+				oneononemeetingrequestDao.updateMeetingRequestStatus(fundid, original_companyid, 7, null);
+				break;
+			}
+			
+			if ( originalMeetingType == "S") {
+				smallmeetingrequestDao.updateMeetingRequestStatus(fundid, original_companyid, 7, null);				
+			}
+
+		}
 		
 		//return success failure
 		return 1;

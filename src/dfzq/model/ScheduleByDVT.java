@@ -44,6 +44,16 @@ public class ScheduleByDVT {
 	public void setColor(String color) {
 		this.color = color;
 	}
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+
+
+
 	private String meetingDate;
 	private String meetingTime;
 	private String venue;
@@ -51,6 +61,9 @@ public class ScheduleByDVT {
 	private String subject;
 	private String description;
 	private String color;
+	
+	//added by leo 20150512 to allow type to be returned to the frontend
+	private String type;
 }
 
 

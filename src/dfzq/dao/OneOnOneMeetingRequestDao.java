@@ -32,15 +32,15 @@ public class OneOnOneMeetingRequestDao extends BaseDao{
     	return (OneOnOneMeetingRequest)getSqlMapClientTemplate().queryForObject("get11MeetReqListForFundCompany", map);
     }
     
-    public void updateMeetingRequestStatus(Integer fundid, Integer companyid, Integer status, Integer lunchtimeid) {
+    public void updateMeetingRequestStatus(Integer fundid, Integer companyid, Integer status, Integer meetingid) {
     	
         Map map = new HashMap();
         map.put("fundid", fundid);
         map.put("companyid", companyid);
         map.put("status", status);
-        map.put("lunchtimeid", lunchtimeid);
+        map.put("meetingid", meetingid);
     	
-    	getSqlMapClientTemplate().update("updateMeetingRequestStatus", map);
+    	getSqlMapClientTemplate().update("update1on1MeetingRequestStatus", map);
     }    
     
     

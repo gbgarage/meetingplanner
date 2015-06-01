@@ -221,9 +221,16 @@
     	delete from one_many_meeting_request
     </delete>
     
-    <update id="updateMeetingRequestStatus" parameterClass="map">
+    <update id="update1on1MeetingRequestStatus" parameterClass="map">
     	update one_on_one_meeting_request as mr
-    	set status = #status#, time_frame_id = #lunchtimeid#
+    	set status = #status#, time_frame_id = #meetingid#
+    	
+    	where mr.fund_id = #fundid# and mr.company_id = #companyid#
+    </update>
+    
+    <update id="updateSmallMeetingRequestStatus" parameterClass="map">
+    	update small_meeting_request as mr
+    	set status = #status#, time_frame_id = #meetingid#
     	
     	where mr.fund_id = #fundid# and mr.company_id = #companyid#
     </update>

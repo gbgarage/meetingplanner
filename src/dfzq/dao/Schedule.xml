@@ -17,6 +17,7 @@
     <result property="color" column="Color"/>
     <result property="recurringRule" column="RecurringRule"/>
     <result property="attendee" column="Attendee"/>
+    <result property="type" column="Type"/>
 </resultMap>
 
  <resultMap id="scheduleByDVTMap" class="dfzq.model.ScheduleByDVT">
@@ -101,7 +102,8 @@
        form.Meeting_Id,
        s.Subject,
        s.Description,
-       s.Color
+       s.Color,
+       s.Type
   FROM (SELECT MAX(Meeting_Id) AS Meeting_Id, Meeting_Dt, Meeting_Tm, Venue
           FROM ((SELECT MAX(Id) AS Meeting_Id,
                         date_format(StartTime, '%Y%m%d') AS Meeting_Dt,
