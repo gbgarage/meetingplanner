@@ -42,6 +42,7 @@ public class ArrangementService {
     public void cauclatingArrangeMeeting() {
 
         arrangeMeetingDao.clearArrangement();
+        meetingScheduleService.cleanLocalMap();
         for (int i = 1; i <= 2; i++) {
             int[] morningtimeFrames = timeframeDao.getTimeFrameByRegion(i + "a");
             int[] afternoonTimeFrames = timeframeDao.getTimeFrameByRegion(i + "b");
