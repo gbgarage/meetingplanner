@@ -798,7 +798,7 @@ INSERT INTO `small_meeting_request` (`fund_id`, `company_id`, `status`, `time_fr
 CREATE TABLE IF NOT EXISTS `tbl_schedule` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `Subject` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
-  `Venue` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `Venue` int(11) DEFAULT NULL,
   `Description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `StartTime` datetime DEFAULT NULL,
   `EndTime` datetime DEFAULT NULL,
@@ -836,7 +836,7 @@ INSERT INTO `time_frame` (`id`, `date`, `time_window`, `region`, `start_time`, `
 (5, '2014-11-23', '13:00-14:00', '1b', '2014-11-23 13:00:00', '2014-11-23 14:00:00'),
 (6, '2014-11-23', '14:00-15:00', '1b', '2014-11-23 14:00:00', '2014-11-23 15:00:00'),
 (7, '2014-11-23', '15:00-16:00', '1b', '2014-11-23 15:00:00', '2014-11-23 16:00:00'),
-(8, '2014-11-23', '16:00-17:00', '1b', '2014-11-23 16:00:00', '2014-11-23 17:00:00');
+(8, '2014-11-23', '16:00-17:00', '1b', '2014-11-23 16:00:00', '2014-11-23 17:00:00'),
 (9, '2014-11-24', '12:00-13:00', '1C', '2014-11-24 12:00:00', '2014-11-24 13:00:00');
 /*!40000 ALTER TABLE `time_frame` ENABLE KEYS */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

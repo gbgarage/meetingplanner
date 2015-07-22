@@ -9,8 +9,11 @@
 <head>
     <script src="${contextPath}/src/jquery.js"></script>
     <script src="${contextPath}/src/jquery-ui.min.js"></script>
-    <script src="${contextPath}/script/miniui/miniui.js" type="text/javascript"></script>
 
+<%-- 	<script src="${contextPath}/src/jquery-1.11.3.min.js"></script> --%>
+<%-- 	<script src="${contextPath}/src/jquery-ui-1.11.4.min.js"></script> --%>
+    <script src="${contextPath}/script/miniui/miniui.js" type="text/javascript"></script>
+    
     <link href="${contextPath}/script/miniui/themes/default/miniui.css" rel="stylesheet" type="text/css"/>
     <link href="${contextPath}/styles/main.css" rel="stylesheet" type="text/css"/>
     <link href="${contextPath}/script/miniui/themes/icons.css" rel="stylesheet" type="text/css"/>
@@ -23,14 +26,61 @@
         .mtobject {
             background-color: #c3deb7;
         }
+        
+        .smobject {
+        	background-color: #9E94EB;
+        }
+        
+        .omobject {
+        	background-color: #F08AA7;
+        }
 
+        .ooobject {
+        	background-color: #c3deb7;
+        }
+        
         .nlobject {
             background-color: #ffeebc;
         }
+        
+        #hoverwin {
+        	background-color: #C6E2FF;    
+		    /*希望窗口有边框*/  
+		    border: 1px red solid;  
+		    /*希望窗口宽度和高度固定，不要太大*/  
+		    width: 300px;  
+		    height: 100px;  
+		    /*希望控制窗口的位置*/  
+ 		    position: absolute;
+/* 		    top: 100px;   */
+/* 		    left: 350px;   */
+		    /*希望窗口开始时不可见*/  
+		    display: none;
+        }
+        
+        #hoverwinmeetingtype {
+		    /*控制标题栏的背景色*/  
+		    background-color: blue;  
+		    /*控制标题栏中文字的颜色*/  
+		    color: yellow;  
+		    /*控制标题栏的左内边距*/  
+		    padding-left:3px;  
+        }
+        
+        #hoverwincompany {
+		    padding-left: 3px;  
+		    padding-top: 5px;      
+        }
+        
+        #hoverwinfund {
+		    padding-left: 3px;  
+		    padding-top: 5px;
+        }
+        
     </style>
 
     <script type="text/javascript">
-    
+
     $(document).ready(function(){
     	
     	var conflictdata;
@@ -75,7 +125,9 @@
             var meetingblockid;
             var conflictblockid;
             
-            if (getOriginalClass($("#" + ui.helper[0].id).attr('class')) == "mtobject" ) {
+            var meetingClass = getOriginalClass($("#" + ui.helper[0].id).attr('class'));
+            
+            if ( meetingClass == "ooobject" || meetingClass == "smobject" || meetingClass == "omobject"  ) {
             	meetingblockid = ui.helper[0].id;
             } 
             else meetingblockid = this.id;
@@ -150,10 +202,18 @@
 						td1.attr("id", "m" + "_" + i + "_" + j);
 
                         if (td1.html() != "" && timeslot[j].substring(0, 1) == "T") {
-
-                            td1.addClass("mtobject").draggable({ opacity: 0.35, revert: true, revertDuration: 100 })
+                        	var meetingType = data[i][timeslot[j]+"TYPE"];
+                        	var meetingId = data[i][timeslot[j]+"ID"];
+                        	var meetingClass;
+                        	switch (meetingType) {
+                        		case 'P': meetingClass = "meetingobject omobject"; break;
+                        		case 'O': meetingClass = "meetingobject ooobject"; break;
+                        		case 'S': meetingClass = "meetingobject smobject"; break;
+                        	};
+                    
+                            td1.addClass(meetingClass).draggable({ opacity: 0.35, revert: true, revertDuration: 100 })
                                     .droppable({drop: dropHandler});
-                            //td1.class ="mtobject";
+                            td1.attr("name", meetingId);
                         }
 
                         tr1.append(td1);
@@ -303,9 +363,34 @@
                     
                  }    
         });	    
+        
+        /* 当鼠标移动到上面的时候浮动窗口显示 */
+        $('.meetingobject').live('mouseenter', function(){
+        	$('#hoverwin').show();
+            $('#hoverwin').css("left",document.body.scrollLeft+event.clientX+1); 
+            $('#hoverwin').css("top",document.body.scrollLeft+event.clientY+10);
+            
+            jQuery.post(
+                "./schedule/showmeetingdetail/" + $(this).attr('name') +".do", null,
+            	function(data) {
+                	$('#hoverwinmeetingtype').text("会议类型: " + data.type);
+                	$('#hoverwincompany').text("公司信息: " + data.companyStr);
+                	$('#hoverwinfund').text("基金信息: " + data.fundStr);
+            	}
+            );
+            
+        });
+        
+        /* 当鼠标移动移出的时候浮动窗口显示 */
+        $('.meetingobject').live('mouseleave', function(){
+        	$('#hoverwin').hide();
+        });
+        
     });
+    
     </script>
     <title>会议安排清单</title>
+    <span style="background-color: #c3deb7">1对1</span><span style="background-color: #9E94EB">小规模</span><span style="background-color: #F08AA7">1对多</span>
 </head>
 <body>
 会议安排清单<br/>
@@ -366,5 +451,11 @@
         <th class="mini-grid-headerCell">备注</th>
     </tr>
 </table>
+
+<div id="hoverwin">
+	<div id="hoverwinmeetingtype">会议类型: </div>
+	<div id="hoverwincompany">公司信息: </div>
+	<div id="hoverwinfund">基金信息: </div>
+</div>
 </body>
 </html>

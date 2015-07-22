@@ -28,6 +28,7 @@
     <result property="subject" column="Subject"/>
     <result property="description" column="Description"/>
     <result property="color" column="Color"/>
+    <result property="type" column="Type"/>
 </resultMap> 
 
  <resultMap id="conflictMap" class="dfzq.model.ConflictResult">

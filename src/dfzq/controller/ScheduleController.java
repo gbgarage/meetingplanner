@@ -10,7 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,8 +27,11 @@ import dfzq.dao.OneOnOneMeetingRequestDao;
 import dfzq.dao.ScheduleDAO;
 import dfzq.dao.SmallMeetingRequestDao;
 import dfzq.dao.TimeframeDao;
+import dfzq.model.Company;
 import dfzq.model.ConflictResult;
 import dfzq.model.DataList;
+import dfzq.model.Fund;
+import dfzq.model.MeetingDetail;
 import dfzq.model.MeetingRequest;
 import dfzq.model.OneOnOneMeetingRequest;
 import dfzq.model.Schedule;
@@ -56,7 +61,6 @@ public class ScheduleController {
 	
 	@Autowired
 	OneOnOneMeetingRequestDao oneononemeetingrequestDao;
-	
 	
 	@Autowired
 	MeetingScheduleService meetingScheduleService;
@@ -463,7 +467,7 @@ public class ScheduleController {
 			
 			//added by leo 20150510, add meetintype into the return page to allow swap
 			dateVenueJsonObject.put("T"+scheduleResultItem.getMeetingTime() + "TYPE", 
-					scheduleResultItem.getSubject()==null?"":scheduleResultItem.getMeetingId()
+					scheduleResultItem.getSubject()==null?"":scheduleResultItem.getType()
 					);
 			
 		}
@@ -646,6 +650,56 @@ public class ScheduleController {
 		return 1;
 	}
 	
+	//show meeting type, attendee for a meeting ID
+	
+	@ResponseBody
+	@RequestMapping(value = "/schedule/showmeetingdetail/{id}")
+	public MeetingDetail showMeetingDetail(@PathVariable("id") Integer meetingid, 
+			Model model){
+		
+		//initiate meeting detail object
+		MeetingDetail md = new MeetingDetail();
+		
+		//get schedule of id from DB
+		Schedule s = scheduleDao.listSchedule(meetingid);
+		
+		//set meeting type
+		if (s.getType().equals("O")) {
+			md.setType("1对1会议");
+		} else if (s.getType().equals("S")) {
+			md.setType("小规模会议");
+		} else if (s.getType().equals("P")) {
+			md.setType("1对多会议");
+		} else {
+			md.setType("未知会议类型");
+		}
+		
+		//initiate return string for company and fund
+		String companyStr = new String();
+		String fundStr = new String();
+		
+		//get the attendee string for the meeting
+		String attStr = s.getAttendee();
+		String[] attStrArray = attStr.split(",");
+		
+		//set company/fund name and contact
+		for (String str:attStrArray) {
+			if (str.contains("c")) {
+				Company c = companyDao.getCompanyById(Integer.parseInt(str.substring(1)));
+				companyStr += " " + c.getName() + "(" + c.getContact() + ")";
+			} else if (str.contains("f0")) {
+				fundStr += " [所有基金公司开放参与]";
+			} else if (str.contains("f")) {
+				Fund f = fundDao.getFundById(Integer.parseInt(str.substring(1)));
+				fundStr += " " + f.getFundName() + "(" + f.getContactor() + ")";
+			}
+		}
+		
+		md.setFundStr(fundStr);
+		md.setCompanyStr(companyStr);
+		
+		return md;
+	}
 }
 
 
