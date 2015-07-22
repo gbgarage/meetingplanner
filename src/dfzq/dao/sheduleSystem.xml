@@ -102,6 +102,7 @@
 
     <select id="getTimeframeList" parameterClass="java.util.Map" resultMap="timeframe-result">
       select * from time_frame
+      where region!='1c'
     </select>
 
 
