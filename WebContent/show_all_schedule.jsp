@@ -371,7 +371,7 @@
             $('#hoverwin').css("top",document.body.scrollLeft+event.clientY+10);
             
             jQuery.post(
-                "./schedule/showmeetingdetail/" + $(this).attr('name') +".do", null,
+                "${contextPath}/schedule/showmeetingdetail/" + $(this).attr('name') +".do", null,
             	function(data) {
                 	$('#hoverwinmeetingtype').text("会议类型: " + data.type);
                 	$('#hoverwincompany').text("公司信息: " + data.companyStr);
