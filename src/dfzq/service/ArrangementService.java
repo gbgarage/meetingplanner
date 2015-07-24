@@ -168,7 +168,7 @@ public class ArrangementService {
 
     private void arrangeMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest) {
         arrangeMeetingDao.updateMeetingStatus(oneOnOneMeetingRequest);
-        meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, oneOnOneMeetingRequest.getTimeFrameId());
+        meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, oneOnOneMeetingRequest.getTimeFrameId(), null);
     }
 
     private void cancelMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest, int status) {

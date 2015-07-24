@@ -505,9 +505,9 @@ public class ScheduleController {
 	
 	//add lunch, input is fund id and company id, add lunch
 	@ResponseBody
-	@RequestMapping(value = "/addlunch", method = RequestMethod.POST)
+	@RequestMapping(value = "/schedule/addlunch", method = RequestMethod.POST)
 	public int addlunch(@RequestParam("fund_id") int fund_id, @RequestParam("company_id") int company_id,
-			@RequestParam("lunchtime_id") int lunchtime_id) {
+			@RequestParam("lunchtime_id") int lunchtime_id, @RequestParam("venue_id") String venue_id) {
 //		print out the add lunch request detail
 //		System.out.println("received add lunch request, fund_id= " + fund_id + " company_id= " 
 //				+ company_id + " lunchtime_id= " + lunchtime_id);
@@ -516,7 +516,7 @@ public class ScheduleController {
 		OneOnOneMeetingRequest request = oneononemeetingrequestDao.getMeetReqForFundCompany(fund_id, company_id);
 	
 		// add one meeting for this meeting request into the schedule table
-		meetingScheduleService.scheduleMeeting(request, lunchtime_id);
+		meetingScheduleService.scheduleMeeting(request, lunchtime_id, venue_id);
 		
 		// update this 1 one 1 request status in  1 one 1 meeting request table to success status
 		oneononemeetingrequestDao.updateMeetingRequestStatus(fund_id, company_id, 5, lunchtime_id);

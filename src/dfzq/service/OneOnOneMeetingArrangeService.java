@@ -44,7 +44,7 @@ public class OneOnOneMeetingArrangeService {
                     fund = request1.getFund();
                     if (fundName.equals(request1.getFund().getFundName())) {
                         arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_COMPANY_AND_ARRAGED);
-                        meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
+                        meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, timeFrameId, null);
 
                         fund.decreaseAvailbility();
                         if (fund.isConflict()) {
@@ -69,7 +69,7 @@ public class OneOnOneMeetingArrangeService {
         Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
         if (timeFrameId != null) {
             arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.CONFLICT_FUND_AND_ARRAGED);
-            meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
+            meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, timeFrameId, null);
 
 
         } else {
@@ -85,7 +85,7 @@ public class OneOnOneMeetingArrangeService {
         Integer timeFrameId = companyDao.getNextAvailableTimeFrame(company, fund);
         if (timeFrameId != null) {
             arrangeMeetingDao.saveArrangement(oneOnOneMeetingRequest, timeFrameId, Status.NOT_CONFLICT);
-            meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, timeFrameId);
+            meetingScheduleService.scheduleMeeting(oneOnOneMeetingRequest, timeFrameId, null);
         }
     }
 }

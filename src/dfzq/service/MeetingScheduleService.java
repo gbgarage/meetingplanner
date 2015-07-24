@@ -31,7 +31,7 @@ public class MeetingScheduleService {
         locationMap.clear();
     }
 
-    public void scheduleMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest, Integer timeFrameId) {
+    public void scheduleMeeting(OneOnOneMeetingRequest oneOnOneMeetingRequest, Integer timeFrameId, String venue) {
         Schedule schedule = new Schedule();
         schedule.setColor("-1");
 
@@ -46,12 +46,13 @@ public class MeetingScheduleService {
         schedule.setStartTime(timeFrame.getStartTime());
         schedule.setEndTime(timeFrame.getEndTime());
 
-        schedule.setLocation(getLocation(timeFrameId) + "");
+        //allow direct set location
+        if (venue==null) schedule.setLocation(getLocation(timeFrameId) + "");
+        else schedule.setLocation(venue);
         String attendee = generateAttendee(company.getId(), fund.getId());
         schedule.setAttendee(attendee);
         schedule.setType(Schedule.ONE_ON_ONE);
         scheduleDAO.addDetailedSchedule(schedule);
-
 
     }
 

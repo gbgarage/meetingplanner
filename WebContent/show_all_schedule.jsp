@@ -117,14 +117,34 @@
             // if the same class, then just return
             if (getOriginalClass($("#" + ui.helper[0].id).attr('class')) ==
                     getOriginalClass($("#" + this.id).attr('class'))) return;
-
-            //swap objects
-            swapObject(ui.helper[0].id, this.id);
             
+            // if target class is blank object, swap the conflict meeting into the blank one, eg. used by add lunch feature
+            if (getOriginalClass($(this).attr('class')) == 'bkobject') {
+            	//if target is blank object, conflict block is the source block
+            	var conflictblockid = ui.helper[0].id;
+            	var meeetingblockid = this.id;
+            	
+        		//post fund_id and company_id to backend to add lunch
+        		//lunchtime_id is derived from target block location, need to change later
+                jQuery.post(
+                        "${contextPath}/schedule/addlunch.do",
+                        { fund_id: conflictdata[conflictblockid.split("_")[1]]["fund_id"], 
+                        	company_id: conflictdata[conflictblockid.split("_")[1]]["company_id"],
+                        	lunchtime_id: meeetingblockid.split("_")[2]-1, 
+                        	venue_id: scheduledata[meeetingblockid.split("_")[1]]['MeetingVenue']} ,
+                        function(data) {
+                        }
+                );
+        		return;
+            }
+
             //set id for meetingblock and conflict block which will be swapped
             var meetingblockid;
             var conflictblockid;
             
+            //swap objects
+            swapObject(ui.helper[0].id, this.id);
+
             var meetingClass = getOriginalClass($("#" + ui.helper[0].id).attr('class'));
             
             if ( meetingClass == "ooobject" || meetingClass == "smobject" || meetingClass == "omobject"  ) {
@@ -150,7 +170,7 @@
             //post meetingid, fundid, companyid to server side
             
             jQuery.post(
-            	"./schedule/swapmeeting.do",
+            	"${contextPath}/schedule/swapmeeting.do",
                 { meeting_id: meeting_id, 
                 	conflict_fundid: conflict_fundid, 
                 	conflict_companyid: conflict_companyid },
@@ -206,14 +226,17 @@
                         	var meetingId = data[i][timeslot[j]+"ID"];
                         	var meetingClass;
                         	switch (meetingType) {
-                        		case 'P': meetingClass = "meetingobject omobject"; break;
-                        		case 'O': meetingClass = "meetingobject ooobject"; break;
-                        		case 'S': meetingClass = "meetingobject smobject"; break;
+                        		case 'P': meetingClass = "omobject meetingobject"; break;
+                        		case 'O': meetingClass = "ooobject meetingobject"; break;
+                        		case 'S': meetingClass = "smobject meetingobject"; break;
                         	};
                     
                             td1.addClass(meetingClass).draggable({ opacity: 0.35, revert: true, revertDuration: 100 })
                                     .droppable({drop: dropHandler});
                             td1.attr("name", meetingId);
+                        } else if (td1.html() == "" && timeslot[j].substring(0, 1) == "T"){
+                        	//if td does not have data, means no meeting at that time, set class to bkobject = blank object
+                        	td1.addClass("bkobject").droppable({drop: dropHandler});
                         }
 
                         tr1.append(td1);
@@ -287,7 +310,7 @@
         		
                     var btnEdit = this;
                     mini.open({
-        				url:  "./schedule/select_lunch.jsp",
+        				url:  "${contextPath}/schedule/select_lunch.jsp",
                         title: "选择列表",
                         width: 650,
                         height: 380,
@@ -299,14 +322,15 @@
                                 if (windowdata) {
                             		//post fund_id and company_id to backend to add lunch
                                     jQuery.post(
-                                            "./addlunch.do",
+                                            "${contextPath}/schedule/addlunch.do",
                                             { fund_id: conflictdata[id]["fund_id"], 
                                             	company_id: conflictdata[id]["company_id"]
                                             	, lunchtime_id: windowdata.id } ,
                                             function(data) {
                                             		if (data!=1) alert("error");
                                             		else $("#isResolved" + id).text("已解决");
-                                            });
+                                            }
+                                    );
                                 }
                             }
 
@@ -335,7 +359,7 @@
         		
                     var btnEdit = this;
                     mini.open({
-        				url:  "./schedule/select_changesmall.jsp?companyid=" + conflictdata[id]["company_id"],
+        				url:  "${contextPath}/schedule/select_changesmall.jsp?companyid=" + conflictdata[id]["company_id"],
                         title: "选择列表",
                         width: 650,
                         height: 380,
@@ -347,7 +371,7 @@
                                 if (windowdata) {
                             		//post fund_id and company_id to backend to add lunch
                                     jQuery.post(
-                                            "./schedule/changesmall.do",
+                                            "${contextPath}/schedule/changesmall.do",
                                             { fund_id: conflictdata[id]["fund_id"], 
                                             	company_id: conflictdata[id]["company_id"],
                                             	meeting_id: windowdata.id},
